@@ -14,6 +14,7 @@ struct MainView: View {
     
     var body: some View {
         VStack {
+            Spacer()
             Text("\(judgeName), Please fill all score.")
                 .font(.title)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -22,6 +23,7 @@ struct MainView: View {
             List(entryNames) {entryName in
                 EntryListItemView(entryName: entryName, scores: $demoScores)
             }
+            Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
 //        .background(.orange)
