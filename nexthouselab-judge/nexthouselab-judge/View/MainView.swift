@@ -24,6 +24,7 @@ struct MainView: View {
                 EntryListItemView(entryName: entryName, scores: $demoScores)
             }
             Spacer()
+            FolderExportView(scores: $demoScores, fileName: judgeName)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
 //        .background(.orange)

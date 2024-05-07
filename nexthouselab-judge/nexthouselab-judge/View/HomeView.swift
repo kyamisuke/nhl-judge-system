@@ -6,9 +6,13 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct HomeView: View {
     @State var name: String = ""
+    @State var entryMembers: [EntryName] = []
+    @State var selectedFileContent: String = ""
+    
     let demo = [
         EntryName(number: 0, name: "kyami"),
         EntryName(number: 1, name: "Kenshu"),
@@ -27,10 +31,20 @@ struct HomeView: View {
                         Text("Judge Name")
                     })
                     NavigationLink("決定") {
-                        MainView(judgeName: name, entryNames: demo)
+                        MainView(judgeName: name, entryNames: entryMembers)
                     }
                 }
                 .frame(width: 480)
+                FolderImportView(fileContent: $selectedFileContent)
+                    .onChange(of: selectedFileContent) {
+                        var tmpMemberArray: [EntryName] = []
+                        var contentAsArray = selectedFileContent.components(separatedBy: ",")
+                        for (i, content) in contentAsArray.enumerated() {
+                            tmpMemberArray.append(EntryName(number: i, name: content))
+                        }
+                        entryMembers = tmpMemberArray
+                    }
+                DemoFolderExportView()
             }
         }
     }

@@ -14,6 +14,8 @@
 		8FE86A622BE9093600F8697C /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE86A612BE9093600F8697C /* MainView.swift */; };
 		8FE86A652BE9134E00F8697C /* EntryListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE86A642BE9134E00F8697C /* EntryListItemView.swift */; };
 		8FE86A692BE9255200F8697C /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE86A682BE9255200F8697C /* HomeView.swift */; };
+		8FE86A6C2BE9355400F8697C /* DocumentPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE86A6B2BE9355400F8697C /* DocumentPickerView.swift */; };
+		8FE86A6E2BE935A100F8697C /* UserDictionaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE86A6D2BE935A100F8697C /* UserDictionaryView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +27,8 @@
 		8FE86A612BE9093600F8697C /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		8FE86A642BE9134E00F8697C /* EntryListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryListItemView.swift; sourceTree = "<group>"; };
 		8FE86A682BE9255200F8697C /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		8FE86A6B2BE9355400F8697C /* DocumentPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentPickerView.swift; sourceTree = "<group>"; };
+		8FE86A6D2BE935A100F8697C /* UserDictionaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDictionaryView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +81,7 @@
 		8FE86A632BE9094700F8697C /* View */ = {
 			isa = PBXGroup;
 			children = (
+				8FE86A6A2BE9353F00F8697C /* Ex */,
 				8FE86A672BE920C300F8697C /* Component */,
 				8FE86A662BE920B700F8697C /* Main */,
 			);
@@ -95,9 +100,18 @@
 		8FE86A672BE920C300F8697C /* Component */ = {
 			isa = PBXGroup;
 			children = (
+				8FE86A6D2BE935A100F8697C /* UserDictionaryView.swift */,
 				8FE86A642BE9134E00F8697C /* EntryListItemView.swift */,
 			);
 			name = Component;
+			sourceTree = "<group>";
+		};
+		8FE86A6A2BE9353F00F8697C /* Ex */ = {
+			isa = PBXGroup;
+			children = (
+				8FE86A6B2BE9355400F8697C /* DocumentPickerView.swift */,
+			);
+			name = Ex;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -171,6 +185,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8FE86A562BE908DC00F8697C /* ContentView.swift in Sources */,
+				8FE86A6C2BE9355400F8697C /* DocumentPickerView.swift in Sources */,
+				8FE86A6E2BE935A100F8697C /* UserDictionaryView.swift in Sources */,
 				8FE86A622BE9093600F8697C /* MainView.swift in Sources */,
 				8FE86A652BE9134E00F8697C /* EntryListItemView.swift in Sources */,
 				8FE86A692BE9255200F8697C /* HomeView.swift in Sources */,
