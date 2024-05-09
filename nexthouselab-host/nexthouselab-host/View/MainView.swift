@@ -33,9 +33,13 @@ struct MainView: View {
             VStack {
                 // 各ジャッジのリストを表示
                 HStack {
+                    Spacer()
+                    Divider()
                     ForEach($demoJudgeArrray) { judge in
                         JudgeView(judgeName: judge, entryMembers: $entryMembers, offset: $offset)
+                        Divider()
                     }
+                    Spacer()
                 }
                 
                 // ファイル選択ボタン

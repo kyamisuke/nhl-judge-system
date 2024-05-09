@@ -23,6 +23,8 @@ struct JudgeView: View {
             Text(judgeName.name)
                 .frame(maxWidth: .infinity)
                 .font(.title)
+            
+            Divider()
             // 角ジャッジの下に表示するエントリーリスト
             ScrollView {
                 LazyVStack(spacing: 0) {
