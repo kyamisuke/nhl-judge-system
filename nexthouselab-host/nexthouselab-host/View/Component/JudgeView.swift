@@ -19,63 +19,18 @@ struct JudgeView: View {
     
     var body: some View {
         VStack {
-            //            Section(content: {
-            //                List(entryMembers) { member in
-            //                    EntryListItemView(entryName: member)
-            //                }
-            //            }, header: {
-            //                Text(judgeName.name)
-            //                    .frame(maxWidth: .infinity)
-            //                    .font(.title)
-            //            })
 //            Text("offset: \(offsetWithId.offset!), id: \(id)")
             Text(judgeName.name)
                 .frame(maxWidth: .infinity)
                 .font(.title)
-//            ScrollView {
-//                LazyVStack(spacing: 0) {
-//                    ForEach(entryMembers) { member in
-//                        EntryListItemView(entryName: member)
-//                            .frame(height: 40)
-//                    }
-//                }
-//                .background {
-//                    GeometryReader { proxy in
-//                        Color.clear.onChange(of: proxy.frame(in: .named("ScrollView")).minY) { _, offset in
-//                            self.offsetWithId = (-1 * Int(offset / 40), self.id)
-//                        }
-//                    }
-//                }
-//            }
-//            .coordinateSpace(name: "ScrollView")
-//            
-//            Button("Scroll") {
-//                withAnimation {
-//                    offsetWithId.offset = 10
-//                }
-//            }
-            
             ScrollView {
                 LazyVStack(spacing: 0) {
                     ForEach(1..<100, id: \.self) { number in
                         EntryListItemView(entryName: EntryName(number: number, name: "kyami"))
                             .frame(height: 40)
-                        //                        .background {
-                        //                            RoundedRectangle(cornerRadius: 10)
-                        //                                .foregroundStyle(.teal)
-                        //                        }
                     }
                     .scrollTargetLayout()
                 }
-//                .background {
-//                    GeometryReader { proxy in
-//                        Color.clear.onChange(of: proxy.frame(in: .named("ScrollView")).minY) { _, offset in
-//                            //withAnimation {
-//                                self.offsetWithId = (-1 * Int(offset / 40), self.id)
-//                            //}
-//                        }
-//                    }
-//                }
             }
             .scrollPosition(id: $offset)
             .coordinateSpace(name: "ScrollView")
