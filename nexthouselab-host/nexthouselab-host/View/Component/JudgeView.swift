@@ -16,6 +16,7 @@ struct JudgeView: View {
     @Binding var judgeName: JudgeName
     @Binding var entryMembers: [EntryName]
     @Binding var offset: Int?
+    @Binding var currentNumber: Int
     
     var body: some View {
         VStack {
@@ -28,8 +29,8 @@ struct JudgeView: View {
             // 角ジャッジの下に表示するエントリーリスト
             ScrollView {
                 LazyVStack(spacing: 0) {
-                    ForEach(1..<100, id: \.self) { number in
-                        EntryListItemView(entryName: EntryName(number: number, name: "kyami"))
+                    ForEach(entryMembers) { member in
+                        EntryListItemView(entryName: member, currentNumber: $currentNumber)
                             .frame(height: 40)
                     }
                     // id指定でコードから各リストに直接飛べるように仕込む
@@ -44,7 +45,7 @@ struct JudgeView: View {
 
 #Preview {
     struct PreviewView: View {
-        @State var entryMembers = [EntryName(number: 0, name: "kyami"), EntryName(number: 1, name: "amazon"), EntryName(number: 2, name: "Amazon")]
+        @State var entryMembers = [EntryName(number: 1, name: "kyami"), EntryName(number: 2, name: "amazon"), EntryName(number: 3, name: "Amazon")]
         @State var judgeName = JudgeName(name: "KAZANE")
         @State var judgeName2 = JudgeName(name: "HIRO")
 
@@ -53,8 +54,8 @@ struct JudgeView: View {
         var body: some View {
 //            Text("offset: \(offset!)")
             HStack {
-                JudgeView(judgeName: $judgeName, entryMembers: $entryMembers, offset: $offset)
-                JudgeView(judgeName: $judgeName2, entryMembers: $entryMembers, offset: $offset)
+                JudgeView(judgeName: $judgeName, entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1))
+                JudgeView(judgeName: $judgeName2, entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1))
             }
         }
     }

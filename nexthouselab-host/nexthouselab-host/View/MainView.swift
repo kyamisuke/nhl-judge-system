@@ -17,8 +17,9 @@ struct MainView: View {
     @State var selectedFileContent: String = ""
     
     // リストに表示するものたち
-    @State var entryMembers = [EntryName(number: 0, name: "kyami"), EntryName(number: 1, name: "amazon"), EntryName(number: 2, name: "Amazon")]
+    @State var entryMembers = [EntryName(number: 1, name: "kyami"), EntryName(number: 2, name: "amazon"), EntryName(number: 3, name: "Amazon")]
     @State var demoJudgeArrray = [JudgeName(name: "KAZANE"), JudgeName(name: "HIRO"), JudgeName(name: "YUU"), JudgeName(name: "KAZUKIYO")]
+    @State var currentNumber: Int = 1
     
     // スクロール同期に関わる部分
     @State var offset: Int? = 0
@@ -36,11 +37,13 @@ struct MainView: View {
                     Spacer()
                     Divider()
                     ForEach($demoJudgeArrray) { judge in
-                        JudgeView(judgeName: judge, entryMembers: $entryMembers, offset: $offset)
+                        JudgeView(judgeName: judge, entryMembers: $entryMembers, offset: $offset, currentNumber: $currentNumber)
                         Divider()
                     }
                     Spacer()
                 }
+                
+                
                 
                 // ファイル選択ボタン
                 FolderImportView(fileContent: $selectedFileContent)
@@ -78,6 +81,22 @@ struct MainView: View {
                             }
                         }
                 )
+        }
+        HStack {
+            Button(action: {
+                if self.currentNumber != 1 {
+                    currentNumber -= 2
+                }
+            }, label: {
+                Text("前へ")
+            })
+            Button(action: {
+                if self.currentNumber + 2 <= entryMembers.count {
+                    currentNumber += 2
+                }
+            }, label: {
+                Text("次へ")
+            })
         }
     }
     

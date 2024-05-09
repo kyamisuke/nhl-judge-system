@@ -16,6 +16,7 @@ struct EntryName: Identifiable {
 struct EntryListItemView: View {
     var entryName: EntryName
     @State var isFilling = false
+    @Binding var currentNumber: Int
     
     var body: some View {
         HStack(spacing: 24) {
@@ -25,11 +26,16 @@ struct EntryListItemView: View {
                 .frame(width: 100)
         }
         .frame(maxWidth: .infinity)
-        .listRowBackground(isFilling ? Color.gray : Color.white)
+        .padding(8)
+        .background(isFocus() ? Color(hue: 0, saturation: 0.5, brightness: 1.0) : Color.white)
     }
     
     private func onClickButton() {
         isFilling = true
+    }
+    
+    private func isFocus() -> Bool {
+        return entryName.number == currentNumber || entryName.number == currentNumber + 1
     }
 }
 
@@ -54,7 +60,7 @@ private struct ScoreSliderView: View {
         @State var demoScores: [Float] = [0, 0, 0, 0, 0, 0]
         
         var body: some View {
-            EntryListItemView(entryName: EntryName(number: 0, name: "kyami"))
+            EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentNumber: .constant(1))
         }
     }
     
