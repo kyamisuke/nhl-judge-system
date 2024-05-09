@@ -22,7 +22,7 @@ struct MainView: View {
     @State var currentNumber: Int = 1
     
     // スクロール同期に関わる部分
-    @State var offset: Int? = 0
+    @State var offset: CGFloat = 0
     @State var ges = "ges"
     @State var dragDistance: CGFloat = 0
     @State var preDragPosition: CGFloat = 0
@@ -33,18 +33,25 @@ struct MainView: View {
         ZStack {
             VStack {
                 // 各ジャッジのリストを表示
+                JudgeView(judgeNames: $demoJudgeArrray, entryMembers: $entryMembers, offset: $offset, currentNumber: $currentNumber)
+                
                 HStack {
-                    Spacer()
-                    Divider()
-                    ForEach($demoJudgeArrray) { judge in
-                        JudgeView(judgeName: judge, entryMembers: $entryMembers, offset: $offset, currentNumber: $currentNumber)
-                        Divider()
-                    }
-                    Spacer()
+                    Button(action: {
+                        if self.currentNumber != 1 {
+                            currentNumber -= 2
+                        }
+                    }, label: {
+                        Text("前へ")
+                    })
+                    Button(action: {
+                        if self.currentNumber + 2 <= entryMembers.count {
+                            currentNumber += 2
+                        }
+                    }, label: {
+                        Text("次へ")
+                    })
                 }
-                
-                
-                
+
                 // ファイル選択ボタン
                 FolderImportView(fileContent: $selectedFileContent)
                     .onChange(of: selectedFileContent, {
@@ -55,48 +62,6 @@ struct MainView: View {
                         }
                     })
             }
-            // 全面に見えないビューを敷き、ドラッグを監視する
-            // ドラッグ量に応じて、全てのリストの位置を更新する
-            Color(red: 1, green: 1, blue: 1, opacity: 0.1)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .gesture(
-                    DragGesture()
-                        .onChanged {gesture in
-                            if isFirstDrag {
-                                isFirstDrag = false
-                                preDragPosition = gesture.startLocation.y
-                                return
-                            }
-                            dragDistance += (preDragPosition - gesture.location.y) / 50
-                            
-                            preDragPosition = gesture.location.y
-                            offset = Int(dragDistance)
-                            self.ges = "\(gesture.startLocation), \(gesture.location), \(dragDistance)"
-                        }
-                        .onEnded {_ in
-                            isFirstDrag = true
-                            if dragDistance < 0 {
-                                dragDistance = 0
-                                offset = Int(dragDistance)
-                            }
-                        }
-                )
-        }
-        HStack {
-            Button(action: {
-                if self.currentNumber != 1 {
-                    currentNumber -= 2
-                }
-            }, label: {
-                Text("前へ")
-            })
-            Button(action: {
-                if self.currentNumber + 2 <= entryMembers.count {
-                    currentNumber += 2
-                }
-            }, label: {
-                Text("次へ")
-            })
         }
     }
     

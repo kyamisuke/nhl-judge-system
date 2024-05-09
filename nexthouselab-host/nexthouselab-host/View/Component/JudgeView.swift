@@ -13,49 +13,91 @@ struct JudgeName: Identifiable, Hashable {
 }
 
 struct JudgeView: View {
-    @Binding var judgeName: JudgeName
+    @Binding var judgeNames: [JudgeName]
     @Binding var entryMembers: [EntryName]
-    @Binding var offset: Int?
+    @Binding var offset: CGFloat
     @Binding var currentNumber: Int
+    @State var isSticky = false
     
     var body: some View {
         VStack {
-//            Text("offset: \(offsetWithId.offset!), id: \(id)")
-            Text(judgeName.name)
-                .frame(maxWidth: .infinity)
-                .font(.title)
-            
-            Divider()
-            // 角ジャッジの下に表示するエントリーリスト
-            ScrollView {
-                LazyVStack(spacing: 0) {
-                    ForEach(entryMembers) { member in
-                        EntryListItemView(entryName: member, currentNumber: $currentNumber)
-                            .frame(height: 40)
+            //            Text("offset: \(offsetWithId.offset!), id: \(id)")
+            ZStack(alignment: .top) {
+                ScrollView {
+                    HStack {
+                        Spacer()
+                        Divider()
+                        ForEach(judgeNames) { judgeName in
+                            // 角ジャッジの下に表示するエントリーリスト
+                            LazyVStack(spacing: 0) {
+                                Text(judgeName.name)
+                                    .frame(maxWidth: .infinity)
+                                    .font(.title)
+                                Divider()
+                                    .padding(8)
+                                ForEach(entryMembers) { member in
+                                    EntryListItemView(entryName: member, currentNumber: $currentNumber)
+                                        .frame(height: 40)
+                                }
+                            }
+                            // id指定でコードから各リストに直接飛べるように仕込む
+                            .scrollTargetLayout()
+                            Divider()
+                            Spacer()
+                        }
                     }
-                    // id指定でコードから各リストに直接飛べるように仕込む
-                    .scrollTargetLayout()
+                    .background {
+                        GeometryReader { proxy in
+                            Color.clear.onChange(of: proxy.frame(in: .named("ScrollView")).minY) { _, offset in
+                                self.offset = offset
+                            }
+                        }
+                    }
                 }
+                //.scrollPosition(id: $offset)
+                .coordinateSpace(name: "ScrollView")
+                
+                VStack {
+                    HStack {
+                        Spacer()
+                        Divider()
+                        ForEach(judgeNames) { judgeName in
+                            // 角ジャッジの下に表示するエントリーリスト
+                            Text(judgeName.name)
+                                .frame(maxWidth: .infinity)
+                                .font(.title)
+                                .background(.white)
+                                .opacity(-1 * (offset/80.0 + 1.0))
+                            Divider()
+                        }
+                        Spacer()
+                    }
+                    .frame(height: 64)
+                    Divider()
+                }
+                .background(.white)
+                .opacity(-1 * (offset/80.0 + 1.0))
             }
-            .scrollPosition(id: $offset)
-            .coordinateSpace(name: "ScrollView")
         }
     }
 }
 
 #Preview {
     struct PreviewView: View {
-        @State var entryMembers = [EntryName(number: 1, name: "kyami"), EntryName(number: 2, name: "amazon"), EntryName(number: 3, name: "Amazon")]
-        @State var judgeName = JudgeName(name: "KAZANE")
-        @State var judgeName2 = JudgeName(name: "HIRO")
-
-        @State var offset: Int? = 0
-
+        @State var entryMembers = [EntryName]()
+        @State var judgeNames = [JudgeName(name: "KAZANE"), JudgeName(name: "HIRO")]
+        
+        @State var offset: CGFloat = 0
+        
         var body: some View {
-//            Text("offset: \(offset!)")
+            //            Text("offset: \(offset!)")
             HStack {
-                JudgeView(judgeName: $judgeName, entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1))
-                JudgeView(judgeName: $judgeName2, entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1))
+                JudgeView(judgeNames: $judgeNames, entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1))
+            }
+            .onAppear {
+                for i in 1...100 {
+                    entryMembers.append(EntryName(number: i, name: "kyami"))
+                }
             }
         }
     }
