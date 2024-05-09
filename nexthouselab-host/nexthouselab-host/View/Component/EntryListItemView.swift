@@ -20,7 +20,7 @@ struct EntryListItemView: View {
     var body: some View {
         HStack(spacing: 24) {
             Text(String(entryName.number))
-                .frame(width: 16)
+                .frame(width: 32)
             Text(entryName.name)
                 .frame(width: 100)
         }

@@ -11,7 +11,7 @@ import SwiftUI
 struct nexthouselab_hostApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainView()
         }
     }
 }
