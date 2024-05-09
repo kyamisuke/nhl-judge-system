@@ -23,12 +23,14 @@ struct JudgeView: View {
             Text(judgeName.name)
                 .frame(maxWidth: .infinity)
                 .font(.title)
+            // 角ジャッジの下に表示するエントリーリスト
             ScrollView {
                 LazyVStack(spacing: 0) {
                     ForEach(1..<100, id: \.self) { number in
                         EntryListItemView(entryName: EntryName(number: number, name: "kyami"))
                             .frame(height: 40)
                     }
+                    // id指定でコードから各リストに直接飛べるように仕込む
                     .scrollTargetLayout()
                 }
             }
