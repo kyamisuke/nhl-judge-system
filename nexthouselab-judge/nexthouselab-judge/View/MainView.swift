@@ -11,6 +11,9 @@ struct MainView: View {
     let judgeName: String
     let entryNames: [EntryName]
     @State var demoScores: [Float] = [0, 0, 0, 0, 0, 0]
+    @State var currentEditingNum = 0
+    
+    @EnvironmentObject var socketManager: SocketManager
     
     var body: some View {
         VStack {
@@ -21,10 +24,12 @@ struct MainView: View {
                 .padding(16)
             Spacer()
             List(entryNames) {entryName in
-                EntryListItemView(entryName: entryName, scores: $demoScores)
+                EntryListItemView(entryName: entryName, scores: $demoScores, currentEdintingNum: $currentEditingNum)
+            }
+            .onChange(of: currentEditingNum) {
+                socketManager.send(message: "\(judgeName)/\(currentEditingNum)")
             }
             Spacer()
-            FolderExportView(scores: $demoScores, fileName: judgeName)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
 //        .background(.orange)

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8F6B2ACF2BEDC08A00A2E23F /* SocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6B2ACE2BEDC08A00A2E23F /* SocketManager.swift */; };
 		8FE86A542BE908DC00F8697C /* nexthouselab_judgeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE86A532BE908DC00F8697C /* nexthouselab_judgeApp.swift */; };
 		8FE86A562BE908DC00F8697C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE86A552BE908DC00F8697C /* ContentView.swift */; };
 		8FE86A582BE908DE00F8697C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8FE86A572BE908DE00F8697C /* Assets.xcassets */; };
@@ -19,6 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8F6B2ACE2BEDC08A00A2E23F /* SocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketManager.swift; sourceTree = "<group>"; };
 		8FE86A502BE908DC00F8697C /* nexthouselab-judge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "nexthouselab-judge.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FE86A532BE908DC00F8697C /* nexthouselab_judgeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = nexthouselab_judgeApp.swift; sourceTree = "<group>"; };
 		8FE86A552BE908DC00F8697C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -42,6 +44,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8F6B2ACC2BEDC05400A2E23F /* Socket */ = {
+			isa = PBXGroup;
+			children = (
+				8F6B2ACE2BEDC08A00A2E23F /* SocketManager.swift */,
+			);
+			path = Socket;
+			sourceTree = "<group>";
+		};
 		8FE86A472BE908DC00F8697C = {
 			isa = PBXGroup;
 			children = (
@@ -61,6 +71,7 @@
 		8FE86A522BE908DC00F8697C /* nexthouselab-judge */ = {
 			isa = PBXGroup;
 			children = (
+				8F6B2ACC2BEDC05400A2E23F /* Socket */,
 				8FE86A532BE908DC00F8697C /* nexthouselab_judgeApp.swift */,
 				8FE86A632BE9094700F8697C /* View */,
 				8FE86A552BE908DC00F8697C /* ContentView.swift */,
@@ -186,6 +197,7 @@
 			files = (
 				8FE86A562BE908DC00F8697C /* ContentView.swift in Sources */,
 				8FE86A6C2BE9355400F8697C /* DocumentPickerView.swift in Sources */,
+				8F6B2ACF2BEDC08A00A2E23F /* SocketManager.swift in Sources */,
 				8FE86A6E2BE935A100F8697C /* UserDictionaryView.swift in Sources */,
 				8FE86A622BE9093600F8697C /* MainView.swift in Sources */,
 				8FE86A652BE9134E00F8697C /* EntryListItemView.swift in Sources */,

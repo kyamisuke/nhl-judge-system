@@ -17,6 +17,7 @@ struct EntryListItemView: View {
     var entryName: EntryName
     @Binding var scores: [Float]
     @State var isFilling = false
+    @Binding var currentEdintingNum: Int
     
     var body: some View {
         HStack(spacing: 24) {
@@ -32,6 +33,9 @@ struct EntryListItemView: View {
                 }
                 .padding(8)
                 Slider(value: $scores[entryName.number], in: 0...10, step: 0.5)
+                    .onChange(of: scores[entryName.number]) {
+                        currentEdintingNum = entryName.number
+                    }
             }
             .frame(width: 480)
             Text(String(scores[entryName.number]))
@@ -70,7 +74,7 @@ private struct ScoreSliderView: View {
         @State var demoScores: [Float] = [0, 0, 0, 0, 0, 0]
         
         var body: some View {
-            EntryListItemView(entryName: EntryName(number: 0, name: "kyami"), scores: $demoScores)
+            EntryListItemView(entryName: EntryName(number: 0, name: "kyami"), scores: $demoScores, currentEdintingNum: .constant(1))
         }
     }
     

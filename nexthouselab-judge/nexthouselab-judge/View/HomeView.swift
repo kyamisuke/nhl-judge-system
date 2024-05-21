@@ -13,6 +13,8 @@ struct HomeView: View {
     @State var entryMembers: [EntryName] = []
     @State var selectedFileContent: String = ""
     
+    @EnvironmentObject var socketManager: SocketManager
+    
     let demo = [
         EntryName(number: 0, name: "kyami"),
         EntryName(number: 1, name: "Kenshu"),
@@ -38,13 +40,18 @@ struct HomeView: View {
                 FolderImportView(fileContent: $selectedFileContent)
                     .onChange(of: selectedFileContent) {
                         var tmpMemberArray: [EntryName] = []
-                        var contentAsArray = selectedFileContent.components(separatedBy: ",")
+                        let contentAsArray = selectedFileContent.components(separatedBy: ",")
                         for (i, content) in contentAsArray.enumerated() {
-                            tmpMemberArray.append(EntryName(number: i, name: content))
+                            tmpMemberArray.append(EntryName(number: i+1, name: content))
                         }
                         entryMembers = tmpMemberArray
                     }
-                DemoFolderExportView()
+//                DemoFolderExportView()
+                Button(action: {
+                    socketManager.connect(host: "127.0.0.1", port: "9000", param: .udp)
+                }, label: {
+                    Text("Connect")
+                })
             }
         }
     }

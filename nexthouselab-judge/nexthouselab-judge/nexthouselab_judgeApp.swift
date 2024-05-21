@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct nexthouselab_judgeApp: App {
+    @StateObject var socketManager = SocketManager()
+    
     var body: some Scene {
         WindowGroup {
             HomeView()
+                .environmentObject(socketManager)
         }
     }
 }
