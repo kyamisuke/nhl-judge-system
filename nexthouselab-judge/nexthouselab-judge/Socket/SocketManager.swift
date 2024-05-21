@@ -109,7 +109,7 @@ final public class SocketManager: ObservableObject {
         }
         
         /* コネクション開始 */
-        let queue = DispatchQueue(label: "example")
+        let queue = DispatchQueue(label: "com.nexthouselab.judge.system.host.connect")
         connection?.start(queue:queue)
 
         /* コネクション完了待ち */
