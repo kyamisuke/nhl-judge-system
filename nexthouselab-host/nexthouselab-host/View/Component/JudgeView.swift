@@ -7,11 +7,6 @@
 
 import SwiftUI
 
-struct JudgeName: Identifiable, Hashable {
-    var id = UUID()
-    var name: String
-}
-
 struct JudgeView: View {
     @Binding var judgeNames: [JudgeName]
     @Binding var entryMembers: [EntryName]

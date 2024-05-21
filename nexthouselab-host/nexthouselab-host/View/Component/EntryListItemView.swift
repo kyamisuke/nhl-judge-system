@@ -7,12 +7,6 @@
 
 import SwiftUI
 
-struct EntryName: Identifiable {
-    let id = UUID()
-    let number: Int
-    let name: String
-}
-
 struct EntryListItemView: View {
     var entryName: EntryName
     @State var isFilling = false
