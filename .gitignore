@@ -1,0 +1,102 @@
+# Xcode
+#
+# Automatically generated project files
+xcuserdata/
+*.xcworkspace
+!default.xcworkspace
+*.xcscmblueprint
+
+# Backup files
+*.xcuserstate
+
+# iOS/OS X
+#
+# User-specific files
+/NHL-Judge-Systm/*.xcuserdatad
+/nexthouselab-host/*.xcuserdatad
+*.moved-aside
+DerivedData/
+.idea/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Logs
+*.log
+
+# OS-specific
+.DS_Store
+/NHL-Judge-System/.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Swift Package Manager
+#
+# Add this line if you want to avoid checking in source code from Swift Package Manager dependencies.
+# Packages/
+.build/
+
+# Swift PM Auto-generated files
+.swiftpm/xcode/package.xcworkspace/
+
+# CocoaPods
+#
+# Uncomment the following line to ignore the Pods directory if you're using CocoaPods.
+# Pods/
+
+# Carthage
+#
+# Uncomment the following line to ignore the Carthage directory if you're using Carthage.
+# Carthage/Build/
+
+# fastlane
+#
+# It is recommended to not store the screenshots in the git repository.
+# Instead, use fastlane to re-generate the screenshots whenever they are needed.
+# For more information about the recommended setup visit:
+# https://docs.fastlane.tools/best-practices/source-control/
+
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Xcode specific files
+*.xcplugindata
+*.xcuserdatad
+*.swifttemplate
+*.playground
+*.xcodeproj
+*.xcworkspace
+*.xcscmblueprint
+*.xcscheme
+*.xcsnippet
+
+# Other
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata/
+*.xccheckout
+
