@@ -49,6 +49,7 @@ struct HomeView: View {
 //                DemoFolderExportView()
                 Button(action: {
                     socketManager.connect(host: "127.0.0.1", port: "9000", param: .udp)
+                    socketManager.startListener(name: "judge_listner")
                 }, label: {
                     Text("Connect")
                 })

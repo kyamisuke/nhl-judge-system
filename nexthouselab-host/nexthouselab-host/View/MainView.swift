@@ -56,6 +56,9 @@ struct MainView: View {
                         Text("次へ")
                     })
                 }
+                .onChange(of: currentNumber) {
+                    socketManager.send(message: String(currentNumber))
+                }
 
                 // ファイル選択ボタン
                 FolderImportView(fileContent: $selectedFileContent)
@@ -68,8 +71,8 @@ struct MainView: View {
                     })
                 
                 Button(action: {
-//                    manager.receive(on: manager.connect(host: "127.0.0.1", port: "9000", param: .udp))
                     socketManager.startListener(name: "host_listener")
+                    socketManager.connect(host: "127.0.0.1", port: "8000", param: .udp)
                 }, label: {
                     Text("Connect")
                 })

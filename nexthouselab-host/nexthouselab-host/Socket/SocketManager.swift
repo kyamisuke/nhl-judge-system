@@ -81,18 +81,17 @@ final public class SocketManager: ObservableObject {
         connection.cancel()
     }
     
-    func connect(host: String, port: String, param: NWParameters) -> NWConnection
+    func connect(host: String, port: String, param: NWParameters)
     {
         let t_host = NWEndpoint.Host(host)
         let t_port = NWEndpoint.Port(port)
-        let connection: NWConnection
         let semaphore = DispatchSemaphore(value: 0)
 
         /* コネクションの初期化 */
         connection = NWConnection(host: t_host, port: t_port!, using: param)
 
         /* コネクションのStateハンドラ設定 */
-        connection.stateUpdateHandler = { (newState) in
+        connection?.stateUpdateHandler = { (newState) in
             switch newState {
                 case .ready:
                     NSLog("Ready to send")
@@ -110,11 +109,10 @@ final public class SocketManager: ObservableObject {
         }
         
         /* コネクション開始 */
-        let queue = DispatchQueue(label: "com.nexthouselab.judge.system.host.connect")
-        connection.start(queue:queue)
+        let queue = DispatchQueue(label: "example")
+        connection?.start(queue:queue)
 
         /* コネクション完了待ち */
         semaphore.wait()
-        return connection
     }
 }

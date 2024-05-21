@@ -12,6 +12,10 @@ final public class SocketManager: ObservableObject {
     var connection: NWConnection?
     
     @Published var recievedData: String = ""
+    
+    // 定数
+    let networkType = "_networkplayground._udp."
+    let networkDomain = "local"
         
     func send(message: String) {
         if connection == nil { return }
@@ -51,6 +55,24 @@ final public class SocketManager: ObservableObject {
                 self.receive(on: connection)
             }
         }
+    }
+    
+    func startListener(name: String) {
+        guard let listener = try? NWListener(using: .udp, on: 8000) else { fatalError() }
+
+        listener.service = NWListener.Service(name: name, type: networkType)
+
+        let listnerQueue = DispatchQueue(label: "com.nhl.judge.system.host.listener")
+
+        // 新しいコネクション受診時の処理
+        listener.newConnectionHandler = { [unowned self] (connection: NWConnection) in
+            connection.start(queue: listnerQueue)
+            self.receive(on: connection)
+        }
+
+        // Listener開始
+        listener.start(queue: listnerQueue)
+        print("Start Listening as \(listener.service!.name)")
     }
     
     func disconnect(connection: NWConnection)

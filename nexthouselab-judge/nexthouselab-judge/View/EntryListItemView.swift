@@ -16,8 +16,10 @@ struct EntryName: Identifiable {
 struct EntryListItemView: View {
     var entryName: EntryName
     @Binding var scores: [Float]
-    @State var isFilling = false
+    @State var isPlaying = false
     @Binding var currentEdintingNum: Int
+    
+    @EnvironmentObject var socketManager: SocketManager
     
     var body: some View {
         HStack(spacing: 24) {
@@ -40,16 +42,13 @@ struct EntryListItemView: View {
             .frame(width: 480)
             Text(String(scores[entryName.number]))
                 .frame(width: 48)
-//            Button(action: onClickButton, label: {
-//                Text("決定")
-//            })
         }
         .frame(maxWidth: .infinity)
-        .listRowBackground(isFilling ? Color.gray : Color.white)
-    }
-    
-    private func onClickButton() {
-        isFilling = true
+        .listRowBackground(isPlaying ? Color.green : Color.white)
+        .onChange(of: socketManager.recievedData) {
+            guard let currentNum = Int(socketManager.recievedData) else { return }
+            isPlaying = (currentNum == entryName.number || currentNum + 1 == entryName.number)
+        }
     }
 }
 
