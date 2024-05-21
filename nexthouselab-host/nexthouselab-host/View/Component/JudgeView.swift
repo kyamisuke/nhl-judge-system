@@ -18,6 +18,7 @@ struct JudgeView: View {
     @Binding var offset: CGFloat
     @Binding var currentNumber: Int
     @State var isSticky = false
+    @Binding var currentMessage: (String, Int)
     
     var body: some View {
         VStack {
@@ -36,8 +37,7 @@ struct JudgeView: View {
                                 Divider()
                                     .padding(8)
                                 ForEach(entryMembers) { member in
-                                    EntryListItemView(entryName: member, currentNumber: $currentNumber)
-                                        .frame(height: 40)
+                                    EntryListItemView(entryName: member, currentNumber: $currentNumber, judgeName: judgeName.name, currentMessage: $currentMessage)
                                 }
                             }
                             // id指定でコードから各リストに直接飛べるように仕込む
@@ -92,7 +92,7 @@ struct JudgeView: View {
         var body: some View {
             //            Text("offset: \(offset!)")
             HStack {
-                JudgeView(judgeNames: $judgeNames, entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1))
+                JudgeView(judgeNames: $judgeNames, entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1), currentMessage: .constant(("KAZANE", 1)))
             }
             .onAppear {
                 for i in 1...100 {

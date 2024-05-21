@@ -9,10 +9,6 @@ import SwiftUI
 import Network
 
 struct MainView: View {
-    // ネットワーク
-    @State var port:NWEndpoint.Port = 9000
-    @State var host:NWEndpoint.Host = "127.0.0.1"
-    @State var connection: NWConnection?
     // ファイルIO
     @State var selectedFileContent: String = ""
     
@@ -28,12 +24,21 @@ struct MainView: View {
     @State var preDragPosition: CGFloat = 0
     @State var isFirstDrag = true
     
+    @EnvironmentObject var socketManager: SocketManager
+    
+    @State var currentMessage: (String, Int) = ("", 0)
+                
     var body: some View {
 //        Text(ges)
         ZStack {
             VStack {
+                Text("judge: \(currentMessage.0), num: \(currentMessage.1)")
+                
                 // 各ジャッジのリストを表示
-                JudgeView(judgeNames: $demoJudgeArrray, entryMembers: $entryMembers, offset: $offset, currentNumber: $currentNumber)
+                JudgeView(judgeNames: $demoJudgeArrray, entryMembers: $entryMembers, offset: $offset, currentNumber: $currentNumber, currentMessage: $currentMessage)
+                    .onChange(of: socketManager.recievedData) {
+                        receiveMessage(message: socketManager.recievedData)
+                    }
                 
                 HStack {
                     Button(action: {
@@ -61,21 +66,26 @@ struct MainView: View {
                             entryMembers.append(EntryName(number: i, name: content))
                         }
                     })
+                
+                Button(action: {
+//                    manager.receive(on: manager.connect(host: "127.0.0.1", port: "9000", param: .udp))
+                    socketManager.startListener(name: "host_listener")
+                }, label: {
+                    Text("Connect")
+                })
             }
+        }
+        .onChange(of: currentMessage.1) {
+            print("change message")
         }
     }
     
-    // 接続
-    func connect() {
-        connection = NWConnection(host: host, port: port, using: .tcp)
-        if connection == nil { return }
-        connection!.start(queue: .global())
-    }
-    
-    // 送信
-    func send(_ payload: Data) {
-        if connection == nil { return }
-        connection!.send(content: payload, completion: .contentProcessed({sendError in}))
+    func receiveMessage(message: String) {
+        let data = message.components(separatedBy: "/")
+        guard let num = Int(data[1]) else { return }
+        let name = data[0]
+        currentMessage = (name, num)
+        print(currentMessage)
     }
 }
 
