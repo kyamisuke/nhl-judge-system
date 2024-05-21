@@ -16,7 +16,7 @@ struct EntryName: Identifiable {
 struct EntryListItemView: View {
     var entryName: EntryName
     @Binding var scores: [Float]
-    @State var isPlaying = false
+    @State var currentPlayNum = 1
     @Binding var currentEdintingNum: Int
     
     @EnvironmentObject var socketManager: SocketManager
@@ -44,11 +44,15 @@ struct EntryListItemView: View {
                 .frame(width: 48)
         }
         .frame(maxWidth: .infinity)
-        .listRowBackground(isPlaying ? Color.green : Color.white)
+        .listRowBackground(isPlaying() ? Color.green : Color.white)
         .onChange(of: socketManager.recievedData) {
-            guard let currentNum = Int(socketManager.recievedData) else { return }
-            isPlaying = (currentNum == entryName.number || currentNum + 1 == entryName.number)
+            guard let currentPlayNum = Int(socketManager.recievedData) else { return }
+            self.currentPlayNum = currentPlayNum
         }
+    }
+    
+    func isPlaying() -> Bool {
+        return currentPlayNum == entryName.number || currentPlayNum + 1 == entryName.number
     }
 }
 
@@ -71,9 +75,11 @@ private struct ScoreSliderView: View {
 #Preview {
     struct PreviewView: View {
         @State var demoScores: [Float] = [0, 0, 0, 0, 0, 0]
+        @State var socketManager = SocketManager()
         
         var body: some View {
-            EntryListItemView(entryName: EntryName(number: 0, name: "kyami"), scores: $demoScores, currentEdintingNum: .constant(1))
+            EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), scores: $demoScores, currentEdintingNum: .constant(1))
+                .environmentObject(socketManager)
         }
     }
     

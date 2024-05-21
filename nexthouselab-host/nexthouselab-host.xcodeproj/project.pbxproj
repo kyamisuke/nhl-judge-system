@@ -20,6 +20,8 @@
 		8FC5BBA32BEAF659007D6758 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8FC5BBA22BEAF659007D6758 /* Preview Assets.xcassets */; };
 		8FC5BBAB2BEAF6F0007D6758 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC5BBAA2BEAF6F0007D6758 /* MainView.swift */; };
 		8FD586852BFC7F0100B2F775 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD586842BFC7F0100B2F775 /* Message.swift */; };
+		8FD586872BFC814900B2F775 /* JudgeName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD586862BFC814900B2F775 /* JudgeName.swift */; };
+		8FD586892BFC816200B2F775 /* EntryName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD586882BFC816200B2F775 /* EntryName.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +39,8 @@
 		8FC5BBA22BEAF659007D6758 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		8FC5BBAA2BEAF6F0007D6758 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		8FD586842BFC7F0100B2F775 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		8FD586862BFC814900B2F775 /* JudgeName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JudgeName.swift; sourceTree = "<group>"; };
+		8FD586882BFC816200B2F775 /* EntryName.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryName.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +60,8 @@
 				8F6B2ABC2BEAFC6700A2E23F /* DocumentPickerView.swift */,
 				8F6B2AC62BEC461A00A2E23F /* TrackableList.swift */,
 				8FD586842BFC7F0100B2F775 /* Message.swift */,
+				8FD586862BFC814900B2F775 /* JudgeName.swift */,
+				8FD586882BFC816200B2F775 /* EntryName.swift */,
 			);
 			path = Ex;
 			sourceTree = "<group>";
@@ -197,11 +203,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				8FC5BB9E2BEAF657007D6758 /* ContentView.swift in Sources */,
+				8FD586892BFC816200B2F775 /* EntryName.swift in Sources */,
 				8FC5BBAB2BEAF6F0007D6758 /* MainView.swift in Sources */,
 				8F6B2AC32BEAFFAC00A2E23F /* EntryListItemView.swift in Sources */,
 				8F6B2AC72BEC461A00A2E23F /* TrackableList.swift in Sources */,
 				8F6B2ACB2BEDBBE500A2E23F /* SocketManager.swift in Sources */,
 				8F6B2AC92BEC618D00A2E23F /* ScrollToRow.swift in Sources */,
+				8FD586872BFC814900B2F775 /* JudgeName.swift in Sources */,
 				8FD586852BFC7F0100B2F775 /* Message.swift in Sources */,
 				8F6B2AC52BEB012700A2E23F /* JudgeView.swift in Sources */,
 				8FC5BB9C2BEAF657007D6758 /* nexthouselab_hostApp.swift in Sources */,

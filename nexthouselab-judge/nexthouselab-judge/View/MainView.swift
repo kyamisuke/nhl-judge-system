@@ -37,11 +37,20 @@ struct MainView: View {
 }
 
 #Preview {
-    MainView(judgeName: "KAZANE", entryNames: [
-        EntryName(number: 0, name: "kyami"),
-        EntryName(number: 1, name: "Kenshu"),
-        EntryName(number: 2, name: "Amazon"),
-        EntryName(number: 3, name: "Occhi"),
-        EntryName(number: 4, name: "Tosai"),
-        EntryName(number: 5, name: "Rinki")])
+    struct Sim: View {
+        @State var socketManager = SocketManager()
+        
+        var body: some View {
+            MainView(judgeName: "KAZANE", entryNames: [
+                EntryName(number: 0, name: "kyami"),
+                EntryName(number: 1, name: "Kenshu"),
+                EntryName(number: 2, name: "Amazon"),
+                EntryName(number: 3, name: "Occhi"),
+                EntryName(number: 4, name: "Tosai"),
+                EntryName(number: 5, name: "Rinki")])
+            .environmentObject(socketManager)
+        }
+    }
+    
+    return Sim()
 }
