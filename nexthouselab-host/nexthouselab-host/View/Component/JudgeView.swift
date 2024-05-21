@@ -18,7 +18,7 @@ struct JudgeView: View {
     @Binding var offset: CGFloat
     @Binding var currentNumber: Int
     @State var isSticky = false
-    @Binding var currentMessage: (String, Int)
+    @Binding var currentMessage: Message
     
     var body: some View {
         VStack {
@@ -57,12 +57,12 @@ struct JudgeView: View {
                 //.scrollPosition(id: $offset)
                 .coordinateSpace(name: "ScrollView")
                 
+                // 一定量スクロールしたら表示するラベル
                 VStack {
                     HStack {
                         Spacer()
                         Divider()
                         ForEach(judgeNames) { judgeName in
-                            // 角ジャッジの下に表示するエントリーリスト
                             Text(judgeName.name)
                                 .frame(maxWidth: .infinity)
                                 .font(.title)
@@ -92,7 +92,7 @@ struct JudgeView: View {
         var body: some View {
             //            Text("offset: \(offset!)")
             HStack {
-                JudgeView(judgeNames: $judgeNames, entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1), currentMessage: .constant(("KAZANE", 1)))
+                JudgeView(judgeNames: $judgeNames, entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1), currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)))
             }
             .onAppear {
                 for i in 1...100 {

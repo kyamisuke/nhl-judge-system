@@ -18,7 +18,8 @@ struct EntryListItemView: View {
     @State var isFilling = false
     @Binding var currentNumber: Int
     let judgeName: String
-    @Binding var currentMessage: (String, Int)
+    @Binding var currentMessage: Message
+    @State var isEditing: Bool = false
     
     var body: some View {
         HStack(spacing: 24) {
@@ -30,7 +31,8 @@ struct EntryListItemView: View {
         .frame(maxWidth: .infinity)
         .padding(16)
         .background(isFocus() ? Color(hue: 0, saturation: 0.5, brightness: 1.0) : Color.white)
-        .border(isEditing() ? Color.green : Color.clear, width: 4)
+        .border(isEditing ? Color.green : Color.clear, width: 4)
+        .onChange(of: currentMessage, checkEditing)
     }
     
     private func onClickButton() {
@@ -38,11 +40,14 @@ struct EntryListItemView: View {
     }
     
     private func isFocus() -> Bool {
+        
         return entryName.number == currentNumber || entryName.number == currentNumber + 1
     }
     
-    private func isEditing() -> Bool {
-        return judgeName == currentMessage.0 && entryName.number == currentMessage.1
+    private func checkEditing() {
+        if judgeName == currentMessage.judgeName {
+            isEditing = entryName.number == currentMessage.number
+        }
     }
 }
 
@@ -67,7 +72,7 @@ private struct ScoreSliderView: View {
         @State var demoScores: [Float] = [0, 0, 0, 0, 0, 0]
         
         var body: some View {
-            EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentNumber: .constant(1), judgeName: "KAZANE", currentMessage: .constant(("KAZANE", 1)))
+            EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentNumber: .constant(1), judgeName: "KAZANE", currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)))
         }
     }
     

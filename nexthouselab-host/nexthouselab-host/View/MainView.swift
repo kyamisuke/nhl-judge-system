@@ -26,14 +26,12 @@ struct MainView: View {
     
     @EnvironmentObject var socketManager: SocketManager
     
-    @State var currentMessage: (String, Int) = ("", 0)
+    @State var currentMessage = Message(judgeName: "", number: 0)
                 
     var body: some View {
 //        Text(ges)
         ZStack {
             VStack {
-                Text("judge: \(currentMessage.0), num: \(currentMessage.1)")
-                
                 // 各ジャッジのリストを表示
                 JudgeView(judgeNames: $demoJudgeArrray, entryMembers: $entryMembers, offset: $offset, currentNumber: $currentNumber, currentMessage: $currentMessage)
                     .onChange(of: socketManager.recievedData) {
@@ -78,20 +76,25 @@ struct MainView: View {
                 })
             }
         }
-        .onChange(of: currentMessage.1) {
-            print("change message")
-        }
     }
     
     func receiveMessage(message: String) {
         let data = message.components(separatedBy: "/")
         guard let num = Int(data[1]) else { return }
         let name = data[0]
-        currentMessage = (name, num)
+        currentMessage = Message(judgeName: name, number: num)
         print(currentMessage)
     }
 }
 
 #Preview {
-    MainView()
+    struct Sim: View {
+        @StateObject var socketManager = SocketManager()
+        
+        var body: some View {
+            MainView()
+                .environmentObject(socketManager)
+        }
+    }
+    return Sim()
 }
