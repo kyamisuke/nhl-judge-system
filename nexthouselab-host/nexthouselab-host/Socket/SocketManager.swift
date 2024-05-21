@@ -20,6 +20,8 @@ final public class SocketManager: ObservableObject {
     let networkDomain = "local"
             
     func send(message: String) {
+        if connection == nil { return }
+        
         /* 送信データ生成 */
         let data = message.data(using: .utf8)!
         let semaphore = DispatchSemaphore(value: 0)
