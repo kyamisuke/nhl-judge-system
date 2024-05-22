@@ -114,5 +114,43 @@ final public class SocketManager: ObservableObject {
 
         /* コネクション完了待ち */
         semaphore.wait()
+//        print(getIPAddresses())
+//        send(message: "CONNECT/\(getIPAddresses()[1])")
+    }
+        
+    func getIPAddresses() -> [String] {
+        var addresses = [String]()
+
+        // Retrieve the current interfaces - returns 0 on success
+        var ifaddr : UnsafeMutablePointer<ifaddrs>? = nil
+        guard getifaddrs(&ifaddr) == 0 else { return [] }
+        guard let firstAddr = ifaddr else { return [] }
+
+        // For each interface ...
+        for ptr in sequence(first: firstAddr, next: { $0.pointee.ifa_next }) {
+            let interface = ptr.pointee
+
+            // Check for IPv4 or IPv6 interface
+            let addrFamily = interface.ifa_addr.pointee.sa_family
+            if addrFamily == UInt8(AF_INET) || addrFamily == UInt8(AF_INET6) {
+
+                // Convert interface name to a String
+                let name = String(cString: interface.ifa_name)
+                if name == "en0" { // Change "en0" to the interface you're interested in
+
+                    // Convert the interface address to a human readable string
+                    var hostname = [CChar](repeating: 0, count: Int(NI_MAXHOST))
+                    if getnameinfo(interface.ifa_addr, socklen_t(interface.ifa_addr.pointee.sa_len),
+                                   &hostname, socklen_t(hostname.count),
+                                   nil, socklen_t(0), NI_NUMERICHOST) == 0 {
+                        let address = String(cString: hostname)
+                        addresses.append(address)
+                    }
+                }
+            }
+        }
+
+        freeifaddrs(ifaddr)
+        return addresses
     }
 }

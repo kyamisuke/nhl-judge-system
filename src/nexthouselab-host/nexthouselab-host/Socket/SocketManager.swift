@@ -14,6 +14,7 @@ final public class SocketManager: ObservableObject {
         
     // 送られてきたデータを監視するところ
     @Published var recievedData: String = ""
+    @Published var ipAddresses = [String]()
     
     // 定数
     let networkType = "_networkplayground._udp."

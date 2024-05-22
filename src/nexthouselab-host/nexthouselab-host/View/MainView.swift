@@ -16,6 +16,7 @@ struct MainView: View {
     @State var entryMembers = [EntryName(number: 1, name: "kyami"), EntryName(number: 2, name: "amazon"), EntryName(number: 3, name: "Amazon")]
     @State var demoJudgeArrray = [JudgeName(name: "KAZANE"), JudgeName(name: "HIRO"), JudgeName(name: "YUU"), JudgeName(name: "KAZUKIYO")]
     @State var currentNumber: Int = 1
+    @State var judgeArray = [JudgeName]()
     
     // スクロール同期に関わる部分
     @State var offset: CGFloat = 0
@@ -72,7 +73,7 @@ struct MainView: View {
                     socketManager.startListener(name: "host_listener")
                     socketManager.connect(host: "127.0.0.1", port: "8000", param: .udp)
                 }, label: {
-                    Text("Connect")
+                    Text("通信待受開始")
                 })
             }
         }
@@ -80,10 +81,19 @@ struct MainView: View {
     
     func receiveMessage(message: String) {
         let data = message.components(separatedBy: "/")
-        guard let num = Int(data[1]) else { return }
-        let name = data[0]
-        currentMessage = Message(judgeName: name, number: num)
-        print(currentMessage)
+        // 先頭にコマンドが入っているので其れによって処理分岐
+        if data[0] == "EDITING" {
+            // ${judgeName}が今操作している欄を取得
+            guard let num = Int(data[2]) else { return }
+            let name = data[1]
+            currentMessage = Message(judgeName: name, number: num)
+            print(currentMessage)
+        }
+        else if data[0] == "CONNECT" {
+            // 接続開始したIPアドレスを取得
+            socketManager.ipAddresses.append(data[1])
+            print(data[1])
+        }
     }
 }
 

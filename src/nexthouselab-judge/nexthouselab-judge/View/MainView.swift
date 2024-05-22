@@ -27,7 +27,7 @@ struct MainView: View {
                 EntryListItemView(entryName: entryName, scores: $demoScores, currentEdintingNum: $currentEditingNum)
             }
             .onChange(of: currentEditingNum) {
-                socketManager.send(message: "\(judgeName)/\(currentEditingNum)")
+                socketManager.send(message: "EDITING/\(judgeName)/\(currentEditingNum)")
             }
             Spacer()
         }
