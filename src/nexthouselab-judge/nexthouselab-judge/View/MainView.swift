@@ -15,6 +15,13 @@ struct MainView: View {
     
     @EnvironmentObject var socketManager: SocketManager
     
+    init(judgeName: String, entryNames: [EntryName]) {
+        self.judgeName = judgeName
+        self.entryNames = entryNames
+        
+        
+    }
+    
     var body: some View {
         VStack {
             Spacer()

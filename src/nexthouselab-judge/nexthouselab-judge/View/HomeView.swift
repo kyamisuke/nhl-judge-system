@@ -32,6 +32,13 @@ struct HomeView: View {
                     TextField(text: $name, label: {
                         Text("Judge Name")
                     })
+                    .onChange(of: name) {
+                        UserDefaults.standard.set(name, forKey: Const.JUDGE_NAME_KEY)
+                    }
+                    .onAppear {
+                        guard let judgeName = UserDefaults.standard.string(forKey: Const.JUDGE_NAME_KEY) else { return }
+                        name = judgeName
+                    }
                     NavigationLink("決定") {
                         MainView(judgeName: name, entryNames: entryMembers)
                     }
@@ -46,7 +53,11 @@ struct HomeView: View {
                         }
                         entryMembers = tmpMemberArray
                     }
-//                DemoFolderExportView()
+                    .onAppear{
+                        guard let data = UserDefaults.standard.string(forKey: Const.SELCTED_FILE_KEY) else { return }
+                        selectedFileContent = data
+                    }
+                //                DemoFolderExportView()
                 Button(action: {
                     socketManager.connect(host: "127.0.0.1", port: "9000", param: .udp)
                     socketManager.startListener(name: "judge_listner")

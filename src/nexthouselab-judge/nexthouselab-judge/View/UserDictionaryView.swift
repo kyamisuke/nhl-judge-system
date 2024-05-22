@@ -17,6 +17,10 @@ struct FolderImportView: View {
         VStack(spacing: 0) {
             HStack {
                 Text(fileName)
+                    .onAppear {
+                        guard let savedFileName = UserDefaults.standard.string(forKey: Const.FILE_NAME_KEY) else { return }
+                        fileName = savedFileName
+                    }
                 Button("importFromFile", action: {
                     showsImportDocumentPicker = true
                 })
@@ -33,6 +37,8 @@ struct FolderImportView: View {
                     let fileContent = try String(contentsOf: fileURL, encoding: .utf8)
                     print(fileContent)
                     self.fileContent = fileContent
+                    UserDefaults.standard.set(fileContent, forKey: Const.SELCTED_FILE_KEY)
+                    UserDefaults.standard.set(fileName, forKey: Const.FILE_NAME_KEY)
                 } catch {
                     print("Failed to import")
                 }
