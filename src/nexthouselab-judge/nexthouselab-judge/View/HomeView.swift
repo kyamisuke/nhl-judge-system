@@ -83,7 +83,11 @@ struct HomeView: View {
                 )
             }
             .onAppear {
-                showAlert = UserDefaults.standard.dictionary(forKey: "scores") != nil && isChecked == false
+                if isChecked {
+                    shouldInitialize = false
+                } else {
+                    showAlert = UserDefaults.standard.dictionary(forKey: "scores") != nil
+                }
             }
             .alert(isPresented: $showAlert) {
                 Alert(
