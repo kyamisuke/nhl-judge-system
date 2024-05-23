@@ -75,8 +75,8 @@ struct DemoFolderExportView: View {
 
 struct FolderExportView: View {
     @State private var showsExportDocumentPicker = false
-    @Binding var scores: [Float]
     let fileName: String
+    @EnvironmentObject var scoreModel: ScoreModel
  
     var body: some View {
         VStack(spacing: 0) {
@@ -90,11 +90,11 @@ struct FolderExportView: View {
                 .didPickDocument { directoryURL in
                     guard directoryURL.startAccessingSecurityScopedResource() else { return }
                     defer { directoryURL.stopAccessingSecurityScopedResource() }
-                    let newFileURL = directoryURL.appendingPathComponent("\(fileName).csv")
+                    let newFileURL = directoryURL.appendingPathComponent(fileName)
                     do {
                         var data = ""
-                        for score in scores {
-                            data += String(score) + ","
+                        for (number, score) in scoreModel.scores.sorted(by: { Int($0.0)! < Int($1.0)! }) {
+                            data += "\(number),\(score)\r\n"
                         }
                         try data.write(to: newFileURL, atomically: true, encoding: .utf8)
                     } catch {

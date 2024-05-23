@@ -6,20 +6,22 @@
 //
 
 import SwiftUI
+import Combine
 
 struct MainView: View {
     let judgeName: String
     let entryNames: [EntryName]
-    @State var demoScores: [Float] = [0, 0, 0, 0, 0, 0]
     @State var currentEditingNum = 0
     
     @EnvironmentObject var socketManager: SocketManager
+    @EnvironmentObject var scoreModel: ScoreModel
+    
+    private var timer: Timer?
+    private var cancellable: AnyCancellable?
     
     init(judgeName: String, entryNames: [EntryName]) {
         self.judgeName = judgeName
         self.entryNames = entryNames
-        
-        
     }
     
     var body: some View {
@@ -31,16 +33,30 @@ struct MainView: View {
                 .padding(16)
             Spacer()
             List(entryNames) {entryName in
-                EntryListItemView(entryName: entryName, scores: $demoScores, currentEdintingNum: $currentEditingNum)
+                EntryListItemView(entryName: entryName, currentEdintingNum: $currentEditingNum)
             }
             .onChange(of: currentEditingNum) {
                 socketManager.send(message: "EDITING/\(judgeName)/\(currentEditingNum)")
             }
             Spacer()
+            FolderExportView(fileName: "\(judgeName).csv")
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .onAppear {
+            scoreModel.initialize(entryList: entryNames)
+        }
 //        .background(.orange)
     }
+    
+//    private func startTimer() {
+//        timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
+//            print("saved")
+//        }
+//    }
+//    
+//    private func saveCounter() {
+//        UserDefaults.standard.set(counter, forKey: "counter")
+//    }
 }
 
 #Preview {
@@ -49,12 +65,13 @@ struct MainView: View {
         
         var body: some View {
             MainView(judgeName: "KAZANE", entryNames: [
-                EntryName(number: 0, name: "kyami"),
                 EntryName(number: 1, name: "Kenshu"),
                 EntryName(number: 2, name: "Amazon"),
                 EntryName(number: 3, name: "Occhi"),
                 EntryName(number: 4, name: "Tosai"),
-                EntryName(number: 5, name: "Rinki")])
+                EntryName(number: 5, name: "Rinki"),
+                EntryName(number: 0, name: "kyami")
+                ])
             .environmentObject(socketManager)
         }
     }

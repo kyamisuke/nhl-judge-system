@@ -15,11 +15,11 @@ struct EntryName: Identifiable {
 
 struct EntryListItemView: View {
     var entryName: EntryName
-    @Binding var scores: [Float]
     @State var currentPlayNum = 1
     @Binding var currentEdintingNum: Int
     
     @EnvironmentObject var socketManager: SocketManager
+    @EnvironmentObject var scoreModel: ScoreModel
     
     var body: some View {
         HStack(spacing: 24) {
@@ -34,13 +34,13 @@ struct EntryListItemView: View {
                     }
                 }
                 .padding(8)
-                Slider(value: $scores[entryName.number], in: 0...10, step: 0.5)
-                    .onChange(of: scores[entryName.number]) {
+                Slider(value: scoreModel.getScore(for: String(entryName.number)), in: 0...10, step: 0.5)
+                    .onChange(of: scoreModel.getScore(for: String(entryName.number)).wrappedValue) {
                         currentEdintingNum = entryName.number
                     }
             }
             .frame(width: 480)
-            Text(String(scores[entryName.number]))
+            Text(String(scoreModel.getScore(for: String(entryName.number)).wrappedValue))
                 .frame(width: 48)
         }
         .frame(maxWidth: .infinity)
@@ -78,7 +78,7 @@ private struct ScoreSliderView: View {
         @State var socketManager = SocketManager()
         
         var body: some View {
-            EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), scores: $demoScores, currentEdintingNum: .constant(1))
+            EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentEdintingNum: .constant(1))
                 .environmentObject(socketManager)
         }
     }
