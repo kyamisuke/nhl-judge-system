@@ -40,6 +40,7 @@ struct HomeView: View {
                     TextField(text: $name, label: {
                         Text("Judge Name")
                     })
+                    .textFieldStyle(.roundedBorder)
                     .frame(width: 150)
                     .onChange(of: name) {
                         UserDefaults.standard.set(name, forKey: Const.JUDGE_NAME_KEY)
@@ -84,6 +85,7 @@ struct HomeView: View {
                         TextField(text: $hostIp, label: {
                             Text("host ip")
                         })
+                        .textFieldStyle(.roundedBorder)
                         .frame(width: 150)
                         .onChange(of: hostIp) {
                             UserDefaults.standard.set(hostIp, forKey: Const.HOST_IP_KEY)
