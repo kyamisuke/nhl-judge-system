@@ -73,14 +73,9 @@ struct HomeView: View {
                 }, label: {
                     Text("Connect")
                 })
-                
-                NavigationLink(
-                    destination: MainView(judgeName: name, entryNames: entryMembers, shouldInitialize: $shouldInitialize),
-                    isActive: $navigateToMainView,
-                    label: {
-                        EmptyView()
-                    }
-                )
+            }
+            .navigationDestination(isPresented: $navigateToMainView) {
+                MainView(judgeName: name, entryNames: entryMembers, shouldInitialize: $shouldInitialize)
             }
             .onAppear {
                 if isChecked {
