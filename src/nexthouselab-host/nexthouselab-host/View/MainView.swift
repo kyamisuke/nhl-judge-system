@@ -63,9 +63,11 @@ struct MainView: View {
                 FolderImportView(fileContent: $selectedFileContent)
                     .onChange(of: selectedFileContent, {
                         entryMembers = []
-                        let contentArray = selectedFileContent.components(separatedBy: ",")
-                        for (i, content) in contentArray.enumerated() {
-                            entryMembers.append(EntryName(number: i, name: content))
+                        let contentArray = selectedFileContent.components(separatedBy: "\r\n")
+                        for content in contentArray {
+                            let data = content.components(separatedBy: ",")
+                            if data.count != 2 { return }
+                            entryMembers.append(EntryName(number: Int(data[0])!, name: data[1]))
                         }
                     })
                 

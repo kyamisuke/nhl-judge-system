@@ -24,8 +24,8 @@ struct EntryListItemView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(16)
-        .background(isFocus() ? Color(hue: 0, saturation: 0.5, brightness: 1.0) : Color.white)
-        .border(isEditing ? Color.green : Color.clear, width: 4)
+        .background(isFocus() ? Color.green : Color.white)
+        .border(isEditing ? Color.red : Color.clear, width: 4)
         .onChange(of: currentMessage, checkEditing)
     }
     
