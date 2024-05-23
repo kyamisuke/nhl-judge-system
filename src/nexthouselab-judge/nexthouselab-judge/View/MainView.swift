@@ -12,25 +12,23 @@ struct MainView: View {
     let judgeName: String
     let entryNames: [EntryName]
     @State var currentEditingNum = 0
+    @Binding var shouldInitialize: Bool
     
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
-    
-    private var timer: Timer?
-    private var cancellable: AnyCancellable?
-    
-    init(judgeName: String, entryNames: [EntryName]) {
-        self.judgeName = judgeName
-        self.entryNames = entryNames
-    }
-    
+        
     var body: some View {
         VStack {
             Spacer()
-            Text("\(judgeName), Please fill all score.")
-                .font(.title)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(16)
+            HStack {
+                Text("\(judgeName), Please fill all score.")
+                    .font(.title)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(16)
+                Spacer()
+                Text("auto saved: \(scoreModel.udpatedTime)")
+                Spacer()
+            }
             Spacer()
             List(entryNames) {entryName in
                 EntryListItemView(entryName: entryName, currentEdintingNum: $currentEditingNum)
@@ -43,20 +41,16 @@ struct MainView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
-            scoreModel.initialize(entryList: entryNames)
+            if shouldInitialize {
+                scoreModel.initialize(entryList: entryNames)
+            }
+            scoreModel.startTimer()
+        }
+        .onDisappear {
+            scoreModel.stopTimer()
         }
 //        .background(.orange)
     }
-    
-//    private func startTimer() {
-//        timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
-//            print("saved")
-//        }
-//    }
-//    
-//    private func saveCounter() {
-//        UserDefaults.standard.set(counter, forKey: "counter")
-//    }
 }
 
 #Preview {
@@ -71,7 +65,7 @@ struct MainView: View {
                 EntryName(number: 4, name: "Tosai"),
                 EntryName(number: 5, name: "Rinki"),
                 EntryName(number: 0, name: "kyami")
-                ])
+            ], shouldInitialize: .constant(true))
             .environmentObject(socketManager)
         }
     }

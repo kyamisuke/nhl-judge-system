@@ -12,8 +12,13 @@ struct HomeView: View {
     @State var name: String = ""
     @State var entryMembers: [EntryName] = []
     @State var selectedFileContent: String = ""
+    @State var showAlert = false
+    @State var navigateToMainView = false
+    @State var isChecked = false
+    @State var shouldInitialize = true
     
     @EnvironmentObject var socketManager: SocketManager
+    @EnvironmentObject var scoreModel: ScoreModel
     
     let demo = [
         EntryName(number: 0, name: "kyami"),
@@ -39,9 +44,11 @@ struct HomeView: View {
                         guard let judgeName = UserDefaults.standard.string(forKey: Const.JUDGE_NAME_KEY) else { return }
                         name = judgeName
                     }
-                    NavigationLink("決定") {
-                        MainView(judgeName: name, entryNames: entryMembers)
-                    }
+                    Button(action: {
+                        navigateToMainView = true
+                    }, label: {
+                        Text("決定")
+                    })
                 }
                 .frame(width: 480)
                 FolderImportView(fileContent: $selectedFileContent)
@@ -66,6 +73,33 @@ struct HomeView: View {
                 }, label: {
                     Text("Connect")
                 })
+                
+                NavigationLink(
+                    destination: MainView(judgeName: name, entryNames: entryMembers, shouldInitialize: $shouldInitialize),
+                    isActive: $navigateToMainView,
+                    label: {
+                        EmptyView()
+                    }
+                )
+            }
+            .onAppear {
+                showAlert = UserDefaults.standard.dictionary(forKey: "scores") != nil && isChecked == false
+            }
+            .alert(isPresented: $showAlert) {
+                Alert(
+                    title: Text("前回のデータが残っています"),
+                    message: Text("前回中断したデータを復元しますか？キャンセルした場合、前回のデータは復元できません。"),
+                    primaryButton: .default(Text("復元"), action: {
+                        isChecked = true
+                        scoreModel.update(scores: UserDefaults.standard.dictionary(forKey: "scores") as! Dictionary<String, Float>)
+                        shouldInitialize = false
+                        navigateToMainView = true
+                    }),
+                    secondaryButton: .cancel(Text("キャンセル"), action: {
+                        isChecked = true
+                        UserDefaults.standard.set(nil, forKey: "scores")
+                    })
+                )
             }
         }
     }
