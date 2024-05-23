@@ -12,7 +12,9 @@ struct HomeView: View {
     @State var name: String = ""
     @State var entryMembers: [EntryName] = []
     @State var selectedFileContent: String = ""
-    @State var showAlert = false
+    @State var hasScoreData = false
+    @State var notSelectFile = false
+    @State var notInputJudgeName = false
     @State var navigateToMainView = false
     @State var isChecked = false
     @State var shouldInitialize = true
@@ -47,6 +49,14 @@ struct HomeView: View {
                         name = judgeName
                     }
                     Button(action: {
+                        if name.isEmpty {
+                            notInputJudgeName = true
+                            return
+                        }
+                        if selectedFileContent.isEmpty {
+                            notSelectFile = true
+                            return
+                        }
                         navigateToMainView = true
                         isChecked = true
                     }, label: {
@@ -104,10 +114,10 @@ struct HomeView: View {
                 if isChecked {
                     shouldInitialize = false
                 } else {
-                    showAlert = UserDefaults.standard.dictionary(forKey: "scores") != nil
+                    hasScoreData = UserDefaults.standard.dictionary(forKey: "scores") != nil
                 }
             }
-            .alert(isPresented: $showAlert) {
+            .alert(isPresented: $hasScoreData) {
                 Alert(
                     title: Text("前回のデータが残っています"),
                     message: Text("前回中断したデータを復元しますか？キャンセルした場合、前回のデータは復元できません。"),
@@ -121,6 +131,20 @@ struct HomeView: View {
                         isChecked = true
                         UserDefaults.standard.set(nil, forKey: "scores")
                     })
+                )
+            }
+            .alert(isPresented: $notSelectFile) {
+                Alert(
+                    title: Text("エントリーリストが選択されていません。"),
+                    message: Text("ファイルを選択し、エントリーリストを設定してください。"),
+                    dismissButton: .default(Text("戻る"))
+                )
+            }
+            .alert(isPresented: $notInputJudgeName) {
+                Alert(
+                    title: Text("ジャッジの名前が入力されていません。"),
+                    message: Text("ジャッジの名前が入力されていることを確認してください。"),
+                    dismissButton: .default(Text("戻る"))
                 )
             }
         }
