@@ -24,7 +24,7 @@ struct EntryListItemView: View {
     var body: some View {
         HStack(spacing: 24) {
             Text(String(entryName.number))
-                .frame(width: 16)
+                .frame(width: 32)
             Text(entryName.name)
                 .frame(width: 100)
             VStack {
@@ -40,8 +40,21 @@ struct EntryListItemView: View {
                     }
             }
             .frame(width: 480)
-            Text(String(scoreModel.getScore(for: String(entryName.number)).wrappedValue))
-                .frame(width: 48)
+            ZStack {
+                Text(String(scoreModel.getScore(for: String(entryName.number)).wrappedValue))
+                    .frame(width: 48)
+                // 上の円
+                Circle()
+                    .trim(from: 0.0, to: CGFloat(scoreModel.getScore(for: String(entryName.number)).wrappedValue) / 10.0) // 線のトリム
+                    .stroke(
+                        Color.blue,
+                        style: StrokeStyle(
+                            lineWidth: 6,
+                            lineCap: .round)
+                    )
+                    .frame(width: 48, height: 48)
+                    .rotationEffect(.degrees(-90))
+            }
         }
         .frame(maxWidth: .infinity)
         .listRowBackground(isPlaying() ? Color.green : Color.white)
