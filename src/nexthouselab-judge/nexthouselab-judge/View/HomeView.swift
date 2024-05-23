@@ -16,6 +16,7 @@ struct HomeView: View {
     @State var navigateToMainView = false
     @State var isChecked = false
     @State var shouldInitialize = true
+    @State var hostIp = ""
     
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
@@ -37,6 +38,7 @@ struct HomeView: View {
                     TextField(text: $name, label: {
                         Text("Judge Name")
                     })
+                    .frame(width: 150)
                     .onChange(of: name) {
                         UserDefaults.standard.set(name, forKey: Const.JUDGE_NAME_KEY)
                     }
@@ -46,6 +48,7 @@ struct HomeView: View {
                     }
                     Button(action: {
                         navigateToMainView = true
+                        isChecked = true
                     }, label: {
                         Text("決定")
                     })
@@ -66,13 +69,33 @@ struct HomeView: View {
                         guard let data = UserDefaults.standard.string(forKey: Const.SELCTED_FILE_KEY) else { return }
                         selectedFileContent = data
                     }
-                //                DemoFolderExportView()
-                Button(action: {
-                    socketManager.connect(host: "127.0.0.1", port: "9000", param: .udp)
-                    socketManager.startListener(name: "judge_listner")
-                }, label: {
-                    Text("Connect")
-                })
+                HStack {
+                    VStack(alignment: .leading) {
+                        TextField(text: $hostIp, label: {
+                            Text("host ip")
+                        })
+                        .frame(width: 150)
+                        .onChange(of: hostIp) {
+                            UserDefaults.standard.set(hostIp, forKey: Const.HOST_IP_KEY)
+                        }
+                        .onAppear {
+                            guard let ip = UserDefaults.standard.string(forKey: Const.HOST_IP_KEY) else { return }
+                            hostIp = ip
+                        }
+                        Text(hostIp.components(separatedBy: ".").count == 4 ? "" : "invalid ip address")
+                            .foregroundStyle(Color.red)
+                            .font(.caption)
+                    }
+                    Button(action: {
+                        if hostIp.isEmpty {
+                            return
+                        }
+                        socketManager.connect(host: hostIp, port: "9000", param: .udp)
+                        socketManager.startListener(name: "judge_listner")
+                    }, label: {
+                        Text("Connect")
+                    })
+                }
             }
             .navigationDestination(isPresented: $navigateToMainView) {
                 MainView(judgeName: name, entryNames: entryMembers, shouldInitialize: $shouldInitialize)

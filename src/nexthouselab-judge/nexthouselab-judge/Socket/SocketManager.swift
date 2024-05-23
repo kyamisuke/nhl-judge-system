@@ -93,18 +93,18 @@ final public class SocketManager: ObservableObject {
         /* コネクションのStateハンドラ設定 */
         connection?.stateUpdateHandler = { (newState) in
             switch newState {
-                case .ready:
-                    NSLog("Ready to send")
-                    semaphore.signal()
-                case .waiting(let error):
-                    NSLog("\(#function), \(error)")
-                case .failed(let error):
-                    NSLog("\(#function), \(error)")
-                case .setup: break
-                case .cancelled: break
-                case .preparing: break
-                @unknown default:
-                    fatalError("Illegal state")
+            case .ready:
+                NSLog("Ready to send")
+                semaphore.signal()
+            case .waiting(let error):
+                NSLog("\(#function), \(error)")
+            case .failed(let error):
+                NSLog("\(#function), \(error)")
+            case .setup: break
+            case .cancelled: break
+            case .preparing: break
+            @unknown default:
+                fatalError("Illegal state")
             }
         }
         
