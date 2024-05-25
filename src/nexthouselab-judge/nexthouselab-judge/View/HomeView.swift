@@ -8,14 +8,19 @@
 import SwiftUI
 import Foundation
 
+enum AlertType: Identifiable {
+    case nameError
+    case fileError
+    case scoreData
+    var id: AlertType { self }
+}
+
 struct HomeView: View {
     @State var name: String = ""
     @State var entryMembers: [EntryName] = []
     @State var selectedFileContent: String = ""
-    @State var hasScoreData = false
-    @State var notSelectFile = false
-    @State var notInputJudgeName = false
     @State var navigateToMainView = false
+    @State var alertType: AlertType?
     @State var isChecked = false
     @State var shouldInitialize = true
     @State var hostIp = ""
@@ -51,11 +56,11 @@ struct HomeView: View {
                     }
                     Button(action: {
                         if name.isEmpty {
-                            notInputJudgeName = true
+                            alertType = .nameError
                             return
                         }
                         if selectedFileContent.isEmpty {
-                            notSelectFile = true
+                            alertType = .fileError
                             return
                         }
                         navigateToMainView = true
@@ -116,38 +121,41 @@ struct HomeView: View {
                 if isChecked {
                     shouldInitialize = false
                 } else {
-                    hasScoreData = UserDefaults.standard.dictionary(forKey: "scores") != nil
+                    if UserDefaults.standard.dictionary(forKey: "scores") != nil {
+                        alertType = .scoreData
+                    }
                 }
             }
-            .alert(isPresented: $hasScoreData) {
-                Alert(
-                    title: Text("前回のデータが残っています"),
-                    message: Text("前回中断したデータを復元しますか？キャンセルした場合、前回のデータは復元できません。"),
-                    primaryButton: .default(Text("復元"), action: {
-                        isChecked = true
-                        scoreModel.update(scores: UserDefaults.standard.dictionary(forKey: "scores") as! Dictionary<String, Float>)
-                        shouldInitialize = false
-                        navigateToMainView = true
-                    }),
-                    secondaryButton: .cancel(Text("キャンセル"), action: {
-                        isChecked = true
-                        UserDefaults.standard.set(nil, forKey: "scores")
-                    })
-                )
-            }
-            .alert(isPresented: $notSelectFile) {
-                Alert(
-                    title: Text("エントリーリストが選択されていません。"),
-                    message: Text("ファイルを選択し、エントリーリストを設定してください。"),
-                    dismissButton: .default(Text("戻る"))
-                )
-            }
-            .alert(isPresented: $notInputJudgeName) {
-                Alert(
-                    title: Text("ジャッジの名前が入力されていません。"),
-                    message: Text("ジャッジの名前が入力されていることを確認してください。"),
-                    dismissButton: .default(Text("戻る"))
-                )
+            .alert(item: $alertType) { alertType in
+                switch alertType {
+                case .nameError:
+                    return Alert(
+                        title: Text("ジャッジの名前が入力されていません。"),
+                        message: Text("ジャッジの名前が入力されていることを確認してください。"),
+                        dismissButton: .default(Text("戻る"))
+                    )
+                case .fileError:
+                    return Alert(
+                        title: Text("エントリーリストが選択されていません。"),
+                        message: Text("ファイルを選択し、エントリーリストを設定してください。"),
+                        dismissButton: .default(Text("戻る"))
+                    )
+                case .scoreData:
+                    return Alert(
+                        title: Text("前回のデータが残っています"),
+                        message: Text("前回中断したデータを復元しますか？キャンセルした場合、前回のデータは復元できません。"),
+                        primaryButton: .default(Text("復元"), action: {
+                            isChecked = true
+                            scoreModel.update(scores: UserDefaults.standard.dictionary(forKey: "scores") as! Dictionary<String, Float>)
+                            shouldInitialize = false
+                            navigateToMainView = true
+                        }),
+                        secondaryButton: .cancel(Text("キャンセル"), action: {
+                            isChecked = true
+                            UserDefaults.standard.set(nil, forKey: "scores")
+                        })
+                    )
+                }
             }
         }
     }
