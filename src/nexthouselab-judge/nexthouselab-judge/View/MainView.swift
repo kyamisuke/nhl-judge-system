@@ -56,6 +56,7 @@ struct MainView: View {
 #Preview {
     struct Sim: View {
         @State var socketManager = SocketManager()
+        @State var scoreModel = ScoreModel()
         
         var body: some View {
             MainView(judgeName: "KAZANE", entryNames: [
@@ -67,6 +68,7 @@ struct MainView: View {
                 EntryName(number: 0, name: "kyami")
             ], shouldInitialize: .constant(true))
             .environmentObject(socketManager)
+            .environmentObject(scoreModel)
         }
     }
     

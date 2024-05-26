@@ -17,12 +17,14 @@ struct EntryListItemView: View {
     var entryName: EntryName
     @State var currentPlayNum = 1
     @Binding var currentEdintingNum: Int
+    @State var isDone = false
     
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
     
     var body: some View {
         HStack(spacing: 24) {
+            Spacer()
             Text(String(entryName.number))
                 .frame(width: 32)
             Text(entryName.name)
@@ -34,10 +36,16 @@ struct EntryListItemView: View {
                     }
                 }
                 .padding(8)
-                Slider(value: scoreModel.getScore(for: String(entryName.number)), in: 0...10, step: 0.5)
-                    .onChange(of: scoreModel.getScore(for: String(entryName.number)).wrappedValue) {
-                        currentEdintingNum = entryName.number
-                    }
+                if !isDone {
+                    Slider(value: scoreModel.getScore(for: String(entryName.number)), in: 0...10, step: 0.5)
+                        .onChange(of: scoreModel.getScore(for: String(entryName.number)).wrappedValue) {
+                            currentEdintingNum = entryName.number
+                        }
+                } else {
+                    Rectangle()
+                        .foregroundStyle(.clear)
+                        .frame(height: 32)
+                }
             }
             .frame(width: 480)
             ZStack {
@@ -55,9 +63,17 @@ struct EntryListItemView: View {
                     .frame(width: 48, height: 48)
                     .rotationEffect(.degrees(-90))
             }
+            Button(action: {
+                isDone.toggle()
+            }, label: {
+                Text(isDone ? "編集" : "決定")
+            })
+            .buttonStyle(BorderlessButtonStyle())
+            .frame(width: 32)
+            Spacer()
         }
         .frame(maxWidth: .infinity)
-        .listRowBackground(isPlaying() ? Color.green : Color.white)
+        .listRowBackground(getBackgroundColor())
         .onChange(of: socketManager.recievedData) {
             guard let currentPlayNum = Int(socketManager.recievedData) else { return }
             self.currentPlayNum = currentPlayNum
@@ -66,6 +82,16 @@ struct EntryListItemView: View {
     
     func isPlaying() -> Bool {
         return currentPlayNum == entryName.number || currentPlayNum + 1 == entryName.number
+    }
+    
+    func getBackgroundColor() -> Color {
+        if isPlaying() {
+            return .green
+        } else if isDone {
+            return .gray
+        } else {
+            return .white
+        }
     }
 }
 
@@ -89,10 +115,14 @@ private struct ScoreSliderView: View {
     struct PreviewView: View {
         @State var demoScores: [Float] = [0, 0, 0, 0, 0, 0]
         @State var socketManager = SocketManager()
+        @State var scoreModel = ScoreModel()
         
         var body: some View {
-            EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentEdintingNum: .constant(1))
-                .environmentObject(socketManager)
+            List {
+                EntryListItemView(entryName: EntryName(number: 5, name: "kyami"), currentEdintingNum: .constant(1))
+                    .environmentObject(socketManager)
+                    .environmentObject(scoreModel)
+            }
         }
     }
     
