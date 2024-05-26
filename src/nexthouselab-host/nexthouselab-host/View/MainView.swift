@@ -14,7 +14,7 @@ struct MainView: View {
     
     // リストに表示するものたち
     @State var entryMembers = [EntryName(number: 1, name: "kyami"), EntryName(number: 2, name: "amazon"), EntryName(number: 3, name: "Amazon")]
-    @State var demoJudgeArrray = [JudgeName(name: "KAZANE"), JudgeName(name: "HIRO"), JudgeName(name: "YUU"), JudgeName(name: "KAZUKIYO")]
+    @State var demoJudgeArrray = [JudgeName(name: "KAZUKIYO"), JudgeName(name: "SU→"), JudgeName(name: "HIRO"), JudgeName(name: "KEIN")]
     @State var currentNumber: Int = 1
     @State var judgeArray = [JudgeName]()
     
