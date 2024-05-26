@@ -30,8 +30,10 @@ struct FolderImportView: View {
                     guard fileURL.startAccessingSecurityScopedResource() else { return }
                     defer { fileURL.stopAccessingSecurityScopedResource() }
                     fileName = (fileURL.path() as NSString).lastPathComponent
-                    let fileContent = try String(contentsOf: fileURL, encoding: .utf8)
-                    print(fileContent)
+                    var fileContent = try String(contentsOf: fileURL, encoding: .utf8)
+                    let regex = try NSRegularExpression(pattern: "\r\n|\n|\r", options: [])
+                    let range = NSRange(location: 0, length: fileContent.utf16.count)
+                    fileContent = regex.stringByReplacingMatches(in: fileContent, options: [], range: range, withTemplate: "\n")
                     self.fileContent = fileContent
                 } catch {
                     print("Failed to import")
