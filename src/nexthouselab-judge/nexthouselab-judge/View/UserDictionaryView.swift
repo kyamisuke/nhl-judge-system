@@ -94,7 +94,7 @@ struct FolderExportView: View {
                     do {
                         var data = ""
                         for (number, score) in scoreModel.scores.sorted(by: { Int($0.0)! < Int($1.0)! }) {
-                            data += "\(number),\(score)\(CharacterSet.newlines)"
+                            data += "\(number),\(score)\n"
                         }
                         try data.write(to: newFileURL, atomically: true, encoding: .utf8)
                     } catch {
