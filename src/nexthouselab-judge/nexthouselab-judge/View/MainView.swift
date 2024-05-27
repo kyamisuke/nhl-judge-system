@@ -12,6 +12,7 @@ struct MainView: View {
     let judgeName: String
     let entryNames: [EntryName]
     @State var currentEditingNum = 0
+    @State var currentPlayNum = 1
     @Binding var shouldInitialize: Bool
     
     @EnvironmentObject var socketManager: SocketManager
@@ -31,11 +32,18 @@ struct MainView: View {
             }
             Spacer()
             List(entryNames) {entryName in
-                EntryListItemView(entryName: entryName, currentEdintingNum: $currentEditingNum)
+                EntryListItemView(entryName: entryName, currentPlayNum: $currentPlayNum, currentEdintingNum: $currentEditingNum)
             }
             .onChange(of: currentEditingNum) {
                 socketManager.send(message: "EDITING/\(judgeName)/\(currentEditingNum)")
             }
+            .onChange(of: socketManager.recievedData) {
+                DispatchQueue.main.async {
+                    guard let currentPlayNum = Int(socketManager.recievedData) else { return }
+                    self.currentPlayNum = currentPlayNum
+                }
+            }
+
             Spacer()
             FolderExportView(fileName: "\(judgeName).csv")
         }

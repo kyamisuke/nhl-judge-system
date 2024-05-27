@@ -149,6 +149,8 @@ struct HomeView: View {
                             scoreModel.update(scores: UserDefaults.standard.dictionary(forKey: "scores") as! Dictionary<String, Float>)
                             shouldInitialize = false
                             navigateToMainView = true
+                            socketManager.connect(host: hostIp, port: "9000", param: .udp)
+                            socketManager.startListener(name: "judge_listner")
                         }),
                         secondaryButton: .cancel(Text("キャンセル"), action: {
                             isChecked = true

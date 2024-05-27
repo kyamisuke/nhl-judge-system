@@ -14,10 +14,11 @@ struct EntryName: Identifiable {
 }
 
 struct EntryListItemView: View {
-    var entryName: EntryName
-    @State var currentPlayNum = 1
+    let entryName: EntryName
+    @Binding var currentPlayNum: Int
     @Binding var currentEdintingNum: Int
     @State var isDone = false
+    @State var wasOnStage = false
     
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
@@ -36,7 +37,7 @@ struct EntryListItemView: View {
                     }
                 }
                 .padding(8)
-                if !isDone {
+                if !isDone && wasOnStage {
                     Slider(value: scoreModel.getScore(for: String(entryName.number)), in: 0...10, step: 0.5)
                         .onChange(of: scoreModel.getScore(for: String(entryName.number)).wrappedValue) {
                             currentEdintingNum = entryName.number
@@ -63,27 +64,31 @@ struct EntryListItemView: View {
                     .frame(width: 48, height: 48)
                     .rotationEffect(.degrees(-90))
             }
-            Button(action: {
-                isDone.toggle()
-            }, label: {
-                Text(isDone ? "編集" : "決定")
-            })
-            .buttonStyle(BorderlessButtonStyle())
-            .frame(width: 32)
+            if wasOnStage {
+                Button(action: {
+                    isDone.toggle()
+                }, label: {
+                    Text(isDone ? "編集" : "決定")
+                })
+                .buttonStyle(BorderlessButtonStyle())
+                .frame(width: 32)
+            }
             Spacer()
         }
         .frame(maxWidth: .infinity)
         .listRowBackground(getBackgroundColor())
-        .onChange(of: socketManager.recievedData) {
-            guard let currentPlayNum = Int(socketManager.recievedData) else { return }
-            self.currentPlayNum = currentPlayNum
+        .onChange(of: currentPlayNum) {
+            wasOnStage = wasOnStage || isPlaying()
+        }
+        .onAppear {
+            wasOnStage = wasOnStage || isPlaying()
         }
     }
     
     func isPlaying() -> Bool {
         return currentPlayNum == entryName.number || currentPlayNum + 1 == entryName.number
     }
-    
+        
     func getBackgroundColor() -> Color {
         if isPlaying() {
             return .green
@@ -119,7 +124,7 @@ private struct ScoreSliderView: View {
         
         var body: some View {
             List {
-                EntryListItemView(entryName: EntryName(number: 5, name: "kyami"), currentEdintingNum: .constant(1))
+                EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentPlayNum: .constant(1), currentEdintingNum: .constant(1))
                     .environmentObject(socketManager)
                     .environmentObject(scoreModel)
             }
