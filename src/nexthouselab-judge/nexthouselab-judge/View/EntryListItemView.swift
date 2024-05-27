@@ -19,6 +19,7 @@ struct EntryListItemView: View {
     @Binding var currentEdintingNum: Int
     @State var isDone = false
     @State var wasOnStage = false
+    let judgeName: String
     
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
@@ -67,6 +68,11 @@ struct EntryListItemView: View {
             if wasOnStage {
                 Button(action: {
                     isDone.toggle()
+                    if isDone {
+                        socketManager.send(message: "SCORER/DECISION/\(judgeName)/\(entryName.number)/\(scoreModel.getScore(for: String(entryName.number)).wrappedValue)")
+                    } else {
+                        socketManager.send(message: "SCORER/CANCEL/\(judgeName)/\(entryName.number)")
+                    }
                 }, label: {
                     Text(isDone ? "編集" : "決定")
                 })
@@ -124,7 +130,7 @@ private struct ScoreSliderView: View {
         
         var body: some View {
             List {
-                EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentPlayNum: .constant(1), currentEdintingNum: .constant(1))
+                EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentPlayNum: .constant(1), currentEdintingNum: .constant(1), judgeName: "HIRO")
                     .environmentObject(socketManager)
                     .environmentObject(scoreModel)
             }

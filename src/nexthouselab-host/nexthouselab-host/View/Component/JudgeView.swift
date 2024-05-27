@@ -14,7 +14,7 @@ struct JudgeView: View {
     @Binding var currentNumber: Int
     @State var isSticky = false
     @Binding var currentMessage: Message
-    
+        
     var body: some View {
         VStack {
             //            Text("offset: \(offsetWithId.offset!), id: \(id)")
@@ -84,10 +84,13 @@ struct JudgeView: View {
         
         @State var offset: CGFloat = 0
         
+        @State var socketManager = SocketManager()
+
         var body: some View {
             //            Text("offset: \(offset!)")
             HStack {
                 JudgeView(judgeNames: $judgeNames, entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1), currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)))
+                    .environmentObject(socketManager)
             }
             .onAppear {
                 for i in 1...100 {

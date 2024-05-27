@@ -32,7 +32,7 @@ struct MainView: View {
             }
             Spacer()
             List(entryNames) {entryName in
-                EntryListItemView(entryName: entryName, currentPlayNum: $currentPlayNum, currentEdintingNum: $currentEditingNum)
+                EntryListItemView(entryName: entryName, currentPlayNum: $currentPlayNum, currentEdintingNum: $currentEditingNum, judgeName: judgeName)
             }
             .onChange(of: currentEditingNum) {
                 socketManager.send(message: "EDITING/\(judgeName)/\(currentEditingNum)")
