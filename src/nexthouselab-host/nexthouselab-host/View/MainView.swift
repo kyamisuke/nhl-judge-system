@@ -70,6 +70,10 @@ struct MainView: View {
                             entryMembers.append(EntryName(number: Int(data[0])!, name: data[1]))
                         }
                     })
+                    .onAppear{
+                        guard let data = UserDefaults.standard.string(forKey: Const.SELCTED_FILE_KEY) else { return }
+                        selectedFileContent = data
+                    }
                 
                 Button(action: {
                     socketManager.startListener(name: "host_listener")
