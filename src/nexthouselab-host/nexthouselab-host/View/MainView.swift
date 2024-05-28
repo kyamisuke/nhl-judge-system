@@ -28,7 +28,8 @@ struct MainView: View {
     @EnvironmentObject var socketManager: SocketManager
     
     @State var currentMessage = Message(judgeName: "", number: 0)
-                
+    @State var bloadcastIp = ""
+
     var body: some View {
 //        Text(ges)
         ZStack {
@@ -75,12 +76,31 @@ struct MainView: View {
                         selectedFileContent = data
                     }
                 
-                Button(action: {
-                    socketManager.startListener(name: "host_listener")
-                    socketManager.connect(host: "127.0.0.1", port: "8000", param: .udp)
-                }, label: {
-                    Text("通信待受開始")
-                })
+                HStack {
+                    VStack(alignment: .leading) {
+                        TextField(text: $bloadcastIp, label: {
+                            Text("host ip")
+                        })
+                        .textFieldStyle(.roundedBorder)
+                        .frame(width: 150)
+                        .onChange(of: bloadcastIp) {
+                            UserDefaults.standard.set(bloadcastIp, forKey: Const.IP_KEY)
+                        }
+                        .onAppear {
+                            guard let ip = UserDefaults.standard.string(forKey: Const.IP_KEY) else { return }
+                            bloadcastIp = ip
+                        }
+                        Text(bloadcastIp.components(separatedBy: ".").count == 4 ? "" : "invalid ip address")
+                            .foregroundStyle(Color.red)
+                            .font(.caption)
+                    }
+                    Button(action: {
+                        socketManager.startListener(name: "host_listener")
+                        socketManager.connect(host: bloadcastIp, port: "8000", param: .udp)
+                    }, label: {
+                        Text("通信待受開始")
+                    })
+                }
             }
         }
     }
