@@ -73,7 +73,7 @@ struct MainView: View {
                 EntryName(number: 3, name: "Occhi"),
                 EntryName(number: 4, name: "Tosai"),
                 EntryName(number: 5, name: "Rinki"),
-                EntryName(number: 0, name: "kyami")
+                EntryName(number: 6, name: "kyami")
             ], shouldInitialize: .constant(true))
             .environmentObject(socketManager)
             .environmentObject(scoreModel)

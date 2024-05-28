@@ -84,10 +84,10 @@ struct EntryListItemView: View {
         .frame(maxWidth: .infinity)
         .listRowBackground(getBackgroundColor())
         .onChange(of: currentPlayNum) {
-            wasOnStage = wasOnStage || isPlaying()
+            wasOnStage = currentPlayNum + 1 >= entryName.number
         }
         .onAppear {
-            wasOnStage = wasOnStage || isPlaying()
+            wasOnStage = currentPlayNum + 1 >= entryName.number
         }
     }
     
