@@ -30,7 +30,7 @@ struct EntryListItemView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(16)
-        .background(isFocus() ? Color.green : Color.white)
+        .background(isFocus() ? Color.green : Color.clear)
         .border(isEditing ? Color.red : Color.clear, width: 4)
         .onChange(of: currentMessage, checkEditing)
         .onChange(of: socketManager.recievedData, receiveData)
@@ -90,7 +90,7 @@ private struct ScoreSliderView: View {
         @State var socketManager = SocketManager()
 
         var body: some View {
-            EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentNumber: .constant(5), judgeName: "KAZANE", currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)))
+            EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentNumber: .constant(1), judgeName: "KAZANE", currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)))
                 .environmentObject(socketManager)
         }
     }

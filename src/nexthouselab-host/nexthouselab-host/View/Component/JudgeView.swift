@@ -21,7 +21,6 @@ struct JudgeView: View {
             ZStack(alignment: .top) {
                 ScrollView {
                     HStack {
-                        Spacer()
                         Divider()
                         ForEach(judgeNames) { judgeName in
                             // 角ジャッジの下に表示するエントリーリスト
@@ -33,12 +32,10 @@ struct JudgeView: View {
                                     .padding(8)
                                 ForEach(entryMembers) { member in
                                     EntryListItemView(entryName: member, currentNumber: $currentNumber, judgeName: judgeName.name, currentMessage: $currentMessage)
+                                    Divider()
                                 }
                             }
-                            // id指定でコードから各リストに直接飛べるように仕込む
-                            .scrollTargetLayout()
                             Divider()
-                            Spacer()
                         }
                     }
                     .background {
@@ -80,7 +77,7 @@ struct JudgeView: View {
 #Preview {
     struct PreviewView: View {
         @State var entryMembers = [EntryName]()
-        @State var judgeNames = [JudgeName(name: "KAZANE"), JudgeName(name: "HIRO")]
+        @State var judgeNames = [JudgeName(name: "KAZANE"), JudgeName(name: "HIRO"), JudgeName(name: "HIRO"), JudgeName(name: "HIRO")]
         
         @State var offset: CGFloat = 0
         

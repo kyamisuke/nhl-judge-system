@@ -30,7 +30,7 @@ struct EntryListItemView: View {
             Text(String(entryName.number))
                 .frame(width: 32)
             Text(entryName.name)
-                .frame(width: 100)
+                .frame(width: 80)
             VStack {
                 HStack {
                     ForEach(0..<21) {num in
@@ -78,6 +78,9 @@ struct EntryListItemView: View {
                 })
                 .buttonStyle(BorderlessButtonStyle())
                 .frame(width: 32)
+            } else {
+                Text("待機")
+                    .frame(width: 32)
             }
             Spacer()
         }
@@ -130,7 +133,7 @@ private struct ScoreSliderView: View {
         
         var body: some View {
             List {
-                EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentPlayNum: .constant(1), currentEdintingNum: .constant(1), judgeName: "HIRO")
+                EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentPlayNum: .constant(5), currentEdintingNum: .constant(1), judgeName: "HIRO")
                     .environmentObject(socketManager)
                     .environmentObject(scoreModel)
             }
