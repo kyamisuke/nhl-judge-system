@@ -27,10 +27,14 @@ struct EntryListItemView: View {
             Text(stateLabel)
                 .frame(width: 32, height: 32)
                 .foregroundStyle(stateLabel == "未" ? Color.red : Color.black)
+                .background(
+                    Circle()
+                        .foregroundStyle(.white)
+                )
         }
         .frame(maxWidth: .infinity)
         .padding(16)
-        .background(isFocus() ? Color.green : Color.clear)
+        .background(getBackgroundColor())
         .border(isEditing ? Color.red : Color.clear, width: 4)
         .onChange(of: currentMessage, checkEditing)
         .onChange(of: socketManager.recievedData, receiveData)
@@ -44,6 +48,18 @@ struct EntryListItemView: View {
     private func isFocus() -> Bool {
         
         return entryName.number == currentNumber || entryName.number == currentNumber + 1
+    }
+    
+    private func getBackgroundColor() -> Color {
+        if isFocus() {
+            if entryName.number % 2 == 1 {
+                return Color("oddColor")
+            } else {
+                return Color("evenColor")
+            }
+        } else {
+            return .clear
+        }
     }
     
     private func checkEditing() {

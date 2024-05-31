@@ -32,74 +32,76 @@ struct MainView: View {
 
     var body: some View {
 //        Text(ges)
-        ZStack {
-            VStack {
-                // 各ジャッジのリストを表示
-                JudgeView(judgeNames: $demoJudgeArrray, entryMembers: $entryMembers, offset: $offset, currentNumber: $currentNumber, currentMessage: $currentMessage)
-                    .onChange(of: socketManager.recievedData) {
-                        receiveMessage(message: socketManager.recievedData)
-                    }
-                
-                HStack {
-                    Button(action: {
-                        if self.currentNumber != 1 {
-                            currentNumber -= 2
+        NavigationStack {
+            ZStack {
+                VStack {
+                    // 各ジャッジのリストを表示
+                    JudgeView(judgeNames: $demoJudgeArrray, entryMembers: $entryMembers, offset: $offset, currentNumber: $currentNumber, currentMessage: $currentMessage)
+                        .onChange(of: socketManager.recievedData) {
+                            receiveMessage(message: socketManager.recievedData)
                         }
-                    }, label: {
-                        Text("前へ")
-                    })
-                    Button(action: {
-                        if self.currentNumber + 2 <= entryMembers.count {
-                            currentNumber += 2
-                        }
-                    }, label: {
-                        Text("次へ")
-                    })
-                }
-                .onChange(of: currentNumber) {
-                    socketManager.send(message: String(currentNumber))
-                }
-
-                // ファイル選択ボタン
-                FolderImportView(fileContent: $selectedFileContent)
-                    .onChange(of: selectedFileContent, {
-                        entryMembers = []
-                        let contentArray = selectedFileContent.components(separatedBy: "\n")
-                        for content in contentArray {
-                            let data = content.components(separatedBy: ",")
-                            if data.count != 2 { return }
-                            entryMembers.append(EntryName(number: Int(data[0])!, name: data[1]))
-                        }
-                    })
-                    .onAppear{
-                        guard let data = UserDefaults.standard.string(forKey: Const.SELCTED_FILE_KEY) else { return }
-                        selectedFileContent = data
-                    }
-                
-                HStack {
-                    VStack(alignment: .leading) {
-                        TextField(text: $bloadcastIp, label: {
-                            Text("host ip")
+                    
+                    HStack {
+                        Button(action: {
+                            if self.currentNumber != 1 {
+                                currentNumber -= 2
+                            }
+                        }, label: {
+                            Text("前へ")
                         })
-                        .textFieldStyle(.roundedBorder)
-                        .frame(width: 150)
-                        .onChange(of: bloadcastIp) {
-                            UserDefaults.standard.set(bloadcastIp, forKey: Const.IP_KEY)
-                        }
-                        .onAppear {
-                            guard let ip = UserDefaults.standard.string(forKey: Const.IP_KEY) else { return }
-                            bloadcastIp = ip
-                        }
-                        Text(bloadcastIp.components(separatedBy: ".").count == 4 ? "" : "invalid ip address")
-                            .foregroundStyle(Color.red)
-                            .font(.caption)
+                        Button(action: {
+                            if self.currentNumber + 2 <= entryMembers.count {
+                                currentNumber += 2
+                            }
+                        }, label: {
+                            Text("次へ")
+                        })
                     }
-                    Button(action: {
-                        socketManager.startListener(name: "host_listener")
-                        socketManager.connect(host: bloadcastIp, port: "8000", param: .udp)
-                    }, label: {
-                        Text("通信待受開始")
-                    })
+                    .onChange(of: currentNumber) {
+                        socketManager.send(message: String(currentNumber))
+                    }
+                    
+                    // ファイル選択ボタン
+                    FolderImportView(fileContent: $selectedFileContent)
+                        .onChange(of: selectedFileContent, {
+                            entryMembers = []
+                            let contentArray = selectedFileContent.components(separatedBy: "\n")
+                            for content in contentArray {
+                                let data = content.components(separatedBy: ",")
+                                if data.count != 2 { return }
+                                entryMembers.append(EntryName(number: Int(data[0])!, name: data[1]))
+                            }
+                        })
+                        .onAppear{
+                            guard let data = UserDefaults.standard.string(forKey: Const.SELCTED_FILE_KEY) else { return }
+                            selectedFileContent = data
+                        }
+                    
+                    HStack {
+                        VStack(alignment: .leading) {
+                            TextField(text: $bloadcastIp, label: {
+                                Text("host ip")
+                            })
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: 150)
+                            .onChange(of: bloadcastIp) {
+                                UserDefaults.standard.set(bloadcastIp, forKey: Const.IP_KEY)
+                            }
+                            .onAppear {
+                                guard let ip = UserDefaults.standard.string(forKey: Const.IP_KEY) else { return }
+                                bloadcastIp = ip
+                            }
+                            Text(bloadcastIp.components(separatedBy: ".").count == 4 ? "" : "invalid ip address")
+                                .foregroundStyle(Color.red)
+                                .font(.caption)
+                        }
+                        Button(action: {
+                            socketManager.startListener(name: "host_listener")
+                            socketManager.connect(host: bloadcastIp, port: "8000", param: .udp)
+                        }, label: {
+                            Text("通信待受開始")
+                        })
+                    }
                 }
             }
         }
