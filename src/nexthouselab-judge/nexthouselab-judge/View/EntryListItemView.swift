@@ -44,7 +44,7 @@ struct EntryListItemView: View {
                         .onChange(of: scoreModel.getScore(for: String(entryName.number)).wrappedValue) {
                             currentEdintingNum = entryName.number
                         }
-                        .tint(.green)
+                        .tint(Const.scoreColor)
                 } else {
                     Rectangle()
                         .foregroundStyle(.clear)
@@ -103,13 +103,13 @@ struct EntryListItemView: View {
     func getBackgroundColor() -> Color {
         if isPlaying() {
             if entryName.number % 2 == 1 {
-                return .red
+                return Const.oddColor
             }
             else {
-                return .blue
+                return Const.evenColor
             }
         } else if isDone {
-            return .gray
+            return Const.fixedColor
         } else {
             return .white
         }
