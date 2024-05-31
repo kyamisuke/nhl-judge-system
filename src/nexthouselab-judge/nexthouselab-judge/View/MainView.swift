@@ -13,6 +13,7 @@ struct MainView: View {
     let entryNames: [EntryName]
     @State var currentEditingNum = 0
     @State var currentPlayNum = 1
+    @State var tappedId = 1
     @Binding var shouldInitialize: Bool
     
     @EnvironmentObject var socketManager: SocketManager
@@ -33,8 +34,12 @@ struct MainView: View {
                 }
                 Spacer()
                 List(entryNames) {entryName in
-                    EntryListItemView(entryName: entryName, currentPlayNum: $currentPlayNum, currentEdintingNum: $currentEditingNum, judgeName: judgeName)
+                    EntryListItemView(entryName: entryName, currentPlayNum: $currentPlayNum, currentEdintingNum: $currentEditingNum, judgeName: judgeName, tappedId: $tappedId)
                         .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            tappedId = entryName.number
+                        }
                 }
                 .onChange(of: currentEditingNum) {
                     socketManager.send(message: "EDITING/\(judgeName)/\(currentEditingNum)")

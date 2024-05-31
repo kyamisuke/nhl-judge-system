@@ -20,6 +20,7 @@ struct EntryListItemView: View {
     @State var isDone = false
     @State var wasOnStage = false
     let judgeName: String
+    @Binding var tappedId: Int
     
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
@@ -38,7 +39,7 @@ struct EntryListItemView: View {
                     }
                 }
                 .padding(8)
-                if !isDone && wasOnStage {
+                if isTapped() && !isDone {
                     Slider(value: scoreModel.getScore(for: String(entryName.number)), in: 0...10, step: 0.5)
                         .onChange(of: scoreModel.getScore(for: String(entryName.number)).wrappedValue) {
                             currentEdintingNum = entryName.number
@@ -65,7 +66,7 @@ struct EntryListItemView: View {
                     .frame(width: 48, height: 48)
                     .rotationEffect(.degrees(-90))
             }
-            if wasOnStage {
+            if isTapped() {
                 Button(action: {
                     isDone.toggle()
                     if isDone {
@@ -107,6 +108,14 @@ struct EntryListItemView: View {
             return .white
         }
     }
+    
+    func isTapped() -> Bool {
+        if tappedId % 2 == 1 {
+            return entryName.number == tappedId || entryName.number == tappedId + 1
+        } else {
+            return entryName.number == tappedId - 1 || entryName.number == tappedId
+        }
+    }
 }
 
 private struct ScoreSliderView: View {
@@ -133,7 +142,7 @@ private struct ScoreSliderView: View {
         
         var body: some View {
             List {
-                EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentPlayNum: .constant(5), currentEdintingNum: .constant(1), judgeName: "HIRO")
+                EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentPlayNum: .constant(5), currentEdintingNum: .constant(1), judgeName: "HIRO", tappedId: .constant(1))
                     .environmentObject(socketManager)
                     .environmentObject(scoreModel)
             }
