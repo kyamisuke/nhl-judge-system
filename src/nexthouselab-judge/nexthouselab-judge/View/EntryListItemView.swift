@@ -21,6 +21,10 @@ struct EntryListItemView: View {
     @State var wasOnStage = false
     let judgeName: String
     @Binding var tappedId: Int
+    let buttonColor = Color.init(red: 0.38, green: 0.28, blue: 0.86)
+    let lightColor = Color.init(red: 0.54, green: 0.41, blue: 0.95)
+    let shadowColor = Color.init(red: 0.25, green: 0.17, blue: 0.75)
+    let radius = CGFloat(12)
     
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
@@ -77,12 +81,37 @@ struct EntryListItemView: View {
                     }
                 }, label: {
                     Text(isDone ? "編集" : "決定")
+                        .font(.system(size: 16, weight: .semibold, design: .default))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 12)
+                        .background(
+                            RoundedRectangle(cornerRadius: radius)
+                                .fill(
+                                    // shadowでボタン上部に光沢を持たせる
+                                    // .innerはiOS16から対応
+                                    .shadow(.inner(color: lightColor, radius: 6, x: 4, y: 4))
+                                    // shadowでボタン下部に影を落とす
+                                    .shadow(.inner(color: shadowColor, radius: 6, x: -2, y: -2))
+                                )
+                                .foregroundColor(buttonColor)
+                            // ボタンのshadowはボタンの色に合わせる
+//                                .shadow(color: buttonColor, radius: 10, y: 6)
+                        )
                 })
                 .buttonStyle(BorderlessButtonStyle())
-                .frame(width: 32)
+                .frame(width: 64)
             } else {
                 Text("待機")
+                    .font(.system(size: 16, weight: .semibold, design: .default))
                     .frame(width: 32)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+                    .background(
+                        RoundedRectangle(cornerRadius: radius)
+                            .foregroundStyle(.black)
+                    )
             }
             Spacer()
         }
@@ -99,7 +128,7 @@ struct EntryListItemView: View {
     func isPlaying() -> Bool {
         return currentPlayNum == entryName.number || currentPlayNum + 1 == entryName.number
     }
-        
+    
     func getBackgroundColor() -> Color {
         if isPlaying() {
             if entryName.number % 2 == 1 {
