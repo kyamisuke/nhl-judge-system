@@ -44,6 +44,7 @@ struct EntryListItemView: View {
                         .onChange(of: scoreModel.getScore(for: String(entryName.number)).wrappedValue) {
                             currentEdintingNum = entryName.number
                         }
+                        .tint(.green)
                 } else {
                     Rectangle()
                         .foregroundStyle(.clear)
@@ -58,7 +59,7 @@ struct EntryListItemView: View {
                 Circle()
                     .trim(from: 0.0, to: CGFloat(scoreModel.getScore(for: String(entryName.number)).wrappedValue) / 10.0) // 線のトリム
                     .stroke(
-                        Color.blue,
+                        Color.green,
                         style: StrokeStyle(
                             lineWidth: 6,
                             lineCap: .round)
@@ -101,7 +102,12 @@ struct EntryListItemView: View {
         
     func getBackgroundColor() -> Color {
         if isPlaying() {
-            return .green
+            if entryName.number % 2 == 1 {
+                return .red
+            }
+            else {
+                return .blue
+            }
         } else if isDone {
             return .gray
         } else {
