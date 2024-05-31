@@ -85,6 +85,7 @@ struct HomeView: View {
                         guard let data = UserDefaults.standard.string(forKey: Const.SELCTED_FILE_KEY) else { return }
                         selectedFileContent = data
                     }
+                FolderExportView(fileName: "\(name).csv")
                 HStack {
                     VStack(alignment: .leading) {
                         TextField(text: $hostIp, label: {
@@ -116,6 +117,11 @@ struct HomeView: View {
             }
             .navigationDestination(isPresented: $navigateToMainView) {
                 MainView(judgeName: name, entryNames: entryMembers, shouldInitialize: $shouldInitialize)
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    PrincipalIcon()
+                }
             }
             .onAppear {
                 if isChecked {

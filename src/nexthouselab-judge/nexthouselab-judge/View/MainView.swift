@@ -19,44 +19,50 @@ struct MainView: View {
     @EnvironmentObject var scoreModel: ScoreModel
         
     var body: some View {
-        VStack {
-            Spacer()
-            HStack {
-                Text("\(judgeName), Please fill all score.")
-                    .font(.title)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(16)
+        NavigationStack {
+            VStack {
                 Spacer()
-                Text("auto saved: \(scoreModel.udpatedTime)")
+                HStack {
+                    Text("\(judgeName), Please fill all score.")
+                        .font(.title)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(16)
+                    Spacer()
+                    Text("auto saved: \(scoreModel.udpatedTime)")
+                    Spacer()
+                }
+                Spacer()
+                List(entryNames) {entryName in
+                    EntryListItemView(entryName: entryName, currentPlayNum: $currentPlayNum, currentEdintingNum: $currentEditingNum, judgeName: judgeName)
+                        .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+                }
+                .onChange(of: currentEditingNum) {
+                    socketManager.send(message: "EDITING/\(judgeName)/\(currentEditingNum)")
+                }
+                .onChange(of: socketManager.recievedData) {
+                    DispatchQueue.main.async {
+                        guard let currentPlayNum = Int(socketManager.recievedData) else { return }
+                        self.currentPlayNum = currentPlayNum
+                    }
+                }
+                
                 Spacer()
             }
-            Spacer()
-            List(entryNames) {entryName in
-                EntryListItemView(entryName: entryName, currentPlayNum: $currentPlayNum, currentEdintingNum: $currentEditingNum, judgeName: judgeName)
-                    .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
-            }
-            .onChange(of: currentEditingNum) {
-                socketManager.send(message: "EDITING/\(judgeName)/\(currentEditingNum)")
-            }
-            .onChange(of: socketManager.recievedData) {
-                DispatchQueue.main.async {
-                    guard let currentPlayNum = Int(socketManager.recievedData) else { return }
-                    self.currentPlayNum = currentPlayNum
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    PrincipalIcon()
                 }
             }
-
-            Spacer()
-            FolderExportView(fileName: "\(judgeName).csv")
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .onAppear {
-            if shouldInitialize {
-                scoreModel.initialize(entryList: entryNames)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .onAppear {
+                if shouldInitialize {
+                    scoreModel.initialize(entryList: entryNames)
+                }
+                scoreModel.startTimer()
             }
-            scoreModel.startTimer()
-        }
-        .onDisappear {
-            scoreModel.stopTimer()
+            .onDisappear {
+                scoreModel.stopTimer()
+            }
         }
 //        .background(.orange)
     }
