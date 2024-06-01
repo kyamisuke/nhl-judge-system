@@ -30,7 +30,7 @@ struct EntryListItemView: View {
     @EnvironmentObject var scoreModel: ScoreModel
     
     var body: some View {
-        HStack(spacing: 24) {
+        HStack(spacing: 12) {
             Spacer()
             Text(String(entryName.number))
                 .frame(width: 32)
@@ -72,46 +72,40 @@ struct EntryListItemView: View {
                     .rotationEffect(.degrees(-90))
             }
             if isTapped() {
-                Button(action: {
-                    isDone.toggle()
-                    if isDone {
-                        socketManager.send(message: "SCORER/DECISION/\(judgeName)/\(entryName.number)/\(scoreModel.getScore(for: String(entryName.number)).wrappedValue)")
-                    } else {
-                        socketManager.send(message: "SCORER/CANCEL/\(judgeName)/\(entryName.number)")
-                    }
-                }, label: {
-                    Text(isDone ? "編集" : "決定")
+                if isDone {
+                    CrayButtonView(label: "編集", action: tapButton, lightColor: Const.rewriteLightColor, shadowColor: Const.rewriteShadowColor, buttonColor: Const.rewriteButtonColor, radius: radius)
+                        .buttonStyle(BorderlessButtonStyle())
+                        .frame(width: 64)
+                } else {
+                    CrayButtonView(label: "決定", action: tapButton, lightColor: Const.selectLightColor, shadowColor: Const.selectShadowColor, buttonColor: Const.selectButtonColor, radius: radius)
+                        .buttonStyle(BorderlessButtonStyle())
+                        .frame(width: 64)
+                }
+                
+            } else {
+                if isDone {
+                    Text("済")
                         .font(.system(size: 16, weight: .semibold, design: .default))
-                        .foregroundColor(.white)
+                        .frame(width: 32)
+                        .foregroundStyle(.white)
                         .padding(.horizontal, 16)
                         .padding(.vertical, 12)
                         .background(
                             RoundedRectangle(cornerRadius: radius)
-                                .fill(
-                                    // shadowでボタン上部に光沢を持たせる
-                                    // .innerはiOS16から対応
-                                    .shadow(.inner(color: lightColor, radius: 6, x: 4, y: 4))
-                                    // shadowでボタン下部に影を落とす
-                                    .shadow(.inner(color: shadowColor, radius: 6, x: -2, y: -2))
-                                )
-                                .foregroundColor(buttonColor)
-                            // ボタンのshadowはボタンの色に合わせる
-//                                .shadow(color: buttonColor, radius: 10, y: 6)
+                                .foregroundStyle(.black)
                         )
-                })
-                .buttonStyle(BorderlessButtonStyle())
-                .frame(width: 64)
-            } else {
-                Text("待機")
-                    .font(.system(size: 16, weight: .semibold, design: .default))
-                    .frame(width: 32)
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 12)
-                    .background(
-                        RoundedRectangle(cornerRadius: radius)
-                            .foregroundStyle(.black)
-                    )
+                } else {
+                    Text("未")
+                        .font(.system(size: 16, weight: .semibold, design: .default))
+                        .frame(width: 32)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 12)
+                        .background(
+                            RoundedRectangle(cornerRadius: radius)
+                                .foregroundStyle(.red)
+                        )
+                }
             }
             Spacer()
         }
@@ -149,6 +143,15 @@ struct EntryListItemView: View {
             return entryName.number == tappedId || entryName.number == tappedId + 1
         } else {
             return entryName.number == tappedId - 1 || entryName.number == tappedId
+        }
+    }
+    
+    func tapButton() {
+        isDone.toggle()
+        if isDone {
+            socketManager.send(message: "SCORER/DECISION/\(judgeName)/\(entryName.number)/\(scoreModel.getScore(for: String(entryName.number)).wrappedValue)")
+        } else {
+            socketManager.send(message: "SCORER/CANCEL/\(judgeName)/\(entryName.number)")
         }
     }
 }

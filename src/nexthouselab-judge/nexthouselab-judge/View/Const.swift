@@ -17,4 +17,13 @@ class Const {
     static let evenColor = Color("evenColor")
     static let fixedColor = Color("fixedColor")
     static let scoreColor = Color("scoreColor")
+    
+    static let selectLightColor = Color("selectLightColor")
+    static let selectButtonColor = Color("selectButtonColor")
+    static let selectShadowColor = Color("selectShadowColor")
+    
+    static let rewriteLightColor = Color("rewriteLightColor")
+    static let rewriteButtonColor = Color("rewriteButtonColor")
+    static let rewriteShadowColor = Color("rewriteShadowColor")
+
 }
