@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct JudgeView: View {
-    @Binding var judgeNames: [JudgeName]
     @Binding var entryMembers: [EntryName]
     @Binding var offset: CGFloat
     @Binding var currentNumber: Int
@@ -22,12 +21,13 @@ struct JudgeView: View {
                 ScrollView {
                     HStack {
                         Divider()
-                        ForEach(judgeNames) { judgeName in
+                        ForEach(Const.JUDGE_NAMES) { judgeName in
                             // 角ジャッジの下に表示するエントリーリスト
                             LazyVStack(spacing: 0) {
                                 Text(judgeName.name)
                                     .frame(maxWidth: .infinity)
                                     .font(.title)
+                                    .fontWeight(.bold)
                                 Divider()
                                     .padding(8)
                                 ForEach(entryMembers) { member in
@@ -54,10 +54,11 @@ struct JudgeView: View {
                     HStack {
                         Spacer()
                         Divider()
-                        ForEach(judgeNames) { judgeName in
+                        ForEach(Const.JUDGE_NAMES) { judgeName in
                             Text(judgeName.name)
                                 .frame(maxWidth: .infinity)
                                 .font(.title)
+                                .fontWeight(.bold)
                                 .background(.white)
                                 .opacity(-1 * (offset/80.0 + 1.0))
                             Divider()
@@ -77,7 +78,7 @@ struct JudgeView: View {
 #Preview {
     struct PreviewView: View {
         @State var entryMembers = [EntryName]()
-        @State var judgeNames = [JudgeName(name: "KAZANE"), JudgeName(name: "HIRO"), JudgeName(name: "HIRO"), JudgeName(name: "HIRO")]
+        let judgeNames = [JudgeName(name: "KAZANE"), JudgeName(name: "HIRO"), JudgeName(name: "HIRO"), JudgeName(name: "HIRO")]
         
         @State var offset: CGFloat = 0
         
@@ -86,7 +87,7 @@ struct JudgeView: View {
         var body: some View {
             //            Text("offset: \(offset!)")
             HStack {
-                JudgeView(judgeNames: $judgeNames, entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1), currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)))
+                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1), currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)))
                     .environmentObject(socketManager)
             }
             .onAppear {

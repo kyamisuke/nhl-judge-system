@@ -14,7 +14,6 @@ struct MainView: View {
     
     // リストに表示するものたち
     @State var entryMembers = [EntryName(number: 1, name: "kyami"), EntryName(number: 2, name: "amazon"), EntryName(number: 3, name: "Amazon")]
-    @State var demoJudgeArrray = [JudgeName(name: "KAZUKIYO"), JudgeName(name: "SU→"), JudgeName(name: "HIRO"), JudgeName(name: "KEIN")]
     @State var currentNumber: Int = 1
     @State var judgeArray = [JudgeName]()
     
@@ -26,6 +25,7 @@ struct MainView: View {
     @State var isFirstDrag = true
     
     @EnvironmentObject var socketManager: SocketManager
+    @EnvironmentObject var scoreModel: ScoreModel
     
     @State var currentMessage = Message(judgeName: "", number: 0)
     @State var bloadcastIp = ""
@@ -36,7 +36,7 @@ struct MainView: View {
             ZStack {
                 VStack {
                     // 各ジャッジのリストを表示
-                    JudgeView(judgeNames: $demoJudgeArrray, entryMembers: $entryMembers, offset: $offset, currentNumber: $currentNumber, currentMessage: $currentMessage)
+                    JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: $currentNumber, currentMessage: $currentMessage)
                         .onChange(of: socketManager.recievedData) {
                             receiveMessage(message: socketManager.recievedData)
                         }
@@ -60,23 +60,39 @@ struct MainView: View {
                     .onChange(of: currentNumber) {
                         socketManager.send(message: String(currentNumber))
                     }
-                    
-                    // ファイル選択ボタン
-                    FolderImportView(fileContent: $selectedFileContent)
-                        .onChange(of: selectedFileContent, {
-                            entryMembers = []
-                            let contentArray = selectedFileContent.components(separatedBy: "\n")
-                            for content in contentArray {
-                                let data = content.components(separatedBy: ",")
-                                if data.count != 2 { return }
-                                entryMembers.append(EntryName(number: Int(data[0])!, name: data[1]))
-                            }
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    HStack {
+                        Button(action: {
+                            UserDefaults.standard.setValue(nil, forKey: "scores")
+                            scoreModel.initialize(entryNames: entryMembers)
+                        }, label: {
+                            Text("Clear")
                         })
-                        .onAppear{
-                            guard let data = UserDefaults.standard.string(forKey: Const.SELCTED_FILE_KEY) else { return }
-                            selectedFileContent = data
-                        }
-                    
+                        .buttonStyle(.custom)
+                        .tint(.gray)
+                        // ファイル選択ボタン
+                        FolderImportView(fileContent: $selectedFileContent)
+                            .onChange(of: selectedFileContent, {
+                                entryMembers = []
+                                let contentArray = selectedFileContent.components(separatedBy: "\n")
+                                for content in contentArray {
+                                    let data = content.components(separatedBy: ",")
+                                    if data.count != 2 { return }
+                                    entryMembers.append(EntryName(number: Int(data[0])!, name: data[1]))
+                                }
+                            })
+                            .onAppear{
+                                guard let data = UserDefaults.standard.string(forKey: Const.SELCTED_FILE_KEY) else { return }
+                                selectedFileContent = data
+                            }
+                        FolderExportView()
+                        PrincipalIcon()
+                    }
+                }
+                ToolbarItem(placement: .topBarLeading) {
                     HStack {
                         VStack(alignment: .leading) {
                             TextField(text: $bloadcastIp, label: {
@@ -101,8 +117,16 @@ struct MainView: View {
                         }, label: {
                             Text("通信待受開始")
                         })
+                        .buttonStyle(.custom)
                     }
                 }
+            }
+            .onAppear {
+                scoreModel.startTimer()
+                scoreModel.initialize(entryNames: entryMembers)
+            }
+            .onDisappear {
+                scoreModel.stopTimer()
             }
         }
     }
@@ -121,6 +145,12 @@ struct MainView: View {
             // 接続開始したIPアドレスを取得
             socketManager.ipAddresses.append(data[1])
             print(data[1])
+        } else if data[0] == "SCORER" {
+            if data[1] == "DECISION" {
+                print("saved \(data)")
+                scoreModel.scores[data[2]]![data[3]] = Float(data[4])!
+                print(scoreModel.scores)
+            }
         }
     }
 }
@@ -128,10 +158,12 @@ struct MainView: View {
 #Preview {
     struct Sim: View {
         @StateObject var socketManager = SocketManager()
+        @StateObject var scoreModel = ScoreModel()
         
         var body: some View {
             MainView()
                 .environmentObject(socketManager)
+                .environmentObject(scoreModel)
         }
     }
     return Sim()

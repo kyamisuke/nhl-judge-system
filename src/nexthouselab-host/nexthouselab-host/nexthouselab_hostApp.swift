@@ -10,11 +10,13 @@ import SwiftUI
 @main
 struct nexthouselab_hostApp: App {
     @StateObject var socketManager = SocketManager()
+    @StateObject var scoreModel = ScoreModel()
     
     var body: some Scene {
         WindowGroup {
             MainView()
                 .environmentObject(socketManager)
+                .environmentObject(scoreModel)
         }
     }
 }
