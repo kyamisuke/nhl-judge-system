@@ -9,9 +9,6 @@ import SwiftUI
 import Network
 
 struct MainView: View {
-    // ファイルIO
-    @State var selectedFileContent: String = ""
-    
     // リストに表示するものたち
     @State var entryMembers = [EntryName(number: 1, name: "kyami"), EntryName(number: 2, name: "amazon"), EntryName(number: 3, name: "Amazon")]
     @State var currentNumber: Int = 1
@@ -28,7 +25,6 @@ struct MainView: View {
     @EnvironmentObject var scoreModel: ScoreModel
     
     @State var currentMessage = Message(judgeName: "", number: 0)
-    @State var bloadcastIp = ""
 
     var body: some View {
 //        Text(ges)
@@ -64,61 +60,7 @@ struct MainView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    HStack {
-                        Button(action: {
-                            UserDefaults.standard.setValue(nil, forKey: "scores")
-                            scoreModel.initialize(entryNames: entryMembers)
-                        }, label: {
-                            Text("Clear")
-                        })
-                        .buttonStyle(.custom)
-                        .tint(.gray)
-                        // ファイル選択ボタン
-                        FolderImportView(fileContent: $selectedFileContent)
-                            .onChange(of: selectedFileContent, {
-                                entryMembers = []
-                                let contentArray = selectedFileContent.components(separatedBy: "\n")
-                                for content in contentArray {
-                                    let data = content.components(separatedBy: ",")
-                                    if data.count != 2 { return }
-                                    entryMembers.append(EntryName(number: Int(data[0])!, name: data[1]))
-                                }
-                            })
-                            .onAppear{
-                                guard let data = UserDefaults.standard.string(forKey: Const.SELCTED_FILE_KEY) else { return }
-                                selectedFileContent = data
-                            }
-                        FolderExportView()
-                        PrincipalIcon()
-                    }
-                }
-                ToolbarItem(placement: .topBarLeading) {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            TextField(text: $bloadcastIp, label: {
-                                Text("host ip")
-                            })
-                            .textFieldStyle(.roundedBorder)
-                            .frame(width: 150)
-                            .onChange(of: bloadcastIp) {
-                                UserDefaults.standard.set(bloadcastIp, forKey: Const.IP_KEY)
-                            }
-                            .onAppear {
-                                guard let ip = UserDefaults.standard.string(forKey: Const.IP_KEY) else { return }
-                                bloadcastIp = ip
-                            }
-                            Text(bloadcastIp.components(separatedBy: ".").count == 4 ? "" : "invalid ip address")
-                                .foregroundStyle(Color.red)
-                                .font(.caption)
-                        }
-                        Button(action: {
-                            socketManager.startListener(name: "host_listener")
-                            socketManager.connect(host: bloadcastIp, port: "8000", param: .udp)
-                        }, label: {
-                            Text("通信待受開始")
-                        })
-                        .buttonStyle(.custom)
-                    }
+                    PrincipalIcon()
                 }
             }
             .onAppear {
@@ -146,11 +88,11 @@ struct MainView: View {
             socketManager.ipAddresses.append(data[1])
             print(data[1])
         } else if data[0] == "SCORER" {
-            if data[1] == "DECISION" {
-                print("saved \(data)")
+//            if data[1] == "DECISION" {
                 scoreModel.scores[data[2]]![data[3]] = Float(data[4])!
-                print(scoreModel.scores)
-            }
+//            } else if data[1] == "CANCEL" {
+//                scoreModel.scores[data[2]]![data[3]] = Float(data[4])!
+//            }
         }
     }
 }

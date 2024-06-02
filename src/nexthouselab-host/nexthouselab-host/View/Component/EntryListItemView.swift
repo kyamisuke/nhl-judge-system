@@ -14,9 +14,9 @@ struct EntryListItemView: View {
     let judgeName: String
     @Binding var currentMessage: Message
     @State var isEditing: Bool = false
-    @State var stateLabel = "未"
     
     @EnvironmentObject var socketManager: SocketManager
+    @EnvironmentObject var scoreModel: ScoreModel
     
     var body: some View {
         HStack(spacing: 24) {
@@ -24,9 +24,9 @@ struct EntryListItemView: View {
                 .frame(width: 32)
             Text(entryName.name)
                 .frame(width: 80)
-            Text(stateLabel)
+            Text(getLabel())
                 .frame(width: 32, height: 32)
-                .foregroundStyle(stateLabel == "未" ? Color.red : Color.black)
+                .foregroundStyle(getLabel() == "未" ? Color.red : Color.black)
                 .background(
                     Circle()
                         .foregroundStyle(.white)
@@ -38,7 +38,6 @@ struct EntryListItemView: View {
         .border(isEditing ? Color.red : Color.clear, width: 4)
         .onChange(of: currentMessage, checkEditing)
         .onChange(of: socketManager.recievedData, receiveData)
-
     }
     
     private func onClickButton() {
@@ -73,13 +72,21 @@ struct EntryListItemView: View {
         if data[0] == "SCORER" {
             if data[1] == "DECISION" {
                 if judgeName == data[2] && entryName.number == Int(data[3])! {
-                    stateLabel = data[4]
+                    scoreModel.scores[judgeName]![String(entryName.number)] = Float(data[4])!
                 }
             } else if data[1] == "CANCEL" {
                 if judgeName == data[2] && entryName.number == Int(data[3])! {
-                    stateLabel = "未"
+                    scoreModel.scores[judgeName]![String(entryName.number)] = Float(data[4])!
                 }
             }
+        }
+    }
+    
+    private func getLabel() -> String {
+        if scoreModel.getScore(in: judgeName, for: String(entryName.number)).wrappedValue == -1 {
+            return "未"
+        } else {
+            return String(scoreModel.getScore(in: judgeName, for: String(entryName.number)).wrappedValue)
         }
     }
 }
@@ -103,11 +110,13 @@ private struct ScoreSliderView: View {
 #Preview {
     struct PreviewView: View {
         @State var demoScores: [Float] = [0, 0, 0, 0, 0, 0]
-        @State var socketManager = SocketManager()
+        @StateObject var socketManager = SocketManager()
+        @StateObject var scoreModel = ScoreModel()
 
         var body: some View {
             EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentNumber: .constant(1), judgeName: "KAZANE", currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)))
                 .environmentObject(socketManager)
+                .environmentObject(scoreModel)
         }
     }
     

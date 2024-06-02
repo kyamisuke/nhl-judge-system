@@ -25,6 +25,7 @@ struct FolderImportView: View {
                         guard let savedFileName = UserDefaults.standard.string(forKey: Const.FILE_NAME_KEY) else { return }
                         fileName = savedFileName
                     }
+                    .font(.system(size: 12, weight: .regular, design: .default))
                 Button("Import") {
                     showsImportDocumentPicker = true
                 }

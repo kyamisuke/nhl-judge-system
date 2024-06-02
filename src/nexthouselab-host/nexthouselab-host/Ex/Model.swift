@@ -26,13 +26,20 @@ final public class ScoreModel: ObservableObject {
             for judgeName in Const.JUDGE_NAMES {
                 var tmpScores = Dictionary<String, Float>()
                 for entryName in entryNames {
-                    tmpScores[String(entryName.number)] = 0
+                    tmpScores[String(entryName.number)] = -1
                 }
                 scores[judgeName.name] = tmpScores
             }
         } else {
             scores = storedScore!
         }
+    }
+    
+    func getScore(in judgeName: String, for key: String) -> Binding<Float> {
+        return .init(
+            get: { (self.scores[judgeName] ?? Dictionary<String, Float>())[key, default: -1] },
+            set: { self.scores[judgeName]?[key] = $0 }
+        )
     }
     
     func startTimer() {

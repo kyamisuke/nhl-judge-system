@@ -13,35 +13,43 @@ struct JudgeView: View {
     @Binding var currentNumber: Int
     @State var isSticky = false
     @Binding var currentMessage: Message
+    
+    @EnvironmentObject var scoreModel: ScoreModel
+    @EnvironmentObject var socketManager: SocketManager
         
     var body: some View {
         VStack {
-            //            Text("offset: \(offsetWithId.offset!), id: \(id)")
             ZStack(alignment: .top) {
                 ScrollView {
-                    HStack {
+                    VStack {
+                        TopUIGrroupView(entryMembers: $entryMembers)
+                        Spacer()
                         Divider()
-                        ForEach(Const.JUDGE_NAMES) { judgeName in
-                            // 角ジャッジの下に表示するエントリーリスト
-                            LazyVStack(spacing: 0) {
-                                Text(judgeName.name)
-                                    .frame(maxWidth: .infinity)
-                                    .font(.title)
-                                    .fontWeight(.bold)
-                                Divider()
-                                    .padding(8)
-                                ForEach(entryMembers) { member in
-                                    EntryListItemView(entryName: member, currentNumber: $currentNumber, judgeName: judgeName.name, currentMessage: $currentMessage)
-                                    Divider()
-                                }
-                            }
+                        Spacer()
+                        HStack {
                             Divider()
+                            ForEach(Const.JUDGE_NAMES) { judgeName in
+                                // 角ジャッジの下に表示するエントリーリスト
+                                LazyVStack(spacing: 0) {
+                                    Text(judgeName.name)
+                                        .frame(maxWidth: .infinity)
+                                        .font(.title)
+                                        .fontWeight(.bold)
+                                    Divider()
+                                        .padding(8)
+                                    ForEach(entryMembers) { member in
+                                        EntryListItemView(entryName: member, currentNumber: $currentNumber, judgeName: judgeName.name, currentMessage: $currentMessage)
+                                        Divider()
+                                    }
+                                }
+                                Divider()
+                            }
                         }
-                    }
-                    .background {
-                        GeometryReader { proxy in
-                            Color.clear.onChange(of: proxy.frame(in: .named("ScrollView")).minY) { _, offset in
-                                self.offset = offset
+                        .background {
+                            GeometryReader { proxy in
+                                Color.clear.onChange(of: proxy.frame(in: .named("ScrollView")).minY) { _, offset in
+                                    self.offset = offset
+                                }
                             }
                         }
                     }
@@ -82,13 +90,15 @@ struct JudgeView: View {
         
         @State var offset: CGFloat = 0
         
-        @State var socketManager = SocketManager()
+        @StateObject var socketManager = SocketManager()
+        @StateObject var scoreModel = ScoreModel()
 
         var body: some View {
             //            Text("offset: \(offset!)")
             HStack {
                 JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1), currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)))
                     .environmentObject(socketManager)
+                    .environmentObject(scoreModel)
             }
             .onAppear {
                 for i in 1...100 {

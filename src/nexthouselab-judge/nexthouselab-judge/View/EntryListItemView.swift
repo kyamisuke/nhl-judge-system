@@ -151,7 +151,7 @@ struct EntryListItemView: View {
         if isDone {
             socketManager.send(message: "SCORER/DECISION/\(judgeName)/\(entryName.number)/\(scoreModel.getScore(for: String(entryName.number)).wrappedValue)")
         } else {
-            socketManager.send(message: "SCORER/CANCEL/\(judgeName)/\(entryName.number)")
+            socketManager.send(message: "SCORER/CANCEL/\(judgeName)/\(entryName.number)/-1")
         }
     }
 }
