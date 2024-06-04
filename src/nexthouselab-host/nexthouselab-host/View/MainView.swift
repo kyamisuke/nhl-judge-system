@@ -51,6 +51,7 @@ struct MainView: View {
                             .padding(.vertical, 4)
                     })
                     .buttonStyle(.custom)
+                    .disabled(currentNumber == 1)
                     Button(action: {
                         if self.currentNumber + 2 <= entryMembers.count {
                             currentNumber += 2
@@ -64,6 +65,7 @@ struct MainView: View {
                             .padding(.vertical, 4)
                     })
                     .buttonStyle(.custom)
+                    .disabled(currentNumber + 2 > entryMembers.count)
                 }
                 .padding(.horizontal, 8)
                 .onChange(of: currentNumber) {
