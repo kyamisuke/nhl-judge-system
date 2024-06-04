@@ -100,9 +100,13 @@ struct HomeView: View {
                             guard let ip = UserDefaults.standard.string(forKey: Const.HOST_IP_KEY) else { return }
                             hostIp = ip
                         }
-                        Text(hostIp.components(separatedBy: ".").count == 4 ? "" : "invalid ip address")
-                            .foregroundStyle(Color.red)
-                            .font(.caption)
+                        if hostIp.components(separatedBy: ".").count == 4 {
+                            EmptyView()
+                        } else {
+                            Text("invalid ip address")
+                                .foregroundStyle(Color.red)
+                                .font(.caption)
+                        }
                     }
                     Button(action: {
                         if hostIp.isEmpty {

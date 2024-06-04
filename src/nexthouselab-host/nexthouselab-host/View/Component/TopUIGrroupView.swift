@@ -30,9 +30,13 @@ struct TopUIGrroupView: View {
                     guard let ip = UserDefaults.standard.string(forKey: Const.IP_KEY) else { return }
                     bloadcastIp = ip
                 }
-                Text(bloadcastIp.components(separatedBy: ".").count == 4 ? "" : "invalid ip address")
-                    .foregroundStyle(Color.red)
-                    .font(.caption)
+                if bloadcastIp.components(separatedBy: ".").count == 4 {
+                    EmptyView()
+                } else {
+                    Text("invalid ip address")
+                        .foregroundStyle(Color.red)
+                        .font(.caption)
+                }
             }
             Button(action: {
                 socketManager.startListener(name: "host_listener")

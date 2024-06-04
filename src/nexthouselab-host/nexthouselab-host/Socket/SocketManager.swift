@@ -31,6 +31,7 @@ final public class SocketManager: ObservableObject {
         connection.send(content: data, completion: .contentProcessed { error in
             if let error = error {
                 NSLog("\(#function), \(error)")
+                semaphore.signal()
             } else {
                 semaphore.signal()
             }
@@ -86,6 +87,8 @@ final public class SocketManager: ObservableObject {
     
     func connect(host: String, port: String, param: NWParameters)
     {
+        connection?.cancel()
+        
         let t_host = NWEndpoint.Host(host)
         let t_port = NWEndpoint.Port(port)
         let semaphore = DispatchSemaphore(value: 0)
