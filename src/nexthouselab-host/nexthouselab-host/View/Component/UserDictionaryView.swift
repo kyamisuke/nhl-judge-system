@@ -12,6 +12,7 @@ struct FolderImportView: View {
     @State private var showsImportDocumentPicker = false
     @State private var fileName = ""
     @Binding var fileContent: String
+    @Binding var entryNum: Int
     let buttonColor = Color(hue: 0.1, saturation: 0.8, brightness: 1)
     let lightColor = Color(hue: 0.1, saturation: 0.5, brightness: 1)
     let shadowColor = Color(hue: 0.1, saturation: 1, brightness: 0.8)
@@ -20,7 +21,7 @@ struct FolderImportView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Text(fileName)
+                Text("\(fileName)\nエントリー総数：\(entryNum)")
                     .onAppear {
                         guard let savedFileName = UserDefaults.standard.string(forKey: Const.FILE_NAME_KEY) else { return }
                         fileName = savedFileName
@@ -135,7 +136,7 @@ struct FolderExportView: View {
         @StateObject var scoreModel = ScoreModel()
         
         var body: some View {
-            FolderImportView(fileContent: $fileContent)
+            FolderImportView(fileContent: $fileContent, entryNum: .constant(0))
             DemoFolderExportView()
             FolderExportView()
                 .environmentObject(scoreModel)

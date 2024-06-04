@@ -13,6 +13,7 @@ struct TopUIGrroupView: View {
     @Binding var entryMembers: [EntryName]
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
+    @State var isInvalidFile = false
 
     var body: some View {
         HStack {
@@ -46,24 +47,29 @@ struct TopUIGrroupView: View {
             })
             .buttonStyle(.custom)
             Spacer()
-            Button(action: {
-                UserDefaults.standard.setValue(nil, forKey: "scores")
-                scoreModel.initialize(entryNames: entryMembers)
-            }, label: {
-                Text("Clear")
-            })
-            .buttonStyle(.custom)
-            .tint(.gray)
+            if isInvalidFile {
+                Text("⚠️適切でない表記のエントリー\nナンバーが含まれています。\n表記の確認を推奨します。")
+                    .foregroundStyle(.red)
+                    .font(.system(size: 10, weight: .semibold))
+            }
             // ファイル選択ボタン
-            FolderImportView(fileContent: $selectedFileContent)
+            FolderImportView(fileContent: $selectedFileContent, entryNum: .constant(entryMembers.count))
                 .onChange(of: selectedFileContent, {
+                    isInvalidFile = false
                     entryMembers = []
                     let contentArray = selectedFileContent.components(separatedBy: "\n")
                     for content in contentArray {
                         let data = content.components(separatedBy: ",")
-                        if data.count != 2 { return }
-                        entryMembers.append(EntryName(number: Int(data[0])!, name: data[1]))
+                        if data.count != 2 { continue }
+                        guard let number = Int(data[0])
+                        else {
+                            isInvalidFile = true
+                            continue
+                        }
+                        entryMembers.append(EntryName(number: number, name: data[1]))
                     }
+                    UserDefaults.standard.set(nil, forKey: Const.SCORES_KEY)
+                    scoreModel.initialize(entryNames: entryMembers)
                 })
                 .onAppear{
                     guard let data = UserDefaults.standard.string(forKey: Const.SELCTED_FILE_KEY) else { return }
