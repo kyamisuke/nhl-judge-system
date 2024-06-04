@@ -20,7 +20,7 @@ final public class ScoreModel: ObservableObject {
     }
     
     func initialize(entryNames: [EntryName]) {
-        let storedScore = UserDefaults.standard.object(forKey: "scores") as? Dictionary<String, Dictionary<String, Float>>
+        let storedScore = UserDefaults.standard.object(forKey: Const.SCORES_KEY) as? Dictionary<String, Dictionary<String, Float>>
         if storedScore == nil {
             scores = Dictionary<String, Dictionary<String, Float>>()
             for judgeName in Const.JUDGE_NAMES {
@@ -30,8 +30,10 @@ final public class ScoreModel: ObservableObject {
                 }
                 scores[judgeName.name] = tmpScores
             }
+            print("Initialze score.")
         } else {
             scores = storedScore!
+            print("すでにデータが存在しています。")
         }
     }
     
@@ -49,7 +51,7 @@ final public class ScoreModel: ObservableObject {
     }
     
     private func saveCounter() {
-        UserDefaults.standard.set(scores, forKey: "scores")
+        UserDefaults.standard.set(scores, forKey: Const.SCORES_KEY)
         udpatedTime = formatter.string(from: Date())
     }
     

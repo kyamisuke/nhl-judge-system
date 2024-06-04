@@ -8,6 +8,10 @@
 import SwiftUI
 
 struct PrincipalIcon: View {
+    let entryMembers: [EntryName]
+    @EnvironmentObject var scoreModel: ScoreModel
+    @Binding var onClearAction: Bool
+    
     var body: some View {
         principalIcon()
     }
@@ -17,13 +21,11 @@ struct PrincipalIcon: View {
             .resizable()
             .scaledToFill()
             .frame(width: 48, height: 48)
-//            .clipShape(Circle())
             .mask {
                 RoundedRectangle(cornerRadius: 8)
             }
+            .onTapGesture(count: 5) {
+                onClearAction = true
+            }
     }
-}
-
-#Preview {
-    PrincipalIcon()
 }

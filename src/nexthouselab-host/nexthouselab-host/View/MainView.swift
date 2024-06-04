@@ -20,6 +20,7 @@ struct MainView: View {
     @State var dragDistance: CGFloat = 0
     @State var preDragPosition: CGFloat = 0
     @State var isFirstDrag = true
+    @State var onClearAction = false
     
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
@@ -72,7 +73,7 @@ struct MainView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    PrincipalIcon()
+                    PrincipalIcon(entryMembers: entryMembers, onClearAction: $onClearAction)
                 }
             }
             .onAppear {
@@ -81,6 +82,20 @@ struct MainView: View {
             }
             .onDisappear {
                 scoreModel.stopTimer()
+            }
+            .alert(isPresented: $onClearAction) {
+                Alert(
+                    title: Text("現在のデータをリセットします。"),
+                    message: Text("本当にリセットしますか？（データの復元はできません）"),
+                    primaryButton: .default(Text("リセット"), action: {
+                        UserDefaults.standard.setValue(nil, forKey: Const.SCORES_KEY)
+                        scoreModel.initialize(entryNames: entryMembers)
+                        onClearAction = false
+                    }),
+                    secondaryButton: .cancel(Text("キャンセル"), action: {
+                        onClearAction = false
+                    })
+                )
             }
         }
     }
