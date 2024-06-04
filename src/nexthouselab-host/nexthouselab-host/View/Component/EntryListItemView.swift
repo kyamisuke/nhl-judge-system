@@ -83,10 +83,11 @@ struct EntryListItemView: View {
     }
     
     private func getLabel() -> String {
-        if scoreModel.getScore(in: judgeName, for: String(entryName.number)).wrappedValue == -1 {
+        let score = scoreModel.getScore(in: judgeName, for: String(entryName.number)).wrappedValue
+        if score == -1 {
             return "未"
         } else {
-            return String(scoreModel.getScore(in: judgeName, for: String(entryName.number)).wrappedValue)
+            return String(score)
         }
     }
 }

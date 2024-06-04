@@ -25,38 +25,50 @@ struct MainView: View {
     @EnvironmentObject var scoreModel: ScoreModel
     
     @State var currentMessage = Message(judgeName: "", number: 0)
-
+    
     var body: some View {
-//        Text(ges)
+        //        Text(ges)
         NavigationStack {
-            ZStack {
-                VStack {
-                    // 各ジャッジのリストを表示
-                    JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: $currentNumber, currentMessage: $currentMessage)
-                        .onChange(of: socketManager.recievedData) {
-                            receiveMessage(message: socketManager.recievedData)
+            VStack {
+                // 各ジャッジのリストを表示
+                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: $currentNumber, currentMessage: $currentMessage)
+                    .onChange(of: socketManager.recievedData) {
+                        receiveMessage(message: socketManager.recievedData)
+                    }
+                
+                Group {
+                    Button(action: {
+                        if self.currentNumber != 1 {
+                            currentNumber -= 2
                         }
-                    
-                    HStack {
-                        Button(action: {
-                            if self.currentNumber != 1 {
-                                currentNumber -= 2
-                            }
-                        }, label: {
-                            Text("前へ")
-                        })
-                        Button(action: {
-                            if self.currentNumber + 2 <= entryMembers.count {
-                                currentNumber += 2
-                            }
-                        }, label: {
-                            Text("次へ")
-                        })
-                    }
-                    .onChange(of: currentNumber) {
-                        socketManager.send(message: String(currentNumber))
-                    }
+                    }, label: {
+                        Image(systemName: "arrowtriangle.up.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 24)
+                            .padding(.vertical, 4)
+                    })
+                    .buttonStyle(.custom)
+                    Button(action: {
+                        if self.currentNumber + 2 <= entryMembers.count {
+                            currentNumber += 2
+                        }
+                    }, label: {
+                        Image(systemName: "arrowtriangle.down.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 24)
+                            .padding(.vertical, 4)
+                    })
+                    .buttonStyle(.custom)
                 }
+                .padding(.horizontal, 8)
+                .onChange(of: currentNumber) {
+                    socketManager.send(message: String(currentNumber))
+                }
+                Spacer()
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -88,11 +100,11 @@ struct MainView: View {
             socketManager.ipAddresses.append(data[1])
             print(data[1])
         } else if data[0] == "SCORER" {
-//            if data[1] == "DECISION" {
-                scoreModel.scores[data[2]]![data[3]] = Float(data[4])!
-//            } else if data[1] == "CANCEL" {
-//                scoreModel.scores[data[2]]![data[3]] = Float(data[4])!
-//            }
+            //            if data[1] == "DECISION" {
+            scoreModel.scores[data[2]]![data[3]] = Float(data[4])!
+            //            } else if data[1] == "CANCEL" {
+            //                scoreModel.scores[data[2]]![data[3]] = Float(data[4])!
+            //            }
         }
     }
 }
