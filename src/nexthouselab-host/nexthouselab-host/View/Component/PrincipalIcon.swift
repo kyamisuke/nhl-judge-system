@@ -20,12 +20,22 @@ struct PrincipalIcon: View {
         Image("icon")
             .resizable()
             .scaledToFill()
-            .frame(width: 48, height: 48)
+            .frame(width: getSize(), height: getSize())
             .mask {
                 RoundedRectangle(cornerRadius: 8)
             }
             .onTapGesture(count: 5) {
                 onClearAction = true
             }
+    }
+    
+    private func getSize() -> CGFloat {
+        if UIDevice.current.isiPad {
+            return 48
+        } else if UIDevice.current.isiPhone {
+            return 32
+        } else {
+            return 48
+        }
     }
 }

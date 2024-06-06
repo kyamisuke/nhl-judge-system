@@ -16,4 +16,5 @@ class Const {
     
     static let exportColor = Color("exportButton")
     static let importColor = Color("importButton")
+    static let judgeLabelColor = Color(hue: 0, saturation: 0, brightness: 0.9)
 }

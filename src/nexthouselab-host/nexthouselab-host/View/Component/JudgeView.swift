@@ -35,6 +35,7 @@ struct JudgeView: View {
                                         .frame(maxWidth: .infinity)
                                         .font(.title)
                                         .fontWeight(.bold)
+//                                        .background(Const.judgeLabelColor)
                                     Divider()
                                         .padding(8)
                                     ForEach(entryMembers) { member in
@@ -60,7 +61,6 @@ struct JudgeView: View {
                 // 一定量スクロールしたら表示するラベル
                 VStack {
                     HStack {
-                        Spacer()
                         Divider()
                         ForEach(Const.JUDGE_NAMES) { judgeName in
                             Text(judgeName.name)
@@ -71,12 +71,15 @@ struct JudgeView: View {
                                 .opacity(getOffset())
                             Divider()
                         }
-                        Spacer()
                     }
-                    .frame(height: 64)
+                    .frame(height: 48)
                     Divider()
                 }
-                .background(.white)
+                .background(
+                    Rectangle()
+                        .foregroundStyle(.ultraThinMaterial)
+                        .shadow(color: .init(white: 0.4, opacity: 0.4), radius: 5, x: 0, y: 0)
+                )
                 .opacity(getOffset())
             }
         }

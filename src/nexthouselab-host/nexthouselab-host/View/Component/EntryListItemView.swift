@@ -19,7 +19,7 @@ struct EntryListItemView: View {
     @EnvironmentObject var scoreModel: ScoreModel
     
     var body: some View {
-        HStack(spacing: 24) {
+        HStack {
             Text(String(entryName.number))
                 .frame(width: 32)
             Text(entryName.name)
@@ -33,7 +33,8 @@ struct EntryListItemView: View {
                 )
         }
         .frame(maxWidth: .infinity)
-        .padding(16)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
         .background(getBackgroundColor())
         .border(isEditing ? Color.red : Color.clear, width: 4)
         .onChange(of: currentMessage, checkEditing)
