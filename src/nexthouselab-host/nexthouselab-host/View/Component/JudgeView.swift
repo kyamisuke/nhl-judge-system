@@ -67,8 +67,8 @@ struct JudgeView: View {
                                 .frame(maxWidth: .infinity)
                                 .font(.title)
                                 .fontWeight(.bold)
-                                .background(.white)
-                                .opacity(-1 * (offset/80.0 + 1.0))
+                                .background(.clear)
+                                .opacity(getOffset())
                             Divider()
                         }
                         Spacer()
@@ -77,9 +77,17 @@ struct JudgeView: View {
                     Divider()
                 }
                 .background(.white)
-                .opacity(-1 * (offset/80.0 + 1.0))
+                .opacity(getOffset())
             }
         }
+    }
+    
+    private func getOffset() -> CGFloat {
+        return clamp(from: 0, to: 1, in: -1 * (offset/40.0 + 1.0))
+    }
+    
+    private func clamp(from minV: CGFloat, to maxV: CGFloat, in value: CGFloat) -> CGFloat {
+        return min(max(value, 0), 1)
     }
 }
 
