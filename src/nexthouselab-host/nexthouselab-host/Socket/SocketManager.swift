@@ -41,21 +41,121 @@ final public class SocketManager: ObservableObject {
     }
     
     func startListener(name: String) {
-        guard let listener = try? NWListener(using: .udp, on: 9000) else { fatalError() }
-
-        listener.service = NWListener.Service(name: name, type: networkType)
-
-        let listnerQueue = DispatchQueue(label: "com.nhl.judge.system.host.listener")
-
-        // 新しいコネクション受診時の処理
-        listener.newConnectionHandler = { [unowned self] (connection: NWConnection) in
-            connection.start(queue: listnerQueue)
-            self.receive(on: connection)
+//        guard let listener = try? NWListener(using: .udp, on: 9000) else { fatalError() }
+//
+//        listener.service = NWListener.Service(name: name, type: networkType)
+//
+//        let listnerQueue = DispatchQueue(label: "com.nhl.judge.system.host.listener")
+//
+//        // 新しいコネクション受診時の処理
+//        listener.newConnectionHandler = { [unowned self] (connection: NWConnection) in
+//            connection.start(queue: listnerQueue)
+//            self.receive(on: connection)
+//        }
+//
+//        // Listener開始
+//        listener.start(queue: listnerQueue)
+//        listener.stateUpdateHandler = { state in
+//            switch state {
+//            case .failed(let error):
+//                print("Failed to listen: \(error)")
+//            case .ready:
+//                print("Start Listening as \(listener.service!.name)")
+//            default:
+//                break
+//            }
+//        }
+//        DispatchQueue.main.async {
+//            self.listenerState = listener.state
+//        }
+        do {
+            // UDPを使用して指定されたポートでリスナーを作成
+            let listener = try NWListener(using: .udp, on: 9000)
+            listener.stateUpdateHandler = { state in
+                switch state {
+                case .setup:
+                    print("Listener setup")
+                case .waiting(let error):
+                    print("Listener waiting: \(error)")
+                case .ready:
+                    print("Listener ready and listening for incoming messages")
+                case .failed(let error):
+                    print("Listener failed with error: \(error)")
+                case .cancelled:
+                    print("Listener cancelled")
+                @unknown default:
+                    print("Unknown state")
+                }
+            }
+            
+            listener.newConnectionHandler = { [weak self] newConnection in
+                newConnection.start(queue: .global())
+                self?.receive(on: newConnection)
+            }
+            
+            listener.start(queue: .main)
+        } catch {
+            print("Failed to create listener: \(error)")
         }
-
-        // Listener開始
-        listener.start(queue: listnerQueue)
-        print("Start Listening as \(listener.service!.name)")
+    }
+    
+    func startListenerForPhone(name: String) {
+//        guard let listener = try? NWListener(using: .udp, on: 8000) else { fatalError() }
+//
+//        listener.service = NWListener.Service(name: name, type: networkType)
+//
+//        let listnerQueue = DispatchQueue(label: "com.nhl.judge.system.host.listener")
+//
+//        // 新しいコネクション受診時の処理
+//        listener.newConnectionHandler = { [unowned self] (connection: NWConnection) in
+//            connection.start(queue: listnerQueue)
+//            self.receive(on: connection)
+//        }
+//
+//        // Listener開始
+//        listener.start(queue: listnerQueue)
+//        listener.stateUpdateHandler = { state in
+//            switch state {
+//            case .failed(let error):
+//                print("Failed to listen: \(error)")
+//            case .ready:
+//                print("Start Listening as \(listener.service!.name)")
+//            default:
+//                break
+//            }
+//        }
+//        DispatchQueue.main.async {
+//            self.listenerStateForPhone = listener.state
+//        }
+        do {
+            // UDPを使用して指定されたポートでリスナーを作成
+            let listener = try NWListener(using: .udp, on: 8000)
+            listener.stateUpdateHandler = { state in
+                switch state {
+                case .setup:
+                    print("Listener setup")
+                case .waiting(let error):
+                    print("Listener waiting: \(error)")
+                case .ready:
+                    print("Listener ready and listening for incoming messages")
+                case .failed(let error):
+                    print("Listener failed with error: \(error)")
+                case .cancelled:
+                    print("Listener cancelled")
+                @unknown default:
+                    print("Unknown state")
+                }
+            }
+            
+            listener.newConnectionHandler = { [unowned self] newConnection in
+                newConnection.start(queue: .global())
+                self.receive(on: newConnection)
+            }
+            
+            listener.start(queue: .main)
+        } catch {
+            print("Failed to create listener: \(error)")
+        }
     }
         
     private func receive(on connection: NWConnection) {

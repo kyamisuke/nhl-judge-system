@@ -21,7 +21,9 @@ struct MainView: View {
     @State var preDragPosition: CGFloat = 0
     @State var isFirstDrag = true
     @State var onClearAction = false
-    
+    @State var isUpTapped = false
+    @State var isDownTapped = false
+
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
     
@@ -42,6 +44,10 @@ struct MainView: View {
                         if self.currentNumber != 1 {
                             currentNumber -= 2
                         }
+                        isUpTapped = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                            isUpTapped = false
+                        }
                     }, label: {
                         Image(systemName: "arrowtriangle.up.fill")
                             .resizable()
@@ -51,10 +57,14 @@ struct MainView: View {
                             .padding(.vertical, 4)
                     })
                     .buttonStyle(.custom)
-                    .disabled(currentNumber == 1)
+                    .disabled(currentNumber == 1 || isUpTapped)
                     Button(action: {
                         if self.currentNumber + 2 <= entryMembers.count {
                             currentNumber += 2
+                        }
+                        isDownTapped = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                            isDownTapped = false
                         }
                     }, label: {
                         Image(systemName: "arrowtriangle.down.fill")
@@ -65,7 +75,7 @@ struct MainView: View {
                             .padding(.vertical, 4)
                     })
                     .buttonStyle(.custom)
-                    .disabled(currentNumber + 2 > entryMembers.count)
+                    .disabled(currentNumber + 2 > entryMembers.count || isDownTapped)
                 }
                 .padding(.horizontal, 8)
                 .onChange(of: currentNumber) {
