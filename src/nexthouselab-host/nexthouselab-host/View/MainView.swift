@@ -21,8 +21,7 @@ struct MainView: View {
     @State var preDragPosition: CGFloat = 0
     @State var isFirstDrag = true
     @State var onClearAction = false
-    @State var isUpTapped = false
-    @State var isDownTapped = false
+    @State var isTapped = false
     @State var isModal = false
     @State var hostArray = [String]()
 
@@ -48,9 +47,9 @@ struct MainView: View {
                             if self.currentNumber != 1 {
                                 currentNumber -= 2
                             }
-                            isUpTapped = true
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                                isUpTapped = false
+                            isTapped = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                isTapped = false
                             }
                         }, label: {
                             Image(systemName: "arrowtriangle.up.fill")
@@ -61,14 +60,14 @@ struct MainView: View {
                                 .padding(.vertical, 4)
                         })
                         .buttonStyle(.custom)
-                        .disabled(currentNumber == 1 || isUpTapped)
+                        .disabled(currentNumber == 1 || isTapped)
                         Button(action: {
                             if self.currentNumber + 2 <= entryMembers.count {
                                 currentNumber += 2
                             }
-                            isDownTapped = true
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                                isDownTapped = false
+                            isTapped = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                isTapped = false
                             }
                         }, label: {
                             Image(systemName: "arrowtriangle.down.fill")
@@ -79,7 +78,7 @@ struct MainView: View {
                                 .padding(.vertical, 4)
                         })
                         .buttonStyle(.custom)
-                        .disabled(currentNumber + 2 > entryMembers.count || isDownTapped)
+                        .disabled(currentNumber + 2 > entryMembers.count || isTapped)
                     }
                     .padding(.horizontal, 8)
                     .onChange(of: currentNumber) {
