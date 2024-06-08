@@ -23,65 +23,69 @@ struct MainView: View {
     @State var onClearAction = false
     @State var isUpTapped = false
     @State var isDownTapped = false
+    @State var isModal = false
 
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
     
     @State var currentMessage = Message(judgeName: "", number: 0)
     
+    let device = UIDevice.current
+    
     var body: some View {
         //        Text(ges)
         NavigationStack {
             VStack {
                 // 各ジャッジのリストを表示
-                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: $currentNumber, currentMessage: $currentMessage)
+                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: $currentNumber, currentMessage: $currentMessage, isModal: $isModal)
                     .onChange(of: socketManager.recievedData) {
                         receiveMessage(message: socketManager.recievedData)
                     }
-                
-                Group {
-                    Button(action: {
-                        if self.currentNumber != 1 {
-                            currentNumber -= 2
-                        }
-                        isUpTapped = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                            isUpTapped = false
-                        }
-                    }, label: {
-                        Image(systemName: "arrowtriangle.up.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 24)
-                            .padding(.vertical, 4)
-                    })
-                    .buttonStyle(.custom)
-                    .disabled(currentNumber == 1 || isUpTapped)
-                    Button(action: {
-                        if self.currentNumber + 2 <= entryMembers.count {
-                            currentNumber += 2
-                        }
-                        isDownTapped = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                            isDownTapped = false
-                        }
-                    }, label: {
-                        Image(systemName: "arrowtriangle.down.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 24)
-                            .padding(.vertical, 4)
-                    })
-                    .buttonStyle(.custom)
-                    .disabled(currentNumber + 2 > entryMembers.count || isDownTapped)
+                if device.isiPad {
+                    Group {
+                        Button(action: {
+                            if self.currentNumber != 1 {
+                                currentNumber -= 2
+                            }
+                            isUpTapped = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                isUpTapped = false
+                            }
+                        }, label: {
+                            Image(systemName: "arrowtriangle.up.fill")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 24)
+                                .padding(.vertical, 4)
+                        })
+                        .buttonStyle(.custom)
+                        .disabled(currentNumber == 1 || isUpTapped)
+                        Button(action: {
+                            if self.currentNumber + 2 <= entryMembers.count {
+                                currentNumber += 2
+                            }
+                            isDownTapped = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                isDownTapped = false
+                            }
+                        }, label: {
+                            Image(systemName: "arrowtriangle.down.fill")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 24)
+                                .padding(.vertical, 4)
+                        })
+                        .buttonStyle(.custom)
+                        .disabled(currentNumber + 2 > entryMembers.count || isDownTapped)
+                    }
+                    .padding(.horizontal, 8)
+                    .onChange(of: currentNumber) {
+                        socketManager.send(message: String(currentNumber))
+                    }
+                    Spacer()
                 }
-                .padding(.horizontal, 8)
-                .onChange(of: currentNumber) {
-                    socketManager.send(message: String(currentNumber))
-                }
-                Spacer()
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -91,6 +95,16 @@ struct MainView: View {
             .onAppear {
                 scoreModel.startTimer()
                 scoreModel.initialize(entryNames: entryMembers)
+                if device.isiPad {
+                    DispatchQueue.global(qos: .background).async {
+                        socketManager.startListener(name: "host-listener")
+                    }
+                } else if device.isiPhone {
+                    DispatchQueue.global(qos: .background).async {
+                        socketManager.startListener(name: "host-9000-listener")
+                        socketManager.startListenerForPhone(name: "host-8000-listener")
+                    }
+                }
             }
             .onDisappear {
                 scoreModel.stopTimer()
@@ -109,6 +123,9 @@ struct MainView: View {
                     })
                 )
             }
+            .sheet(isPresented: $isModal) {
+                HostSelectModalView(isModal: $isModal)
+            }
         }
     }
     
@@ -124,7 +141,7 @@ struct MainView: View {
         }
         else if data[0] == "CONNECT" {
             // 接続開始したIPアドレスを取得
-            socketManager.ipAddresses.append(data[1])
+            socketManager.connect(host: data[1], port: "8000", param: .udp)
             print(data[1])
         } else if data[0] == "SCORER" {
             //            if data[1] == "DECISION" {
@@ -132,6 +149,13 @@ struct MainView: View {
             //            } else if data[1] == "CANCEL" {
             //                scoreModel.scores[data[2]]![data[3]] = Float(data[4])!
             //            }
+        } else if data[0] == "DISCONNECT" {
+            socketManager.disconnect(host: data[1])
+        } else {
+            guard let currentNum = Int(message) else {
+                return
+            }
+            self.currentNumber = currentNum
         }
     }
 }

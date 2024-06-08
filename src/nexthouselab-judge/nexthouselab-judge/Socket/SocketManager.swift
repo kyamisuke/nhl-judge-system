@@ -147,7 +147,7 @@ final public class SocketManager: ObservableObject {
         /* コネクション完了待ち */
         semaphore.wait()
 //        print(getIPAddresses())
-//        send(message: "CONNECT/\(getIPAddresses()[1])")
+        send(message: "CONNECT/\(getIPAddresses()[1])")
     }
         
     func getIPAddresses() -> [String] {

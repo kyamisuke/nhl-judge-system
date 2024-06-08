@@ -13,6 +13,7 @@ struct JudgeView: View {
     @Binding var currentNumber: Int
     @State var isSticky = false
     @Binding var currentMessage: Message
+    @Binding var isModal: Bool
     
     @EnvironmentObject var scoreModel: ScoreModel
     @EnvironmentObject var socketManager: SocketManager
@@ -22,7 +23,7 @@ struct JudgeView: View {
             ZStack(alignment: .top) {
                 ScrollView {
                     VStack {
-                        TopUIGrroupView(entryMembers: $entryMembers)
+                        TopUIGrroupView(entryMembers: $entryMembers, isModal: $isModal)
                         Spacer()
                         Divider()
                         Spacer()
@@ -107,7 +108,7 @@ struct JudgeView: View {
         var body: some View {
             //            Text("offset: \(offset!)")
             HStack {
-                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1), currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)))
+                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1), currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)), isModal: .constant(false))
                     .environmentObject(socketManager)
                     .environmentObject(scoreModel)
             }

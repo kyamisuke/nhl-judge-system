@@ -14,41 +14,48 @@ struct TopUIGrroupView: View {
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
     @State var isInvalidFile = false
+    @Binding var isModal: Bool
 
     var body: some View {
         HStack {
+            Spacer()
+//            VStack(alignment: .leading) {
+//                TextField(text: $bloadcastIp, label: {
+//                    Text("ip")
+//                })
+//                .textFieldStyle(.roundedBorder)
+//                .frame(width: 150)
+//                .onChange(of: bloadcastIp) {
+//                    UserDefaults.standard.set(bloadcastIp, forKey: Const.IP_KEY)
+//                }
+//                .onAppear {
+//                    guard let ip = UserDefaults.standard.string(forKey: Const.IP_KEY) else { return }
+//                    bloadcastIp = ip
+//                }
+//                if bloadcastIp.components(separatedBy: ".").count == 4 {
+//                    EmptyView()
+//                } else {
+//                    Text("invalid ip address")
+//                        .foregroundStyle(Color.red)
+//                        .font(.caption)
+//                }
+//            }
+//            Button(action: {
+//                socketManager.startListener(name: "host_listener")
+//                socketManager.connect(host: bloadcastIp, port: "8000", param: .udp)
+//            }, label: {
+//                Text("通信待受開始")
+//            })
+//            .buttonStyle(.custom)
             if UIDevice.current.isiPad {
-                Spacer()
-                VStack(alignment: .leading) {
-                    TextField(text: $bloadcastIp, label: {
-                        Text("ip")
-                    })
-                    .textFieldStyle(.roundedBorder)
-                    .frame(width: 150)
-                    .onChange(of: bloadcastIp) {
-                        UserDefaults.standard.set(bloadcastIp, forKey: Const.IP_KEY)
-                    }
-                    .onAppear {
-                        guard let ip = UserDefaults.standard.string(forKey: Const.IP_KEY) else { return }
-                        bloadcastIp = ip
-                    }
-                    if bloadcastIp.components(separatedBy: ".").count == 4 {
-                        EmptyView()
-                    } else {
-                        Text("invalid ip address")
-                            .foregroundStyle(Color.red)
-                            .font(.caption)
-                    }
-                }
                 Button(action: {
-                    socketManager.startListener(name: "host_listener")
-                    socketManager.connect(host: bloadcastIp, port: "8000", param: .udp)
+                    isModal = true
                 }, label: {
-                    Text("通信待受開始")
+                    Text("通信先選択")
                 })
                 .buttonStyle(.custom)
+                Spacer()
             }
-            Spacer()
             if isInvalidFile {
                 Text("⚠️適切でない表記のエントリー\nナンバーが含まれています。\n表記の確認を推奨します。")
                     .foregroundStyle(.red)

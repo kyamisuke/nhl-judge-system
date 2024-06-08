@@ -14,15 +14,9 @@ struct nexthouselab_hostApp: App {
     
     var body: some Scene {
         WindowGroup {
-            if UIDevice.current.isiPad {
-                MainView()
-                    .environmentObject(socketManager)
-                    .environmentObject(scoreModel)
-            } else if UIDevice.current.isiPhone {
-                PhoneMainView()
-                    .environmentObject(socketManager)
-                    .environmentObject(scoreModel)
-            }
+            MainView()
+                .environmentObject(socketManager)
+                .environmentObject(scoreModel)
         }
     }
 }

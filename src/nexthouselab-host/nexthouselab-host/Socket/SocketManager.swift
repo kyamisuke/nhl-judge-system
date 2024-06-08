@@ -10,34 +10,52 @@ import Network
 
 final public class SocketManager: ObservableObject {
     // ネットワーク
-    var connection: NWConnection!
+    @Published var connections = [String: NWConnection]()
         
     // 送られてきたデータを監視するところ
     @Published var recievedData: String = ""
-    @Published var ipAddresses = [String]()
     
     // 定数
     let networkType = "_networkplayground._udp."
     let networkDomain = "local"
             
     func send(message: String) {
-        if connection == nil { return }
+//        if connection == nil { return }
+//        
+//        /* 送信データ生成 */
+//        let data = message.data(using: .utf8)!
+//        let semaphore = DispatchSemaphore(value: 0)
+//
+//        /* データ送信 */
+//        connection.send(content: data, completion: .contentProcessed { error in
+//            if let error = error {
+//                NSLog("\(#function), \(error)")
+//                semaphore.signal()
+//            } else {
+//                semaphore.signal()
+//            }
+//        })
+//        /* 送信完了待ち */
+//        semaphore.wait()
         
         /* 送信データ生成 */
         let data = message.data(using: .utf8)!
-        let semaphore = DispatchSemaphore(value: 0)
+        let group = DispatchGroup()
 
         /* データ送信 */
-        connection.send(content: data, completion: .contentProcessed { error in
-            if let error = error {
-                NSLog("\(#function), \(error)")
-                semaphore.signal()
-            } else {
-                semaphore.signal()
-            }
-        })
+        connections.forEach { (host, connection) in
+            group.enter()
+            connection.send(content: data, completion: .contentProcessed { error in
+                if let error = error {
+                    print("\(#function), \(error)")
+                } else {
+                    print("Send to \(host)")
+                }
+                group.leave()
+            })
+        }
         /* 送信完了待ち */
-        semaphore.wait()
+        group.wait()
     }
     
     func startListener(name: String) {
@@ -179,16 +197,18 @@ final public class SocketManager: ObservableObject {
         }
     }
     
-    func disconnect(connection: NWConnection)
+    func disconnect(host: String)
     {
         /* コネクション切断 */
-        connection.cancel()
+        connections[host]?.cancel()
+        connections.removeValue(forKey: host)
     }
     
     func connect(host: String, port: String, param: NWParameters)
     {
-        connection?.cancel()
+        if connections.keys.contains(host) { return }
         
+        let connection: NWConnection!
         let t_host = NWEndpoint.Host(host)
         let t_port = NWEndpoint.Port(port)
         let semaphore = DispatchSemaphore(value: 0)
@@ -206,19 +226,24 @@ final public class SocketManager: ObservableObject {
                     NSLog("\(#function), \(error)")
                 case .failed(let error):
                     NSLog("\(#function), \(error)")
-                case .setup: break
-                case .cancelled: break
-                case .preparing: break
+                case .setup:
+                    print("set up")
+                case .cancelled:
+                    print("cancelled")
+                case .preparing:
+                    print("preparing")
                 @unknown default:
                     fatalError("Illegal state")
             }
         }
         
         /* コネクション開始 */
-        let queue = DispatchQueue(label: "example")
+        let queue = DispatchQueue(label: "_udp._hostConnection")
         connection?.start(queue:queue)
 
         /* コネクション完了待ち */
         semaphore.wait()
+        
+        connections[host] = connection
     }
 }
