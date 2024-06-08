@@ -33,11 +33,11 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 16) {
-                Text("What's your name?")
-                    .font(.title)
+                Text("ジャッジの名前を入力してください")
+                    .font(.headline)
                 HStack {
                     TextField(text: $name, label: {
-                        Text("Judge Name")
+                        Text("ジャッジ名")
                     })
                     .textFieldStyle(.roundedBorder)
                     .frame(width: 150)
@@ -115,7 +115,7 @@ struct HomeView: View {
                 //                        Text("Connect")
                 //                    })
                 //                }
-                SelectHostView(hostArray: $hostArray)
+                SelectHostView(alertType: $alertType, hostArray: $hostArray)
             }
             .navigationDestination(isPresented: $navigateToMainView) {
                 MainView(judgeName: name, entryNames: entryMembers, shouldInitialize: $shouldInitialize)

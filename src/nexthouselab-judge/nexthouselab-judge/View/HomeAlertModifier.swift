@@ -12,7 +12,41 @@ enum AlertType: Identifiable {
     case fileError
     case scoreData
     case onClear
+    case hostIsEmpty
+    case invalidAddress
+    
     var id: AlertType { self }
+    
+    var title: String {
+        switch self {
+        case .nameError:
+            return "ジャッジの名前が入力されていません。"
+        case .fileError:
+            return "エントリーリストが選択されていません。"
+        case .hostIsEmpty:
+            return "空欄になっています。"
+        case .invalidAddress:
+            return "入力された値は使えません。"
+        default:
+            return ""
+        }
+    }
+    
+    var message: String {
+        switch self {
+        case .nameError:
+            return "ジャッジの名前が入力されていることを確認してください。"
+        case .fileError:
+            return "ファイルを選択し、エントリーリストを設定してください。"
+        case .hostIsEmpty:
+            return "アドレスを入力してください。"
+        case .invalidAddress:
+            return "X.X.X.Xの形式で入力してください。"
+        default:
+            return ""
+        }
+    }
+
 }
 
 struct HomeAlertModifier: ViewModifier {
@@ -28,16 +62,10 @@ struct HomeAlertModifier: ViewModifier {
         content
             .alert(item: $alertType) { alertType in
                 switch alertType {
-                case .nameError:
+                case .nameError, .fileError, .hostIsEmpty, .invalidAddress:
                     return Alert(
-                        title: Text("ジャッジの名前が入力されていません。"),
-                        message: Text("ジャッジの名前が入力されていることを確認してください。"),
-                        dismissButton: .default(Text("戻る"))
-                    )
-                case .fileError:
-                    return Alert(
-                        title: Text("エントリーリストが選択されていません。"),
-                        message: Text("ファイルを選択し、エントリーリストを設定してください。"),
+                        title: Text(alertType.title),
+                        message: Text(alertType.message),
                         dismissButton: .default(Text("戻る"))
                     )
                 case .scoreData:

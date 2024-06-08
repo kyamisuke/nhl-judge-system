@@ -7,37 +7,10 @@
 
 import SwiftUI
 
-struct SelectHostView: View {
-    enum HostAlertType: Identifiable {
-        case Empty
-        case Invalid
-        
-        var id: Int {
-            hashValue
-        }
-        
-        var title: String {
-            switch self {
-            case .Empty:
-                return "空欄になっています。"
-            case .Invalid:
-                return "入力された値は使えません。"
-            }
-        }
-        
-        var message: String {
-            switch self {
-            case .Empty:
-                return "アドレスを入力してください。"
-            case .Invalid:
-                return "X.X.X.Xの形式で入力してください。"
-            }
-        }
-    }
-    
+struct SelectHostView: View {    
     @State var host = ""
     @EnvironmentObject var socketManager: SocketManager
-    @State var alertType: HostAlertType?
+    @Binding var alertType: AlertType?
     @Binding var hostArray: [String]
     
     var body: some View {
@@ -57,7 +30,7 @@ struct SelectHostView: View {
             
             HStack {
                 TextField("送信先のIPアドレスを入力", text: $host)
-                    .frame(width: 200)
+                    .frame(width: 300)
                     .textFieldStyle(.roundedBorder)
                 Button(action: addRow, label: {
                     Text("決定")
@@ -78,27 +51,20 @@ struct SelectHostView: View {
             }
             .padding()
         }
-        .alert(item: $alertType) { alertType in
-            Alert(
-                title: Text(alertType.title),
-                message: Text(alertType.message),
-                dismissButton: .default(Text("OK"))
-            )
-        }
     }
     
     func addRow() {
         if host.isEmpty {
-            alertType = .Empty
+            alertType = .hostIsEmpty
             return
         }
         if host.components(separatedBy: ".").count != 4 {
-            alertType = .Invalid
+            alertType = .invalidAddress
             return
         }
         for ad in host.components(separatedBy: ".") {
             if Int(ad) == nil {
-                alertType = .Invalid
+                alertType = .invalidAddress
                 return
             }
         }
@@ -130,7 +96,7 @@ struct SelectHostView: View {
         @StateObject var socketManager = SocketManager()
         
         var body: some View {
-            SelectHostView(hostArray: .constant([String]()))
+            SelectHostView(alertType: .constant(nil), hostArray: .constant([String]()))
                 .environmentObject(socketManager)
         }
     }
