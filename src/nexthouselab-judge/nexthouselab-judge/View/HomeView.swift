@@ -132,9 +132,9 @@ struct HomeView: View {
                     if UserDefaults.standard.dictionary(forKey: "scores") != nil {
                         alertType = .scoreData
                     }
+                    socketManager.startListener(name: "judge_listner")
+                    hostArrayInit()
                 }
-                socketManager.startListener(name: "judge_listner")
-                hostArrayInit()
             }
             .modifier(HomeAlertModifier(alertType: $alertType, isChecked: $isChecked, shouldInitialize: $shouldInitialize, navigateToMainView: $navigateToMainView, hostIp: $hostIp))
         }
