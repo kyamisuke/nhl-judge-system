@@ -246,4 +246,51 @@ final public class SocketManager: ObservableObject {
         
         connections[host] = connection
     }
+    
+    func connectAllHosts(hosts: [String], port: String, param: NWParameters) {
+        let group = DispatchGroup()
+        
+        hosts.forEach { host in
+            if connections.keys.contains(host) { return }
+            
+            group.enter()
+            
+            let connection: NWConnection!
+            let t_host = NWEndpoint.Host(host)
+            let t_port = NWEndpoint.Port(port)
+            
+            /* コネクションの初期化 */
+            connection = NWConnection(host: t_host, port: t_port!, using: param)
+            
+            /* コネクションのStateハンドラ設定 */
+            connection?.stateUpdateHandler = { (newState) in
+                switch newState {
+                case .ready:
+                    print("Ready to send")
+                    group.leave()
+                case .waiting(let error):
+                    print("\(#function), \(error)")
+                case .failed(let error):
+                    print("\(#function), \(error)")
+                case .setup:
+                    print("set up")
+                case .cancelled:
+                    print("cancelled")
+                case .preparing:
+                    print("preparing")
+                @unknown default:
+                    fatalError("Illegal state")
+                }
+            }
+            
+            /* コネクション開始 */
+            let queue = DispatchQueue(label: "_udp._hostConnection")
+            connection?.start(queue:queue)
+            
+            /* コネクション完了待ち */
+            group.wait()
+            
+            connections[host] = connection
+        }
+    }
 }

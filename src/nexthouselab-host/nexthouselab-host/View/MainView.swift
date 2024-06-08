@@ -24,6 +24,7 @@ struct MainView: View {
     @State var isUpTapped = false
     @State var isDownTapped = false
     @State var isModal = false
+    @State var hostArray = [String]()
 
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
@@ -93,18 +94,8 @@ struct MainView: View {
                 }
             }
             .onAppear {
-                scoreModel.startTimer()
-                scoreModel.initialize(entryNames: entryMembers)
-                if device.isiPad {
-                    DispatchQueue.global(qos: .background).async {
-                        socketManager.startListener(name: "host-listener")
-                    }
-                } else if device.isiPhone {
-                    DispatchQueue.global(qos: .background).async {
-                        socketManager.startListener(name: "host-9000-listener")
-                        socketManager.startListenerForPhone(name: "host-8000-listener")
-                    }
-                }
+                scoreModelInit()
+                socketManagerInit()
             }
             .onDisappear {
                 scoreModel.stopTimer()
@@ -124,7 +115,7 @@ struct MainView: View {
                 )
             }
             .sheet(isPresented: $isModal) {
-                HostSelectModalView(isModal: $isModal)
+                HostSelectModalView(isModal: $isModal, hostArray: $hostArray)
             }
         }
     }
@@ -157,6 +148,33 @@ struct MainView: View {
             }
             self.currentNumber = currentNum
         }
+    }
+    
+    func scoreModelInit() {
+        scoreModel.startTimer()
+        scoreModel.initialize(entryNames: entryMembers)
+    }
+    
+    func socketManagerInit() {
+        if device.isiPad {
+            DispatchQueue.global(qos: .background).async {
+                socketManager.startListener(name: "host-listener")
+            }
+            hostArrayInit()
+        } else if device.isiPhone {
+            DispatchQueue.global(qos: .background).async {
+                socketManager.startListener(name: "host-9000-listener")
+                socketManager.startListenerForPhone(name: "host-8000-listener")
+            }
+        }
+    }
+    
+    func hostArrayInit() {
+        guard let hosts = UserDefaults.standard.array(forKey: Const.HOST_KEY) as? [String] else {
+            return
+        }
+        hostArray = hosts
+        socketManager.connectAllHosts(hosts: hosts, port: "8000", param: .udp)
     }
 }
 

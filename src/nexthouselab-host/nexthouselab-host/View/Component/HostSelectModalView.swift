@@ -39,7 +39,7 @@ struct HostSelectModalView: View {
     @EnvironmentObject var socketManager: SocketManager
     @State var alertType: HostAlertType?
     @Binding var isModal: Bool
-    @State var hostArray = [String]()
+    @Binding var hostArray: [String]
     
     var body: some View {
         VStack {
@@ -105,6 +105,7 @@ struct HostSelectModalView: View {
         }
         socketManager.connect(host: host, port: "8000", param: .udp)
         hostArray.append(host)
+        save()
         host = ""
     }
     
@@ -117,6 +118,11 @@ struct HostSelectModalView: View {
             socketManager.disconnect(host: host)
         }
         hostArray.remove(atOffsets: offsets)
+        save()
+    }
+    
+    func save() {
+        UserDefaults.standard.set(hostArray, forKey: Const.HOST_KEY)
     }
 }
 
@@ -125,7 +131,7 @@ struct HostSelectModalView: View {
         @StateObject var socketManager = SocketManager()
         
         var body: some View {
-            HostSelectModalView(isModal: .constant(true))
+            HostSelectModalView(isModal: .constant(true), hostArray: .constant([String]()))
                 .environmentObject(socketManager)
         }
     }
