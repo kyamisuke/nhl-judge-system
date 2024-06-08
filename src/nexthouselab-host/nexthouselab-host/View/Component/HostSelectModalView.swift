@@ -33,13 +33,13 @@ struct HostSelectModalView: View {
                 return "X.X.X.Xの形式で入力してください。"
             }
         }
-
     }
     
     @State var host = ""
     @EnvironmentObject var socketManager: SocketManager
     @State var alertType: HostAlertType?
     @Binding var isModal: Bool
+    @State var hostArray = [String]()
     
     var body: some View {
         VStack {
@@ -53,54 +53,77 @@ struct HostSelectModalView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        ScrollView {
-            VStack {
-                Spacer()
-                
-                HStack {
-                    TextField("送信先のIPアドレスを入力", text: $host)
-                        .frame(width: 200)
-                    Button(action: {
-                        if host.isEmpty {
-                            alertType = .Empty
-                            return
+        VStack {
+            Spacer()
+            
+            HStack {
+                TextField("送信先のIPアドレスを入力", text: $host)
+                    .frame(width: 200)
+                    .textFieldStyle(.roundedBorder)
+                Button(action: addRow, label: {
+                    Text("決定")
+                })
+                .buttonStyle(.custom)
+            }
+            List {
+                Section("接続済みホスト一覧") {
+                    ForEach(hostArray, id: \.self) { ip in
+                        HStack {
+                            Spacer()
+                            Text(ip)
+                            Spacer()
                         }
-                        if host.components(separatedBy: ".").count != 4 {
-                            alertType = .Invalid
-                            return
-                        }
-                        for ad in host.components(separatedBy: ".") {
-                            if Int(ad) == nil {
-                                alertType = .Invalid
-                                return
-                            }
-                        }
-                        socketManager.connect(host: host, port: "8000", param: .udp)
-                        host = ""
-                    }, label: {
-                        Text("決定")
-                    })
-                    .buttonStyle(.custom)
-                }
-                ForEach(socketManager.connections.map{$0.key}, id: \.self) { ip in
-                    Text(ip)
+                    }
+                    .onDelete(perform: removeRow)
                 }
             }
-            .alert(item: $alertType) { alertType in
-                Alert(
-                    title: Text(alertType.title),
-                    message: Text(alertType.message),
-                    dismissButton: .default(Text("OK"))
-                )
+            .padding()
+        }
+        .alert(item: $alertType) { alertType in
+            Alert(
+                title: Text(alertType.title),
+                message: Text(alertType.message),
+                dismissButton: .default(Text("OK"))
+            )
+        }
+    }
+    
+    func addRow() {
+        if host.isEmpty {
+            alertType = .Empty
+            return
+        }
+        if host.components(separatedBy: ".").count != 4 {
+            alertType = .Invalid
+            return
+        }
+        for ad in host.components(separatedBy: ".") {
+            if Int(ad) == nil {
+                alertType = .Invalid
+                return
             }
         }
+        socketManager.connect(host: host, port: "8000", param: .udp)
+        hostArray.append(host)
+        host = ""
+    }
+    
+    func removeRow(offsets: IndexSet) {
+        // 削除する前に、インデックスセットを配列に変換して並べ替え
+        let indices = offsets.sorted()
+        // 削除する要素の値を抽出
+        let valuesToRemove = indices.map { hostArray[$0] }
+        valuesToRemove.forEach { host in
+            socketManager.disconnect(host: host)
+        }
+        hostArray.remove(atOffsets: offsets)
     }
 }
 
 #Preview {
     struct Sim: View {
         @StateObject var socketManager = SocketManager()
-
+        
         var body: some View {
             HostSelectModalView(isModal: .constant(true))
                 .environmentObject(socketManager)
