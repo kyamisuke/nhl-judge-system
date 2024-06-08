@@ -8,13 +8,6 @@
 import SwiftUI
 import Foundation
 
-enum AlertType: Identifiable {
-    case nameError
-    case fileError
-    case scoreData
-    var id: AlertType { self }
-}
-
 struct HomeView: View {
     @State var name: String = ""
     @State var entryMembers: [EntryName] = []
@@ -24,6 +17,7 @@ struct HomeView: View {
     @State var isChecked = false
     @State var shouldInitialize = true
     @State var hostIp = ""
+    @State var hostArray = [String]()
     
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
@@ -68,63 +62,67 @@ struct HomeView: View {
                     }, label: {
                         Text("決定")
                     })
+                    .buttonStyle(.custom)
                 }
                 .frame(width: 480)
-                FolderImportView(fileContent: $selectedFileContent)
-                    .onChange(of: selectedFileContent) {
-                        var tmpMemberArray: [EntryName] = []
-                        let contentAsArray = selectedFileContent.components(separatedBy: "\n")
-                        for content in contentAsArray {
-                            let data = content.components(separatedBy: ",")
-                            if data.count != 2 { continue }
-                            tmpMemberArray.append(EntryName(number: Int(data[0]) ?? -1, name: data[1]))
-                        }
-                        entryMembers = tmpMemberArray
-                    }
-                    .onAppear{
-                        guard let data = UserDefaults.standard.string(forKey: Const.SELCTED_FILE_KEY) else { return }
-                        selectedFileContent = data
-                    }
-                FolderExportView(fileName: "\(name).csv")
                 HStack {
-                    VStack(alignment: .leading) {
-                        TextField(text: $hostIp, label: {
-                            Text("host ip")
-                        })
-                        .textFieldStyle(.roundedBorder)
-                        .frame(width: 150)
-                        .onChange(of: hostIp) {
-                            UserDefaults.standard.set(hostIp, forKey: Const.HOST_IP_KEY)
+                    FolderImportView(fileContent: $selectedFileContent)
+                        .onChange(of: selectedFileContent) {
+                            var tmpMemberArray: [EntryName] = []
+                            let contentAsArray = selectedFileContent.components(separatedBy: "\n")
+                            for content in contentAsArray {
+                                let data = content.components(separatedBy: ",")
+                                if data.count != 2 { continue }
+                                tmpMemberArray.append(EntryName(number: Int(data[0]) ?? -1, name: data[1]))
+                            }
+                            entryMembers = tmpMemberArray
                         }
-                        .onAppear {
-                            guard let ip = UserDefaults.standard.string(forKey: Const.HOST_IP_KEY) else { return }
-                            hostIp = ip
+                        .onAppear{
+                            guard let data = UserDefaults.standard.string(forKey: Const.SELCTED_FILE_KEY) else { return }
+                            selectedFileContent = data
                         }
-                        if hostIp.components(separatedBy: ".").count == 4 {
-                            EmptyView()
-                        } else {
-                            Text("invalid ip address")
-                                .foregroundStyle(Color.red)
-                                .font(.caption)
-                        }
-                    }
-                    Button(action: {
-                        if hostIp.isEmpty {
-                            return
-                        }
-                        socketManager.connect(host: hostIp, port: "9000", param: .udp)
-                        socketManager.startListener(name: "judge_listner")
-                    }, label: {
-                        Text("Connect")
-                    })
+                    FolderExportView(fileName: "\(name).csv")
                 }
+                //                HStack {
+                //                    VStack(alignment: .leading) {
+                //                        TextField(text: $hostIp, label: {
+                //                            Text("host ip")
+                //                        })
+                //                        .textFieldStyle(.roundedBorder)
+                //                        .frame(width: 150)
+                //                        .onChange(of: hostIp) {
+                //                            UserDefaults.standard.set(hostIp, forKey: Const.HOST_IP_KEY)
+                //                        }
+                //                        .onAppear {
+                //                            guard let ip = UserDefaults.standard.string(forKey: Const.HOST_IP_KEY) else { return }
+                //                            hostIp = ip
+                //                        }
+                //                        if hostIp.components(separatedBy: ".").count == 4 {
+                //                            EmptyView()
+                //                        } else {
+                //                            Text("invalid ip address")
+                //                                .foregroundStyle(Color.red)
+                //                                .font(.caption)
+                //                        }
+                //                    }
+                //                    Button(action: {
+                //                        if hostIp.isEmpty {
+                //                            return
+                //                        }
+                //                        socketManager.connect(host: hostIp, port: "9000", param: .udp)
+                //                        socketManager.startListener(name: "judge_listner")
+                //                    }, label: {
+                //                        Text("Connect")
+                //                    })
+                //                }
+                SelectHostView(hostArray: $hostArray)
             }
             .navigationDestination(isPresented: $navigateToMainView) {
                 MainView(judgeName: name, entryNames: entryMembers, shouldInitialize: $shouldInitialize)
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    PrincipalIcon()
+                    ClearablePrincipalIcon(alertType: $alertType)
                 }
             }
             .onAppear {
@@ -135,12 +133,30 @@ struct HomeView: View {
                         alertType = .scoreData
                     }
                 }
+                socketManager.startListener(name: "judge_listner")
+                hostArrayInit()
             }
             .modifier(HomeAlertModifier(alertType: $alertType, isChecked: $isChecked, shouldInitialize: $shouldInitialize, navigateToMainView: $navigateToMainView, hostIp: $hostIp))
         }
     }
+    
+    func hostArrayInit() {
+        guard let hosts = UserDefaults.standard.array(forKey: Const.HOST_KEY) as? [String] else {
+            return
+        }
+        hostArray = hosts
+        socketManager.connectAllHosts(hosts: hosts, port: "9000", param: .udp)
+    }
 }
 
 #Preview {
-    HomeView()
+    struct Sim: View {
+        @StateObject var socketManager = SocketManager()
+        var body: some View {
+            HomeView()
+                .environmentObject(socketManager)
+        }
+    }
+    
+    return Sim()
 }

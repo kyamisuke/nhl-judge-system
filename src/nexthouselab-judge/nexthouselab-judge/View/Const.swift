@@ -12,6 +12,7 @@ class Const {
     static let FILE_NAME_KEY = "file_name"
     static let JUDGE_NAME_KEY = "judge_name"
     static let HOST_IP_KEY = "host_ip"
+    static let HOST_KEY = "host"
     
     static let oddColor = Color("oddColor")
     static let evenColor = Color("evenColor")

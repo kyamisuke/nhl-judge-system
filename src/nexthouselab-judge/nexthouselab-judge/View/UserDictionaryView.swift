@@ -21,9 +21,11 @@ struct FolderImportView: View {
                         guard let savedFileName = UserDefaults.standard.string(forKey: Const.FILE_NAME_KEY) else { return }
                         fileName = savedFileName
                     }
-                Button("importFromFile", action: {
+                Button("Import", action: {
                     showsImportDocumentPicker = true
                 })
+                .buttonStyle(.custom)
+                .tint(.orange)
             }
         }
         .sheet(isPresented: $showsImportDocumentPicker) {
@@ -82,9 +84,11 @@ struct FolderExportView: View {
  
     var body: some View {
         VStack(spacing: 0) {
-            Button("exportToFile", action: {
+            Button("Export", action: {
                 showsExportDocumentPicker = true
             })
+            .buttonStyle(.custom)
+            .tint(.purple)
         }
         .sheet(isPresented: $showsExportDocumentPicker) {
             // 1. ユーザにフォルダーを選択させ、そこにファイルを作成する。

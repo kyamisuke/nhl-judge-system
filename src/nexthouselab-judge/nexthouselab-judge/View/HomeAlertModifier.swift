@@ -7,6 +7,14 @@
 
 import SwiftUI
 
+enum AlertType: Identifiable {
+    case nameError
+    case fileError
+    case scoreData
+    case onClear
+    var id: AlertType { self }
+}
+
 struct HomeAlertModifier: ViewModifier {
     @Binding var alertType: AlertType?
     @Binding var isChecked: Bool
@@ -35,21 +43,26 @@ struct HomeAlertModifier: ViewModifier {
                 case .scoreData:
                     return Alert(
                         title: Text("前回のデータが残っています"),
-                        message: Text("前回中断したデータを復元しますか？キャンセルした場合、前回のデータは復元できません。"),
-                        primaryButton: .default(Text("復元"), action: {
+                        message: Text("前回中断したデータから再開しますか？"),
+                        primaryButton: .default(Text("再開"), action: {
                             isChecked = true
                             scoreModel.update(scores: UserDefaults.standard.dictionary(forKey: "scores") as! Dictionary<String, Float>)
                             shouldInitialize = false
                             navigateToMainView = true
-                            DispatchQueue.global(qos: .background).async {
-                                socketManager.connect(host: hostIp, port: "9000", param: .udp)
-                                socketManager.startListener(name: "judge_listner")
-                            }
                         }),
                         secondaryButton: .cancel(Text("キャンセル"), action: {
                             isChecked = true
-                            UserDefaults.standard.set(nil, forKey: "scores")
                         })
+                    )
+                case .onClear:
+                    return Alert(
+                        title: Text("得点のデータを初期化しますか？"),
+                        message: Text("初期化したデータは復元できません。"),
+                        primaryButton: .destructive(Text("削除"), action: {
+                            UserDefaults.standard.set(nil, forKey: "scores")
+                            shouldInitialize = true
+                        }),
+                        secondaryButton: .cancel(Text("キャンセル"))
                     )
                 }
             }
