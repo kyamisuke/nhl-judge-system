@@ -77,8 +77,8 @@ struct TopUIGrroupView: View {
                         }
                         entryMembers.append(EntryName(number: number, name: data[1]))
                     }
-                    UserDefaults.standard.set(nil, forKey: Const.SCORES_KEY)
-                    scoreModel.initialize(entryNames: entryMembers)
+//                    UserDefaults.standard.set(nil, forKey: Const.SCORES_KEY)
+//                    scoreModel.initialize(entryNames: entryMembers)
                 })
                 .onAppear{
                     guard let data = UserDefaults.standard.string(forKey: Const.SELCTED_FILE_KEY) else { return }

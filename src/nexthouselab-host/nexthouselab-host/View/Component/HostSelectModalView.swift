@@ -103,7 +103,7 @@ struct HostSelectModalView: View {
                 return
             }
         }
-        socketManager.connect(host: host, port: "8000", param: .udp)
+        socketManager.connect(host: host)
         hostArray.append(host)
         save()
         host = ""

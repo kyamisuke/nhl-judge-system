@@ -15,9 +15,13 @@ final public class SocketManager: ObservableObject {
     // 送られてきたデータを監視するところ
     @Published var recievedData: String = ""
     
+    var storedData = [String: String]()
+    
     // 定数
     let networkType = "_networkplayground._udp."
     let networkDomain = "local"
+    
+    let param = NWParameters.udp
             
     func send(message: String) {
 //        if connection == nil { return }
@@ -88,7 +92,7 @@ final public class SocketManager: ObservableObject {
 //        }
         do {
             // UDPを使用して指定されたポートでリスナーを作成
-            let listener = try NWListener(using: .udp, on: 9000)
+            let listener = try NWListener(using: param, on: 9000)
             listener.stateUpdateHandler = { state in
                 switch state {
                 case .setup:
@@ -147,7 +151,7 @@ final public class SocketManager: ObservableObject {
 //        }
         do {
             // UDPを使用して指定されたポートでリスナーを作成
-            let listener = try NWListener(using: .udp, on: 8000)
+            let listener = try NWListener(using: param, on: 8000)
             listener.stateUpdateHandler = { state in
                 switch state {
                 case .setup:
@@ -184,7 +188,9 @@ final public class SocketManager: ObservableObject {
                 print("Received Message: \(message)")
                 // メインスレッドで変数更新
                 DispatchQueue.main.sync {
-                    self.recievedData = message
+                    let uuid = UUID()
+                    self.recievedData = "\(message)/\(uuid)"
+                    self.storedData["\(uuid)"] = self.recievedData
                 }
             }
 
@@ -204,13 +210,13 @@ final public class SocketManager: ObservableObject {
         connections.removeValue(forKey: host)
     }
     
-    func connect(host: String, port: String, param: NWParameters)
+    func connect(host: String)
     {
         if connections.keys.contains(host) { return }
         
         let connection: NWConnection!
         let t_host = NWEndpoint.Host(host)
-        let t_port = NWEndpoint.Port(port)
+        let t_port = NWEndpoint.Port("8000")
         let semaphore = DispatchSemaphore(value: 0)
 
         /* コネクションの初期化 */
@@ -247,7 +253,7 @@ final public class SocketManager: ObservableObject {
         connections[host] = connection
     }
     
-    func connectAllHosts(hosts: [String], port: String, param: NWParameters) {
+    func connectAllHosts(hosts: [String]) {
         let group = DispatchGroup()
         
         hosts.forEach { host in
@@ -257,7 +263,7 @@ final public class SocketManager: ObservableObject {
             
             let connection: NWConnection!
             let t_host = NWEndpoint.Host(host)
-            let t_port = NWEndpoint.Port(port)
+            let t_port = NWEndpoint.Port("8000")
             
             /* コネクションの初期化 */
             connection = NWConnection(host: t_host, port: t_port!, using: param)

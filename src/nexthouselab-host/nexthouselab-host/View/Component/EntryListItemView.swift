@@ -38,7 +38,7 @@ struct EntryListItemView: View {
         .background(getBackgroundColor())
         .border(isEditing ? Color.red : Color.clear, width: 4)
         .onChange(of: currentMessage, checkEditing)
-        .onChange(of: socketManager.recievedData, receiveData)
+//        .onChange(of: socketManager.recievedData, receiveData)
     }
     
     private func onClickButton() {
@@ -68,20 +68,20 @@ struct EntryListItemView: View {
         }
     }
     
-    private func receiveData() {
-        let data = socketManager.recievedData.components(separatedBy: "/")
-        if data[0] == "SCORER" {
-            if data[1] == "DECISION" {
-                if judgeName == data[2] && entryName.number == Int(data[3])! {
-                    scoreModel.scores[judgeName]![String(entryName.number)] = Float(data[4])!
-                }
-            } else if data[1] == "CANCEL" {
-                if judgeName == data[2] && entryName.number == Int(data[3])! {
-                    scoreModel.scores[judgeName]![String(entryName.number)] = Float(data[4])!
-                }
-            }
-        }
-    }
+//    private func receiveData() {
+//        let data = socketManager.recievedData.components(separatedBy: "/")
+//        if data[0] == "SCORER" {
+//            if data[1] == "DECISION" {
+//                if judgeName == data[2] && entryName.number == Int(data[3])! {
+//                    scoreModel.scores[judgeName]![String(entryName.number)] = Float(data[4])!
+//                }
+//            } else if data[1] == "CANCEL" {
+//                if judgeName == data[2] && entryName.number == Int(data[3])! {
+//                    scoreModel.scores[judgeName]![String(entryName.number)] = Float(data[4])!
+//                }
+//            }
+//        }
+//    }
     
     private func getLabel() -> String {
         let score = scoreModel.getScore(in: judgeName, for: String(entryName.number)).wrappedValue

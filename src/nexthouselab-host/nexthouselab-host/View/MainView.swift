@@ -30,6 +30,8 @@ struct MainView: View {
     
     @State var currentMessage = Message(judgeName: "", number: 0)
     
+    @State var timer: Timer?
+    
     let device = UIDevice.current
     
     var body: some View {
@@ -95,9 +97,11 @@ struct MainView: View {
             .onAppear {
                 scoreModelInit()
                 socketManagerInit()
+                startTimer()
             }
             .onDisappear {
                 scoreModel.stopTimer()
+                timer?.invalidate()
             }
             .alert(isPresented: $onClearAction) {
                 Alert(
@@ -131,10 +135,11 @@ struct MainView: View {
         }
         else if data[0] == "CONNECT" {
             // 接続開始したIPアドレスを取得
-            socketManager.connect(host: data[1], port: "8000", param: .udp)
+            socketManager.connect(host: data[1])
             print(data[1])
         } else if data[0] == "SCORER" {
             //            if data[1] == "DECISION" {
+            print("Update Score: \(data[2]), \(data[3]), \(data[4])")
             scoreModel.scores[data[2]]![data[3]] = Float(data[4])!
             //            } else if data[1] == "CANCEL" {
             //                scoreModel.scores[data[2]]![data[3]] = Float(data[4])!
@@ -147,6 +152,7 @@ struct MainView: View {
             }
             self.currentNumber = currentNum
         }
+        socketManager.storedData.removeValue(forKey: data.last!)
     }
     
     func scoreModelInit() {
@@ -173,7 +179,17 @@ struct MainView: View {
             return
         }
         hostArray = hosts
-        socketManager.connectAllHosts(hosts: hosts, port: "8000", param: .udp)
+        socketManager.connectAllHosts(hosts: hosts)
+    }
+    
+    func startTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
+            if (socketManager.storedData.isEmpty) { return }
+            for m in socketManager.storedData.values {
+                print("restore: \(m)")
+                self.receiveMessage(message: m)
+            }
+        }
     }
 }
 
