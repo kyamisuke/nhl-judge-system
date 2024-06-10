@@ -68,6 +68,7 @@ struct MainView: View {
             .onDisappear {
                 scoreModel.stopTimer()
             }
+            .navigationBarBackButtonHidden(true)
         }
 //        .background(.orange)
     }

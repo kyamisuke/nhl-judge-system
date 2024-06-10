@@ -30,6 +30,7 @@ struct ClearablePrincipalIcon: View {
 }
 
 struct PrincipalIcon: View {
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         principalIcon()
@@ -43,6 +44,9 @@ struct PrincipalIcon: View {
 //            .clipShape(Circle())
             .mask {
                 RoundedRectangle(cornerRadius: 8)
+            }
+            .onTapGesture(count: 5) {
+                dismiss()
             }
     }
 }
