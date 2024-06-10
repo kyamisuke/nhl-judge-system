@@ -27,13 +27,23 @@ struct SelectHostView: View {
 //        .padding()
         VStack {
             Spacer()
-            
+            HStack {
+                Text(socketManager.listnerStae)
+                    .foregroundStyle(socketManager.stateColor)
+                Button(action: {
+                    socketManager.startListener(name: "judge_listner")
+                }, label: {
+                    Text("接続待受開始")
+                })
+                .buttonStyle(.custom)
+            }
+            Spacer()
             HStack {
                 TextField("送信先のIPアドレスを入力", text: $host)
                     .frame(width: 300)
                     .textFieldStyle(.roundedBorder)
                 Button(action: addRow, label: {
-                    Text("決定")
+                    Text("登録")
                 })
                 .buttonStyle(.custom)
             }
@@ -41,9 +51,11 @@ struct SelectHostView: View {
                 Section("接続済みホスト一覧") {
                     ForEach(hostArray, id: \.self) { ip in
                         HStack {
+                            Text("")
                             Spacer()
                             Text(ip)
                             Spacer()
+                            Text("")
                         }
                     }
                     .onDelete(perform: removeRow)

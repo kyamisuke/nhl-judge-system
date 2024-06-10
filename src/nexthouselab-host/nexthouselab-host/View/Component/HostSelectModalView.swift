@@ -41,6 +41,8 @@ struct HostSelectModalView: View {
     @Binding var isModal: Bool
     @Binding var hostArray: [String]
     
+    let device = UIDevice.current
+    
     var body: some View {
         VStack {
             Button(action: {
@@ -55,13 +57,23 @@ struct HostSelectModalView: View {
         .padding()
         VStack {
             Spacer()
-            
+            HStack {
+                Text(socketManager.listnerStae)
+                    .foregroundStyle(socketManager.stateColor)
+                Button(action: {
+                    socketManagerInit()
+                }, label: {
+                    Text("接続待受開始")
+                })
+                .buttonStyle(.custom)
+            }
+            Spacer()
             HStack {
                 TextField("送信先のIPアドレスを入力", text: $host)
                     .frame(width: 200)
                     .textFieldStyle(.roundedBorder)
                 Button(action: addRow, label: {
-                    Text("決定")
+                    Text("登録")
                 })
                 .buttonStyle(.custom)
             }
@@ -69,9 +81,11 @@ struct HostSelectModalView: View {
                 Section("接続済みホスト一覧") {
                     ForEach(hostArray, id: \.self) { ip in
                         HStack {
+                            Text("")
                             Spacer()
                             Text(ip)
                             Spacer()
+                            Text("")
                         }
                     }
                     .onDelete(perform: removeRow)
@@ -123,6 +137,19 @@ struct HostSelectModalView: View {
     
     func save() {
         UserDefaults.standard.set(hostArray, forKey: Const.HOST_KEY)
+    }
+    
+    func socketManagerInit() {
+        if device.isiPad {
+            DispatchQueue.global(qos: .background).async {
+                socketManager.startListener(name: "host-listener")
+            }
+        } else if device.isiPhone {
+            DispatchQueue.global(qos: .background).async {
+                socketManager.startListener(name: "host-9000-listener")
+                socketManager.startListenerForPhone(name: "host-8000-listener")
+            }
+        }
     }
 }
 

@@ -5,13 +5,16 @@
 //  Created by 村上航輔 on 2024/05/10.
 //
 
-import Foundation
+import SwiftUI
 import Network
 
 final public class SocketManager: ObservableObject {
     // ネットワーク
     @Published var connections = [String: NWConnection]()
-        
+    @Published var listnerStae = "未接続"
+    @Published var stateColor = Color.red
+    private var nwListener: NWListener?
+
     // 送られてきたデータを監視するところ
     @Published var recievedData: String = ""
     
@@ -91,22 +94,13 @@ final public class SocketManager: ObservableObject {
 //            self.listenerState = listener.state
 //        }
         do {
+            // 前のポートが残ってるなら閉じる
+            nwListener?.cancel()
             // UDPを使用して指定されたポートでリスナーを作成
             let listener = try NWListener(using: param, on: 9000)
             listener.stateUpdateHandler = { state in
-                switch state {
-                case .setup:
-                    print("Listener setup")
-                case .waiting(let error):
-                    print("Listener waiting: \(error)")
-                case .ready:
-                    print("Listener ready and listening for incoming messages")
-                case .failed(let error):
-                    print("Listener failed with error: \(error)")
-                case .cancelled:
-                    print("Listener cancelled")
-                @unknown default:
-                    print("Unknown state")
+                DispatchQueue.main.async {
+                    self.updateListenerStae(state: state)
                 }
             }
             
@@ -116,6 +110,7 @@ final public class SocketManager: ObservableObject {
             }
             
             listener.start(queue: .main)
+            nwListener = listener
         } catch {
             print("Failed to create listener: \(error)")
         }
@@ -179,7 +174,36 @@ final public class SocketManager: ObservableObject {
             print("Failed to create listener: \(error)")
         }
     }
-        
+    
+    func updateListenerStae(state: NWListener.State)  {
+        switch state {
+        case .setup:
+            print("Listener setup")
+            listnerStae = "セットアップ中"
+            stateColor = .yellow
+        case .waiting(let error):
+            print("Listener waiting: \(error)")
+            listnerStae =  "待機中"
+            stateColor = .yellow
+        case .ready:
+            print("Listener ready and listening for incoming messages")
+            listnerStae =  "接続準備完了"
+            stateColor = .green
+        case .failed(let error):
+            print("Listener failed with error: \(error)")
+            listnerStae =  "失敗しました"
+            stateColor = .red
+        case .cancelled:
+            print("Listener cancelled")
+            listnerStae =  "キャンセルしました"
+            stateColor = .black
+        @unknown default:
+            print("Unknown state")
+            listnerStae =  "未定義"
+            stateColor = .yellow
+        }
+    }
+            
     private func receive(on connection: NWConnection) {
         print("receive on connection: \(connection)")
         connection.receiveMessage { (data: Data?, contentContext: NWConnection.ContentContext?, aBool: Bool, error: NWError?) in

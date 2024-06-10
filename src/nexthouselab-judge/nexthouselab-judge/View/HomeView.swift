@@ -63,6 +63,7 @@ struct HomeView: View {
                         Text("決定")
                     })
                     .buttonStyle(.custom)
+                    .tint(.green)
                 }
                 .frame(width: 480)
                 HStack {
@@ -115,6 +116,7 @@ struct HomeView: View {
                 //                        Text("Connect")
                 //                    })
                 //                }
+                Divider()
                 SelectHostView(alertType: $alertType, hostArray: $hostArray)
             }
             .navigationDestination(isPresented: $navigateToMainView) {
