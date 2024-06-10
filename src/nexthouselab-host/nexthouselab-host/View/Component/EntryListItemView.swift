@@ -33,6 +33,7 @@ struct EntryListItemView: View {
                 )
         }
         .frame(maxWidth: .infinity)
+//        .frame(width: 150)
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
         .background(getBackgroundColor())

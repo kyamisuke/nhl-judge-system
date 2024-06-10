@@ -22,7 +22,7 @@ struct JudgeView: View {
         VStack {
             ZStack(alignment: .top) {
                 ScrollView {
-                    VStack {
+                    LazyVStack {
                         TopUIGrroupView(entryMembers: $entryMembers, isModal: $isModal)
                         Spacer()
                         Divider()
@@ -31,27 +31,49 @@ struct JudgeView: View {
                             Divider()
                             ForEach(Const.JUDGE_NAMES) { judgeName in
                                 // 角ジャッジの下に表示するエントリーリスト
-                                LazyVStack(spacing: 0) {
-                                    Text(judgeName.name)
-                                        .frame(maxWidth: .infinity)
-                                        .font(.title)
-                                        .fontWeight(.bold)
-//                                        .background(Const.judgeLabelColor)
-                                    Divider()
-                                        .padding(8)
-                                    ForEach(entryMembers) { member in
-                                        EntryListItemView(entryName: member, currentNumber: $currentNumber, judgeName: judgeName.name, currentMessage: $currentMessage)
-                                        Divider()
-                                    }
-                                }
+                                Text(judgeName.name)
+                                    .frame(maxWidth: .infinity)
+                                    .font(.title)
+                                    .fontWeight(.bold)
                                 Divider()
                             }
                         }
-                        .background {
-                            GeometryReader { proxy in
-                                Color.clear.onChange(of: proxy.frame(in: .named("ScrollView")).minY) { _, offset in
-                                    self.offset = offset
+                        Divider()
+                        ForEach(entryMembers) { member in
+                            HStack {
+                                Divider()
+                                ForEach(Const.JUDGE_NAMES) { judgeName in
+                                    EntryListItemView(entryName: member, currentNumber: $currentNumber, judgeName: judgeName.name, currentMessage: $currentMessage)
+                                    Divider()
                                 }
+                            }
+                            Divider()
+                        }
+//                        HStack {
+//                            Divider()
+//                            ForEach(Const.JUDGE_NAMES) { judgeName in
+//                                // 角ジャッジの下に表示するエントリーリスト
+//                                LazyVStack(spacing: 0) {
+//                                    Text(judgeName.name)
+//                                        .frame(maxWidth: .infinity)
+//                                        .font(.title)
+//                                        .fontWeight(.bold)
+////                                        .background(Const.judgeLabelColor)
+//                                    Divider()
+//                                        .padding(8)
+//                                    ForEach(entryMembers) { member in
+//                                        EntryListItemView(entryName: member, currentNumber: $currentNumber, judgeName: judgeName.name, currentMessage: $currentMessage)
+//                                        Divider()
+//                                    }
+//                                }
+//                                Divider()
+//                            }
+//                        }
+                    }
+                    .background {
+                        GeometryReader { proxy in
+                            Color.clear.onChange(of: proxy.frame(in: .named("ScrollView")).minY) { _, offset in
+                                self.offset = offset
                             }
                         }
                     }
