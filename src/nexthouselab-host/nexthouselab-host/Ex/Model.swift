@@ -59,3 +59,51 @@ final public class ScoreModel: ObservableObject {
         timer?.invalidate()
     }
 }
+
+final public class JudgeIpModel: ObservableObject {
+    var judgeAndIpDic: [String: String]
+    @Published var keys: [String]
+    
+    init() {
+        if let data = UserDefaults.standard.dictionary(forKey: Const.HOST_KEY) as? [String: String] {
+            judgeAndIpDic = data
+            keys = data.map { $0.key }
+        } else {
+            judgeAndIpDic = [String: String]()
+            keys = [String]()
+        }
+    }
+    
+    func update(forKey judge: String, value ip: String) -> Bool {
+        if keys.contains(judge) {
+            return false
+        } else if judgeAndIpDic.map({ $0.value }).contains(ip) {
+            return false
+        } else {
+            judgeAndIpDic[judge] = ip
+            keys.append(judge)
+            save()
+            return true
+        }
+    }
+    
+    func remove(forKey judge: String) -> Bool {
+        if keys.contains(judge) {
+            let i = keys.firstIndex(of: judge)!
+            let _ = keys.remove(at: i)
+            let _ = judgeAndIpDic.removeValue(forKey: judge)
+            save()
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    private func save() {
+        UserDefaults.standard.set(judgeAndIpDic, forKey: Const.HOST_KEY)
+    }
+    
+    func getIp(forKey judge: String) -> String? {
+        return judgeAndIpDic[judge]
+    }
+}

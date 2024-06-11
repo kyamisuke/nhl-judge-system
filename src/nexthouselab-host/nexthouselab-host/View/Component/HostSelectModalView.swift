@@ -11,6 +11,7 @@ struct HostSelectModalView: View {
     enum HostAlertType: Identifiable {
         case Empty
         case Invalid
+        case IsExited
         
         var id: Int {
             hashValue
@@ -22,6 +23,8 @@ struct HostSelectModalView: View {
                 return "空欄になっています。"
             case .Invalid:
                 return "入力された値は使えません。"
+            case .IsExited:
+                return "既に登録されています。"
             }
         }
         
@@ -31,6 +34,8 @@ struct HostSelectModalView: View {
                 return "アドレスを入力してください。"
             case .Invalid:
                 return "X.X.X.Xの形式で入力してください。"
+            case .IsExited:
+                return "他のアドレスを入力してください。"
             }
         }
     }
@@ -39,7 +44,8 @@ struct HostSelectModalView: View {
     @EnvironmentObject var socketManager: SocketManager
     @State var alertType: HostAlertType?
     @Binding var isModal: Bool
-    @Binding var hostArray: [String]
+    @Binding var hostArray: JudgeIpModel
+    @State private var selection = "KEIN"
     
     let device = UIDevice.current
     
@@ -69,6 +75,11 @@ struct HostSelectModalView: View {
             }
             Spacer()
             HStack {
+                Picker("ジャッジの名前を選択", selection: $selection) {
+                    ForEach(Const.JUDGE_NAMES) { judge in
+                        Text(judge.name).tag(judge.name)
+                    }
+                }
                 TextField("送信先のIPアドレスを入力", text: $host)
                     .frame(width: 200)
                     .textFieldStyle(.roundedBorder)
@@ -79,11 +90,16 @@ struct HostSelectModalView: View {
             }
             List {
                 Section("接続済みホスト一覧") {
-                    ForEach(hostArray, id: \.self) { ip in
+                    ForEach(hostArray.keys, id: \.self) { judge in
                         HStack {
                             Text("")
                             Spacer()
-                            Text(ip)
+                            Text(judge)
+                                .frame(width: 150)
+                                .fontWeight(.bold)
+                            Divider()
+                            Text(hostArray.getIp(forKey: judge)!)
+                                .frame(width: 150)
                             Spacer()
                             Text("")
                         }
@@ -117,9 +133,11 @@ struct HostSelectModalView: View {
                 return
             }
         }
+        if hostArray.update(forKey: selection, value: host) == false {
+            alertType = .IsExited
+            return
+        }
         socketManager.connect(host: host)
-        hostArray.append(host)
-        save()
         host = ""
     }
     
@@ -127,18 +145,13 @@ struct HostSelectModalView: View {
         // 削除する前に、インデックスセットを配列に変換して並べ替え
         let indices = offsets.sorted()
         // 削除する要素の値を抽出
-        let valuesToRemove = indices.map { hostArray[$0] }
-        valuesToRemove.forEach { host in
-            socketManager.disconnect(host: host)
+        let keysToRemove = indices.map { hostArray.keys[$0] }
+        keysToRemove.forEach { judge in
+            socketManager.disconnect(host: hostArray.getIp(forKey: judge)!)
+            let _ = hostArray.remove(forKey: judge)
         }
-        hostArray.remove(atOffsets: offsets)
-        save()
     }
-    
-    func save() {
-        UserDefaults.standard.set(hostArray, forKey: Const.HOST_KEY)
-    }
-    
+        
     func socketManagerInit() {
         if device.isiPad {
             DispatchQueue.global(qos: .background).async {
@@ -158,7 +171,7 @@ struct HostSelectModalView: View {
         @StateObject var socketManager = SocketManager()
         
         var body: some View {
-            HostSelectModalView(isModal: .constant(true), hostArray: .constant([String]()))
+            HostSelectModalView(isModal: .constant(true), hostArray: .constant(JudgeIpModel()))
                 .environmentObject(socketManager)
         }
     }

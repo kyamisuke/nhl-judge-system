@@ -27,6 +27,7 @@ struct MainView: View {
 
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
+    @State var judgeIpModel: JudgeIpModel = JudgeIpModel()
     
     @State var currentMessage = Message(judgeName: "", number: 0)
     
@@ -118,7 +119,7 @@ struct MainView: View {
                 )
             }
             .sheet(isPresented: $isModal) {
-                HostSelectModalView(isModal: $isModal, hostArray: $hostArray)
+                HostSelectModalView(isModal: $isModal, hostArray: $judgeIpModel)
             }
         }
     }
