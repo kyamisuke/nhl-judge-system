@@ -65,6 +65,26 @@ final public class SocketManager: ObservableObject {
         group.wait()
     }
     
+    func send(to ip: String, message: String) {
+        guard let connection = connections[ip] else { return }
+
+        /* 送信データ生成 */
+        let data = message.data(using: .utf8)!
+        let semaphore = DispatchSemaphore(value: 0)
+
+        /* データ送信 */
+        connection.send(content: data, completion: .contentProcessed { error in
+            if let error = error {
+                NSLog("\(#function), \(error)")
+                semaphore.signal()
+            } else {
+                semaphore.signal()
+            }
+        })
+        /* 送信完了待ち */
+        semaphore.wait()
+    }
+    
     func startListener(name: String) {
 //        guard let listener = try? NWListener(using: .udp, on: 9000) else { fatalError() }
 //

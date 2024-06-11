@@ -14,6 +14,7 @@ struct JudgeView: View {
     @State var isSticky = false
     @Binding var currentMessage: Message
     @Binding var isModal: Bool
+    @Binding var judgeIpModel: JudgeIpModel
     
     @EnvironmentObject var scoreModel: ScoreModel
     @EnvironmentObject var socketManager: SocketManager
@@ -35,7 +36,17 @@ struct JudgeView: View {
                                     .frame(maxWidth: .infinity)
                                     .font(.title)
                                     .fontWeight(.bold)
+                                Button(action: {
+                                    guard let ip = judgeIpModel.getIp(forKey: judgeName.name) else {
+                                        return
+                                    }
+                                    socketManager.send(to: ip, message: "UPDATE")
+                                }, label: {
+                                    Text("更新")
+                                })
+                                .buttonStyle(.custom)
                                 Divider()
+                                    
                             }
                         }
                         Divider()
@@ -130,7 +141,7 @@ struct JudgeView: View {
         var body: some View {
             //            Text("offset: \(offset!)")
             HStack {
-                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1), currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)), isModal: .constant(false))
+                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1), currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)), isModal: .constant(false), judgeIpModel: .constant(JudgeIpModel()))
                     .environmentObject(socketManager)
                     .environmentObject(scoreModel)
             }

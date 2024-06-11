@@ -23,7 +23,6 @@ struct MainView: View {
     @State var onClearAction = false
     @State var isTapped = false
     @State var isModal = false
-    @State var hostArray = [String]()
 
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
@@ -40,7 +39,7 @@ struct MainView: View {
         NavigationStack {
             VStack {
                 // 各ジャッジのリストを表示
-                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: $currentNumber, currentMessage: $currentMessage, isModal: $isModal)
+                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: $currentNumber, currentMessage: $currentMessage, isModal: $isModal, judgeIpModel: $judgeIpModel)
                     .onChange(of: socketManager.recievedData) {
                         receiveMessage(message: socketManager.recievedData)
                     }
@@ -176,11 +175,10 @@ struct MainView: View {
     }
     
     func hostArrayInit() {
-        guard let hosts = UserDefaults.standard.array(forKey: Const.HOST_KEY) as? [String] else {
+        guard let hosts = UserDefaults.standard.dictionary(forKey: Const.HOST_KEY) as? [String: String] else {
             return
         }
-        hostArray = hosts
-        socketManager.connectAllHosts(hosts: hosts)
+        socketManager.connectAllHosts(hosts: hosts.map{ $0.value })
     }
     
     func startTimer() {
