@@ -90,7 +90,9 @@ struct HomeAlertModifier: ViewModifier {
                         title: Text("得点のデータを初期化しますか？"),
                         message: Text("初期化したデータは復元できません。"),
                         primaryButton: .destructive(Text("削除"), action: {
-                            UserDefaults.standard.set(nil, forKey: "scores")
+                            UserDefaults.standard.set(nil, forKey: Const.SCORE_KEY)
+                            UserDefaults.standard.set(nil, forKey: Const.DONE_STATES_KEY)
+                            currentPlayNum = 1
                             shouldInitialize = true
                         }),
                         secondaryButton: .cancel(Text("キャンセル"))

@@ -26,6 +26,7 @@ final public class ScoreModel: ObservableObject {
     func initialize(entryList: [EntryName]) {
         for entry in entryList {
             scores[String(entry.number)] = 0
+            doneArray[String(entry.number)] = false
         }
     }
     
