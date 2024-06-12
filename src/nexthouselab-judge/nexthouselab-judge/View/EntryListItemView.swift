@@ -17,7 +17,11 @@ struct EntryListItemView: View {
     let entryName: EntryName
     @Binding var currentPlayNum: Int
     @Binding var currentEdintingNum: Int
-    @State var isDone = false
+    var isDone: Bool {
+        get {
+            return scoreModel.getDoneState(for: String(entryName.number)).wrappedValue
+        }
+    }
     @State var wasOnStage = false
     let judgeName: String
     @Binding var tappedId: Int
@@ -147,7 +151,7 @@ struct EntryListItemView: View {
     }
     
     func tapButton() {
-        isDone.toggle()
+        scoreModel.updateDoneState(in: String(entryName.number), value: !isDone)
         if isDone {
             socketManager.send(message: "SCORER/DECISION/\(judgeName)/\(entryName.number)/\(scoreModel.getScore(for: String(entryName.number)).wrappedValue)")
         } else {

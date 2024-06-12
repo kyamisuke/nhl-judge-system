@@ -12,7 +12,7 @@ struct MainView: View {
     let judgeName: String
     let entryNames: [EntryName]
     @State var currentEditingNum = 0
-    @State var currentPlayNum = 1
+    @Binding var currentPlayNum: Int
     @State var tappedId = 1
     @Binding var shouldInitialize: Bool
     
@@ -97,7 +97,7 @@ struct MainView: View {
                 EntryName(number: 4, name: "Tosai"),
                 EntryName(number: 5, name: "Rinki"),
                 EntryName(number: 6, name: "kyami")
-            ], shouldInitialize: .constant(true))
+            ], currentPlayNum: .constant(1), shouldInitialize: .constant(true))
             .environmentObject(socketManager)
             .environmentObject(scoreModel)
         }

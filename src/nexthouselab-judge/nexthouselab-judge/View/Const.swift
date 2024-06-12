@@ -13,6 +13,8 @@ class Const {
     static let JUDGE_NAME_KEY = "judge_name"
     static let HOST_IP_KEY = "host_ip"
     static let HOST_KEY = "host"
+    static let SCORE_KEY = "scores"
+    static let DONE_STATES_KEY = "done_states"
     
     static let oddColor = Color("oddColor")
     static let evenColor = Color("evenColor")

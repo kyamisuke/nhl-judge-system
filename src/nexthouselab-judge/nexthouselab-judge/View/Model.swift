@@ -11,6 +11,7 @@ import Combine
 
 final public class ScoreModel: ObservableObject {
     @Published var scores: Dictionary<String, Float>
+    @Published var doneArray: Dictionary<String, Bool>
     @Published var udpatedTime: String = ""
     
     private var timer: Timer?
@@ -18,6 +19,7 @@ final public class ScoreModel: ObservableObject {
     
     init() {
         scores = Dictionary<String, Float>()
+        doneArray = Dictionary<String, Bool>()
         formatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "yMdkHms", options: 0, locale: Locale(identifier: "ja_JP"))
     }
     
@@ -27,8 +29,12 @@ final public class ScoreModel: ObservableObject {
         }
     }
     
-    func update(scores: Dictionary<String, Float>) {
+    func updateScores(_ scores: Dictionary<String, Float>) {
         self.scores = scores
+    }
+    
+    func updateScores(forKey key: String, value: Float) {
+        self.scores[key] = value
     }
     
     func getScore(for key: String) -> Binding<Float> {
@@ -38,6 +44,21 @@ final public class ScoreModel: ObservableObject {
         )
     }
     
+    func getDoneState(for key: String) -> Binding<Bool> {
+        return .init(
+            get: { self.doneArray[key, default: false] },
+            set: { self.doneArray[key] = $0 }
+        )
+    }
+
+    func updateDoneState(in key: String, value: Bool) {
+        doneArray[key] = value
+    }
+    
+    func updateDoneState(_ value: Dictionary<String, Bool>) {
+        doneArray = value
+    }
+    
     func startTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
             self?.saveCounter()
@@ -45,7 +66,8 @@ final public class ScoreModel: ObservableObject {
     }
     
     private func saveCounter() {
-        UserDefaults.standard.set(scores, forKey: "scores")
+        UserDefaults.standard.set(scores, forKey: Const.SCORE_KEY)
+        UserDefaults.standard.set(doneArray, forKey: Const.DONE_STATES_KEY)
         udpatedTime = formatter.string(from: Date())
     }
     

@@ -18,6 +18,7 @@ struct HomeView: View {
     @State var shouldInitialize = true
     @State var hostIp = ""
     @State var hostArray = [String]()
+    @State var currentPlayNum = 1
     
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
@@ -120,7 +121,7 @@ struct HomeView: View {
                 SelectHostView(alertType: $alertType, hostArray: $hostArray)
             }
             .navigationDestination(isPresented: $navigateToMainView) {
-                MainView(judgeName: name, entryNames: entryMembers, shouldInitialize: $shouldInitialize)
+                MainView(judgeName: name, entryNames: entryMembers, currentPlayNum: $currentPlayNum, shouldInitialize: $shouldInitialize)
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {

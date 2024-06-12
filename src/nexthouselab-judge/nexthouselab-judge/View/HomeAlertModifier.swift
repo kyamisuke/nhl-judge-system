@@ -74,7 +74,8 @@ struct HomeAlertModifier: ViewModifier {
                         message: Text("前回中断したデータから再開しますか？"),
                         primaryButton: .default(Text("再開"), action: {
                             isChecked = true
-                            scoreModel.update(scores: UserDefaults.standard.dictionary(forKey: "scores") as! Dictionary<String, Float>)
+                            scoreModel.updateScores(UserDefaults.standard.dictionary(forKey: Const.SCORE_KEY) as! Dictionary<String, Float>)
+                            scoreModel.updateDoneState(UserDefaults.standard.dictionary(forKey: Const.DONE_STATES_KEY) as! Dictionary<String, Bool>)
                             shouldInitialize = false
                             navigateToMainView = true
                         }),
