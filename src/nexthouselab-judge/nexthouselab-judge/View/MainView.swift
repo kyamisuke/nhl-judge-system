@@ -50,11 +50,15 @@ struct MainView: View {
                     } else if socketManager.recievedData == "UPDATE" {
                         do {
                             // DictionaryをJSONデータに変換
-                            let jsonData = try JSONSerialization.data(withJSONObject: scoreModel.scores)
+                            let scoresJson = try JSONSerialization.data(withJSONObject: scoreModel.scores)
                             // JSONデータを文字列に変換
-                            let jsonStr = String(bytes: jsonData, encoding: .utf8)!
-                            print(jsonStr)
-                            socketManager.send(message: "UPDATE/\(jsonStr)")
+                            let scoresJsonStr = String(bytes: scoresJson, encoding: .utf8)!
+                            // DictionaryをJSONデータに変換
+                            let doneStateJson = try JSONSerialization.data(withJSONObject: scoreModel.doneArray)
+                            // JSONデータを文字列に変換
+                            let doneStateJsonStr = String(bytes: doneStateJson, encoding: .utf8)!
+                            print(doneStateJsonStr)
+                            socketManager.send(message: "UPDATE/\(scoresJsonStr)/\(doneStateJsonStr)")
                         } catch (let e) {
                             print(e)
                         }
