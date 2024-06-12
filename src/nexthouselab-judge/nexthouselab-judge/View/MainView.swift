@@ -45,9 +45,19 @@ struct MainView: View {
                     socketManager.send(message: "EDITING/\(judgeName)/\(currentEditingNum)")
                 }
                 .onChange(of: socketManager.recievedData) {
-                    DispatchQueue.main.async {
-                        guard let currentPlayNum = Int(socketManager.recievedData) else { return }
+                    if let currentPlayNum = Int(socketManager.recievedData) {
                         self.currentPlayNum = currentPlayNum
+                    } else if socketManager.recievedData == "UPDATE" {
+                        do {
+                            // DictionaryをJSONデータに変換
+                            let jsonData = try JSONSerialization.data(withJSONObject: scoreModel.scores)
+                            // JSONデータを文字列に変換
+                            let jsonStr = String(bytes: jsonData, encoding: .utf8)!
+                            print(jsonStr)
+                            socketManager.send(message: "UPDATE/\(jsonStr)")
+                        } catch (let e) {
+                            print(e)
+                        }
                     }
                 }
                 
