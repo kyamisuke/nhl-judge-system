@@ -58,7 +58,7 @@ struct MainView: View {
                             // JSONデータを文字列に変換
                             let doneStateJsonStr = String(bytes: doneStateJson, encoding: .utf8)!
                             print(doneStateJsonStr)
-                            socketManager.send(message: "UPDATE/\(scoresJsonStr)/\(doneStateJsonStr)")
+                            socketManager.send(message: "UPDATE/\(judgeName)/\(scoresJsonStr)/\(doneStateJsonStr)")
                         } catch (let e) {
                             print(e)
                         }

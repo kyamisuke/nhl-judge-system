@@ -146,7 +146,21 @@ struct MainView: View {
             //            }
         } else if data[0] == "DISCONNECT" {
             socketManager.disconnect(host: data[1])
-        } else {
+        } else if data[0] == "UPDATE" {
+            do {
+                let judgeName = data[1]
+                var scores = try JSONSerialization.jsonObject(with: data[2].data(using: .utf8)!) as! [String: Float]
+                let stateArray = try JSONSerialization.jsonObject(with: data[3].data(using: .utf8)!) as! [String: Bool]
+                stateArray.forEach { state in
+                    if !state.value {
+                        scores[state.key] = -1
+                    }
+                }
+                scoreModel.update(forKey: judgeName, scores: scores)
+            } catch {
+                
+            }
+        }else {
             guard let currentNum = Int(message) else {
                 return
             }

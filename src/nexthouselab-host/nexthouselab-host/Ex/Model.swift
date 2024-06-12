@@ -44,6 +44,10 @@ final public class ScoreModel: ObservableObject {
         )
     }
     
+    func update(forKey judge: String, scores: Dictionary<String, Float>) {
+        self.scores[judge] = scores
+    }
+    
     func startTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
             self?.saveCounter()
