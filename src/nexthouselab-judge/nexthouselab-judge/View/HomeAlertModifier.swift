@@ -57,6 +57,7 @@ struct HomeAlertModifier: ViewModifier {
     @Binding var navigateToMainView: Bool
     @EnvironmentObject var socketManager: SocketManager
     @Binding var hostIp: String
+    @Binding var currentPlayNum: Int
     
     func body(content: Content) -> some View {
         content
@@ -76,6 +77,7 @@ struct HomeAlertModifier: ViewModifier {
                             isChecked = true
                             scoreModel.updateScores(UserDefaults.standard.dictionary(forKey: Const.SCORE_KEY) as! Dictionary<String, Float>)
                             scoreModel.updateDoneState(UserDefaults.standard.dictionary(forKey: Const.DONE_STATES_KEY) as! Dictionary<String, Bool>)
+                            currentPlayNum = UserDefaults.standard.integer(forKey: Const.CURRENT_PLAY_NUM_KEY)
                             shouldInitialize = false
                             navigateToMainView = true
                         }),

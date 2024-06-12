@@ -139,7 +139,10 @@ struct HomeView: View {
                     hostArrayInit()
                 }
             }
-            .modifier(HomeAlertModifier(alertType: $alertType, isChecked: $isChecked, shouldInitialize: $shouldInitialize, navigateToMainView: $navigateToMainView, hostIp: $hostIp))
+            .onChange(of: currentPlayNum) {
+                UserDefaults.standard.set(currentPlayNum, forKey: Const.CURRENT_PLAY_NUM_KEY)
+            }
+            .modifier(HomeAlertModifier(alertType: $alertType, isChecked: $isChecked, shouldInitialize: $shouldInitialize, navigateToMainView: $navigateToMainView, hostIp: $hostIp, currentPlayNum: $currentPlayNum))
         }
     }
     

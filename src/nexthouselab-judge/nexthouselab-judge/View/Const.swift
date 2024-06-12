@@ -15,6 +15,7 @@ class Const {
     static let HOST_KEY = "host"
     static let SCORE_KEY = "scores"
     static let DONE_STATES_KEY = "done_states"
+    static let CURRENT_PLAY_NUM_KEY = "current_play_num_key"
     
     static let oddColor = Color("oddColor")
     static let evenColor = Color("evenColor")
