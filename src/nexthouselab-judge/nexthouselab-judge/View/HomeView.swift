@@ -151,7 +151,7 @@ struct HomeView: View {
             return
         }
         hostArray = hosts
-        socketManager.connectAllHosts(hosts: hosts, port: "9000", param: .udp)
+        socketManager.connectAllHosts(hosts: hosts)
     }
 }
 

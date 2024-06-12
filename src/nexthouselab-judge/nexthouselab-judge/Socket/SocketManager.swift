@@ -16,6 +16,10 @@ final public class SocketManager: ObservableObject {
     private var nwListener: NWListener?
 
     @Published var recievedData: String = ""
+
+    let sendPort: NWEndpoint.Port = 9000
+    let receivePort: NWEndpoint.Port = 8000
+    let param = NWParameters.udp
     
     // 定数
     let networkType = "_networkplayground._udp."
@@ -100,7 +104,7 @@ final public class SocketManager: ObservableObject {
         do {
             nwListener?.cancel()
             // UDPを使用して指定されたポートでリスナーを作成
-            let listener = try NWListener(using: .udp, on: 8000)
+            let listener = try NWListener(using: .udp, on: receivePort)
             listener.stateUpdateHandler = { state in
                 DispatchQueue.main.async {
                     self.updateListenerStae(state: state)
@@ -155,17 +159,16 @@ final public class SocketManager: ObservableObject {
         connections.removeValue(forKey: host)
     }
 
-    func connect(host: String, port: String, param: NWParameters)
+    func connect(host: String)
     {
         if connections.keys.contains(host) { return }
         
         let connection: NWConnection!
         let t_host = NWEndpoint.Host(host)
-        let t_port = NWEndpoint.Port(port)
         let semaphore = DispatchSemaphore(value: 0)
 
         /* コネクションの初期化 */
-        connection = NWConnection(host: t_host, port: t_port!, using: param)
+        connection = NWConnection(host: t_host, port: sendPort, using: param)
 
         /* コネクションのStateハンドラ設定 */
         connection?.stateUpdateHandler = { (newState) in
@@ -234,7 +237,7 @@ final public class SocketManager: ObservableObject {
         return addresses
     }
     
-    func connectAllHosts(hosts: [String], port: String, param: NWParameters) {
+    func connectAllHosts(hosts: [String]) {
         let group = DispatchGroup()
         
         hosts.forEach { host in
@@ -244,10 +247,9 @@ final public class SocketManager: ObservableObject {
             
             let connection: NWConnection!
             let t_host = NWEndpoint.Host(host)
-            let t_port = NWEndpoint.Port(port)
             
             /* コネクションの初期化 */
-            connection = NWConnection(host: t_host, port: t_port!, using: param)
+            connection = NWConnection(host: t_host, port: sendPort, using: param)
             
             /* コネクションのStateハンドラ設定 */
             connection?.stateUpdateHandler = { (newState) in
