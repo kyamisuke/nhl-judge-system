@@ -102,7 +102,10 @@ final public class SocketManager: ObservableObject {
         //        listener.start(queue: listnerQueue)
         //        print("Start Listening as \(listener.service!.name)")
         do {
+            // すでに繋がっているなら閉じる
             nwListener?.cancel()
+            // キャンセルが完了するのを待つ
+            Thread.sleep(forTimeInterval: 0.1)
             // UDPを使用して指定されたポートでリスナーを作成
             let listener = try NWListener(using: .udp, on: receivePort)
             listener.stateUpdateHandler = { state in

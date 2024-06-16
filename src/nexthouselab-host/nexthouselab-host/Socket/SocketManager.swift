@@ -117,6 +117,8 @@ final public class SocketManager: ObservableObject {
         do {
             // 前のポートが残ってるなら閉じる
             nwListener?.cancel()
+            // キャンセルが完了するのを待つ
+            Thread.sleep(forTimeInterval: 0.1)
             // UDPを使用して指定されたポートでリスナーを作成
             let listener = try NWListener(using: param, on: 9000)
             listener.stateUpdateHandler = { state in
