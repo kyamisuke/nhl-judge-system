@@ -78,6 +78,7 @@ final public class SocketManager: ObservableObject {
                 NSLog("\(#function), \(error)")
                 semaphore.signal()
             } else {
+                print("Send to \(ip)")
                 semaphore.signal()
             }
         })

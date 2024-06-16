@@ -38,9 +38,11 @@ struct JudgeView: View {
                                     .fontWeight(.bold)
                                 Button(action: {
                                     guard let ip = judgeIpModel.getIp(forKey: judgeName.name) else {
+                                        print("ip not found")
                                         return
                                     }
                                     socketManager.send(to: ip, message: "UPDATE")
+                                    print("send update")
                                 }, label: {
                                     Text("更新")
                                 })
@@ -103,6 +105,17 @@ struct JudgeView: View {
                                 .fontWeight(.bold)
                                 .background(.clear)
                                 .opacity(getOffset())
+                            Button(action: {
+                                guard let ip = judgeIpModel.getIp(forKey: judgeName.name) else {
+                                    print("ip not found")
+                                    return
+                                }
+                                socketManager.send(to: ip, message: "UPDATE")
+                                print("send update")
+                            }, label: {
+                                Text("更新")
+                            })
+                            .buttonStyle(.custom)
                             Divider()
                         }
                     }
