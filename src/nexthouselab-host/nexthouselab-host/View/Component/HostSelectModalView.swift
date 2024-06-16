@@ -64,6 +64,19 @@ struct HostSelectModalView: View {
         VStack {
             Spacer()
             HStack {
+                Text("この端末のIPアドレス: ")
+                if !socketManager.getIPAddresses().isEmpty {
+                    Text("\(socketManager.getIPAddresses()[1])")
+                        .textSelection(.enabled)
+                    Button(action: {
+                        UIPasteboard.general.string = socketManager.getIPAddresses()[1]
+                    }, label: {
+                        Image(systemName: "doc.on.doc.fill")
+                    })
+                }
+            }
+            Spacer()
+            HStack {
                 Text(socketManager.listnerStae)
                     .foregroundStyle(socketManager.stateColor)
                 Button(action: {
