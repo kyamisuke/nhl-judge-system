@@ -37,7 +37,7 @@ struct EntryListItemView: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
         .background(getBackgroundColor())
-        .border(isEditing ? Color.red : Color.clear, width: 4)
+        .border(isEditing ? Color.green : Color.clear, width: 4)
         .onChange(of: currentMessage, checkEditing)
 //        .onChange(of: socketManager.recievedData, receiveData)
     }
