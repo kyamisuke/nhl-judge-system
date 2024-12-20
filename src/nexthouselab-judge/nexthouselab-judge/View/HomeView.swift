@@ -19,6 +19,7 @@ struct HomeView: View {
     @State var hostIp = ""
     @State var hostArray = [String]()
     @State var currentPlayNum = 1
+    @State var mode = Const.Mode.Solo
     
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
@@ -85,38 +86,8 @@ struct HomeView: View {
                         }
                     FolderExportView(fileName: "\(name).csv")
                 }
-                //                HStack {
-                //                    VStack(alignment: .leading) {
-                //                        TextField(text: $hostIp, label: {
-                //                            Text("host ip")
-                //                        })
-                //                        .textFieldStyle(.roundedBorder)
-                //                        .frame(width: 150)
-                //                        .onChange(of: hostIp) {
-                //                            UserDefaults.standard.set(hostIp, forKey: Const.HOST_IP_KEY)
-                //                        }
-                //                        .onAppear {
-                //                            guard let ip = UserDefaults.standard.string(forKey: Const.HOST_IP_KEY) else { return }
-                //                            hostIp = ip
-                //                        }
-                //                        if hostIp.components(separatedBy: ".").count == 4 {
-                //                            EmptyView()
-                //                        } else {
-                //                            Text("invalid ip address")
-                //                                .foregroundStyle(Color.red)
-                //                                .font(.caption)
-                //                        }
-                //                    }
-                //                    Button(action: {
-                //                        if hostIp.isEmpty {
-                //                            return
-                //                        }
-                //                        socketManager.connect(host: hostIp, port: "9000", param: .udp)
-                //                        socketManager.startListener(name: "judge_listner")
-                //                    }, label: {
-                //                        Text("Connect")
-                //                    })
-                //                }
+                SelectModeButtonPickerView(selectedMode: $mode)
+                    .frame(width: 400)
                 Divider()
                 SelectHostView(alertType: $alertType, hostArray: $hostArray)
             }

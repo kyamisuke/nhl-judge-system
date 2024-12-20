@@ -52,7 +52,7 @@ struct EntryListItemView: View {
                         .onChange(of: scoreModel.getScore(for: String(entryName.number)).wrappedValue) {
                             currentEdintingNum = entryName.number
                         }
-                        .tint(Const.scoreColor)
+                        .tint(Color(R.color.scoreColor))
                 } else {
                     Rectangle()
                         .foregroundStyle(.clear)
@@ -77,11 +77,11 @@ struct EntryListItemView: View {
             }
             if isTapped() {
                 if isDone {
-                    CrayButtonView(label: "編集", action: tapButton, lightColor: Const.rewriteLightColor, shadowColor: Const.rewriteShadowColor, buttonColor: Const.rewriteButtonColor, radius: radius)
+                    CrayButtonView(label: "編集", action: tapButton, lightColor: Color(R.color.rewriteLightColor), shadowColor: Color(R.color.rewriteShadowColor), buttonColor: Color(R.color.rewriteButtonColor), radius: radius)
                         .buttonStyle(BorderlessButtonStyle())
                         .frame(width: 64)
                 } else {
-                    CrayButtonView(label: "決定", action: tapButton, lightColor: Const.selectLightColor, shadowColor: Const.selectShadowColor, buttonColor: Const.selectButtonColor, radius: radius)
+                    CrayButtonView(label: "決定", action: tapButton, lightColor: Color(R.color.selectLightColor), shadowColor: Color(R.color.selectShadowColor), buttonColor: Color(R.color.selectButtonColor), radius: radius)
                         .buttonStyle(BorderlessButtonStyle())
                         .frame(width: 64)
                 }
@@ -130,13 +130,13 @@ struct EntryListItemView: View {
     func getBackgroundColor() -> Color {
         if isPlaying() {
             if entryName.number % 2 == 1 {
-                return Const.oddColor
+                return Color(R.color.oddColor)
             }
             else {
-                return Const.evenColor
+                return Color(R.color.evenColor)
             }
         } else if isDone {
-            return Const.fixedColor
+            return Color(R.color.fixedColor)
         } else {
             return .white
         }

@@ -25,7 +25,6 @@ struct FolderImportView: View {
                     showsImportDocumentPicker = true
                 })
                 .buttonStyle(.custom)
-                .tint(.orange)
             }
         }
         .sheet(isPresented: $showsImportDocumentPicker) {
@@ -88,7 +87,6 @@ struct FolderExportView: View {
                 showsExportDocumentPicker = true
             })
             .buttonStyle(.custom)
-            .tint(.purple)
         }
         .sheet(isPresented: $showsExportDocumentPicker) {
             // 1. ユーザにフォルダーを選択させ、そこにファイルを作成する。
