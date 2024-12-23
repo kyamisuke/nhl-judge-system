@@ -14,6 +14,7 @@ struct EntryListItemView: View {
     let judgeName: String
     @Binding var currentMessage: Message
     @State var isEditing: Bool = false
+    @Binding var mode: Const.Mode
     
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
@@ -47,16 +48,25 @@ struct EntryListItemView: View {
     }
     
     private func isFocus() -> Bool {
-        
-        return entryName.number == currentNumber || entryName.number == currentNumber + 1
+        switch mode {
+        case .Solo:
+            return entryName.number == currentNumber
+        case .Dual:
+            return entryName.number == currentNumber || entryName.number == currentNumber + 1
+        }
     }
     
     private func getBackgroundColor() -> Color {
         if isFocus() {
-            if entryName.number % 2 == 1 {
+            switch mode {
+            case .Solo:
                 return Color("oddColor")
-            } else {
-                return Color("evenColor")
+            case .Dual:
+                if entryName.number % 2 == 1 {
+                    return Color("oddColor")
+                } else {
+                    return Color("evenColor")
+                }
             }
         } else {
             return .clear
@@ -117,7 +127,7 @@ private struct ScoreSliderView: View {
         @StateObject var scoreModel = ScoreModel()
 
         var body: some View {
-            EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentNumber: .constant(1), judgeName: "KAZANE", currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)))
+            EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentNumber: .constant(1), judgeName: "KAZANE", currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)), mode: .constant(.Solo))
                 .environmentObject(socketManager)
                 .environmentObject(scoreModel)
         }

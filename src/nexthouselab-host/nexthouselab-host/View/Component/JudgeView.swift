@@ -15,6 +15,7 @@ struct JudgeView: View {
     @Binding var currentMessage: Message
     @Binding var isModal: Bool
     @Binding var judgeIpModel: JudgeIpModel
+    @Binding var mode: Const.Mode
     
     @EnvironmentObject var scoreModel: ScoreModel
     @EnvironmentObject var socketManager: SocketManager
@@ -56,7 +57,7 @@ struct JudgeView: View {
                             HStack {
                                 Divider()
                                 ForEach(Const.JUDGE_NAMES) { judgeName in
-                                    EntryListItemView(entryName: member, currentNumber: $currentNumber, judgeName: judgeName.name, currentMessage: $currentMessage)
+                                    EntryListItemView(entryName: member, currentNumber: $currentNumber, judgeName: judgeName.name, currentMessage: $currentMessage, mode: $mode)
                                     Divider()
                                 }
                             }
@@ -154,7 +155,7 @@ struct JudgeView: View {
         var body: some View {
             //            Text("offset: \(offset!)")
             HStack {
-                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1), currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)), isModal: .constant(false), judgeIpModel: .constant(JudgeIpModel()))
+                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1), currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)), isModal: .constant(false), judgeIpModel: .constant(JudgeIpModel()), mode: .constant(.Solo))
                     .environmentObject(socketManager)
                     .environmentObject(scoreModel)
             }

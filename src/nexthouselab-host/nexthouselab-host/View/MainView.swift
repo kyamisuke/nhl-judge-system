@@ -32,6 +32,9 @@ struct MainView: View {
     
     @State var timer: Timer?
     
+    // TODO: 決め打ちなので、UIから変更できるような仕組みを作る
+    @State var currentMode = Const.Mode.Solo
+    
     let device = UIDevice.current
     
     var body: some View {
@@ -39,7 +42,7 @@ struct MainView: View {
         NavigationStack {
             VStack {
                 // 各ジャッジのリストを表示
-                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: $currentNumber, currentMessage: $currentMessage, isModal: $isModal, judgeIpModel: $judgeIpModel)
+                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: $currentNumber, currentMessage: $currentMessage, isModal: $isModal, judgeIpModel: $judgeIpModel, mode: $currentMode)
                     .onChange(of: socketManager.recievedData) {
                         receiveMessage(message: socketManager.recievedData)
                     }
@@ -47,7 +50,7 @@ struct MainView: View {
                     Group {
                         Button(action: {
                             if self.currentNumber != 1 {
-                                currentNumber -= 2
+                                currentNumber -= currentMode.playerNum()
                             }
                             isTapped = true
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -64,8 +67,8 @@ struct MainView: View {
                         .buttonStyle(.custom)
                         .disabled(currentNumber == 1 || isTapped)
                         Button(action: {
-                            if self.currentNumber + 2 <= entryMembers.count {
-                                currentNumber += 2
+                            if self.currentNumber + currentMode.playerNum() <= entryMembers.count {
+                                currentNumber += currentMode.playerNum()
                             }
                             isTapped = true
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -80,7 +83,7 @@ struct MainView: View {
                                 .padding(.vertical, 4)
                         })
                         .buttonStyle(.custom)
-                        .disabled(currentNumber + 2 > entryMembers.count || isTapped)
+                        .disabled(currentNumber + currentMode.playerNum() > entryMembers.count || isTapped)
                     }
                     .padding(.horizontal, 8)
                     .onChange(of: currentNumber) {
