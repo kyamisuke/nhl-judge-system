@@ -1,0 +1,510 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8F3D1FB02C099232000D34B0 /* PrincipalIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D1FAF2C099232000D34B0 /* PrincipalIcon.swift */; };
+		8F3D1FB32C0998C8000D34B0 /* HomeAlertModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D1FB22C0998C8000D34B0 /* HomeAlertModifier.swift */; };
+		8F44ADA02C0ADE5D0058914A /* CrayButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F44AD9F2C0ADE5D0058914A /* CrayButtonView.swift */; };
+		8F56276D2D0EB06300189C0B /* RswiftLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = 8F56276C2D0EB06300189C0B /* RswiftLibrary */; };
+		8F5B90742C1428AB00F0BF33 /* SelectHostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F5B90732C1428AB00F0BF33 /* SelectHostView.swift */; };
+		8F5B90772C1429A900F0BF33 /* CustomButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F5B90762C1429A900F0BF33 /* CustomButtonStyle.swift */; };
+		8F6B2ACF2BEDC08A00A2E23F /* SocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6B2ACE2BEDC08A00A2E23F /* SocketManager.swift */; };
+		8F7A42D72BFDDDBD0051A275 /* Const.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F7A42D62BFDDDBD0051A275 /* Const.swift */; };
+		8FAC52F22D0EA97700C5985C /* SelectModeButtonPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FAC52F12D0EA97700C5985C /* SelectModeButtonPickerView.swift */; };
+		8FE7B67A2BFF27C0002D8B15 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE7B6792BFF27C0002D8B15 /* Model.swift */; };
+		8FE86A542BE908DC00F8697C /* nexthouselab_judgeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE86A532BE908DC00F8697C /* nexthouselab_judgeApp.swift */; };
+		8FE86A562BE908DC00F8697C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE86A552BE908DC00F8697C /* ContentView.swift */; };
+		8FE86A582BE908DE00F8697C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8FE86A572BE908DE00F8697C /* Assets.xcassets */; };
+		8FE86A5B2BE908DE00F8697C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8FE86A5A2BE908DE00F8697C /* Preview Assets.xcassets */; };
+		8FE86A622BE9093600F8697C /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE86A612BE9093600F8697C /* MainView.swift */; };
+		8FE86A652BE9134E00F8697C /* EntryListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE86A642BE9134E00F8697C /* EntryListItemView.swift */; };
+		8FE86A692BE9255200F8697C /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE86A682BE9255200F8697C /* HomeView.swift */; };
+		8FE86A6C2BE9355400F8697C /* DocumentPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE86A6B2BE9355400F8697C /* DocumentPickerView.swift */; };
+		8FE86A6E2BE935A100F8697C /* UserDictionaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE86A6D2BE935A100F8697C /* UserDictionaryView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		8F3D1FAF2C099232000D34B0 /* PrincipalIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrincipalIcon.swift; sourceTree = "<group>"; };
+		8F3D1FB22C0998C8000D34B0 /* HomeAlertModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAlertModifier.swift; sourceTree = "<group>"; };
+		8F44AD9F2C0ADE5D0058914A /* CrayButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrayButtonView.swift; sourceTree = "<group>"; };
+		8F5B90732C1428AB00F0BF33 /* SelectHostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectHostView.swift; sourceTree = "<group>"; };
+		8F5B90762C1429A900F0BF33 /* CustomButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButtonStyle.swift; sourceTree = "<group>"; };
+		8F6B2ACE2BEDC08A00A2E23F /* SocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketManager.swift; sourceTree = "<group>"; };
+		8F7A42D62BFDDDBD0051A275 /* Const.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Const.swift; sourceTree = "<group>"; };
+		8FAC52F12D0EA97700C5985C /* SelectModeButtonPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectModeButtonPickerView.swift; sourceTree = "<group>"; };
+		8FE7B6792BFF27C0002D8B15 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		8FE86A502BE908DC00F8697C /* nexthouselab-judge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "nexthouselab-judge.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8FE86A532BE908DC00F8697C /* nexthouselab_judgeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = nexthouselab_judgeApp.swift; sourceTree = "<group>"; };
+		8FE86A552BE908DC00F8697C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		8FE86A572BE908DE00F8697C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8FE86A5A2BE908DE00F8697C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		8FE86A612BE9093600F8697C /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		8FE86A642BE9134E00F8697C /* EntryListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntryListItemView.swift; sourceTree = "<group>"; };
+		8FE86A682BE9255200F8697C /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		8FE86A6B2BE9355400F8697C /* DocumentPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentPickerView.swift; sourceTree = "<group>"; };
+		8FE86A6D2BE935A100F8697C /* UserDictionaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDictionaryView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8FE86A4D2BE908DC00F8697C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8F56276D2D0EB06300189C0B /* RswiftLibrary in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		8F3D1FB12C0998AB000D34B0 /* Modifier */ = {
+			isa = PBXGroup;
+			children = (
+				8F3D1FB22C0998C8000D34B0 /* HomeAlertModifier.swift */,
+				8F5B90762C1429A900F0BF33 /* CustomButtonStyle.swift */,
+			);
+			name = Modifier;
+			sourceTree = "<group>";
+		};
+		8F6B2ACC2BEDC05400A2E23F /* Socket */ = {
+			isa = PBXGroup;
+			children = (
+				8F6B2ACE2BEDC08A00A2E23F /* SocketManager.swift */,
+			);
+			path = Socket;
+			sourceTree = "<group>";
+		};
+		8FE86A472BE908DC00F8697C = {
+			isa = PBXGroup;
+			children = (
+				8FE86A522BE908DC00F8697C /* nexthouselab-judge */,
+				8FE86A512BE908DC00F8697C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8FE86A512BE908DC00F8697C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8FE86A502BE908DC00F8697C /* nexthouselab-judge.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8FE86A522BE908DC00F8697C /* nexthouselab-judge */ = {
+			isa = PBXGroup;
+			children = (
+				8F6B2ACC2BEDC05400A2E23F /* Socket */,
+				8FE86A532BE908DC00F8697C /* nexthouselab_judgeApp.swift */,
+				8FE86A632BE9094700F8697C /* View */,
+				8FE86A552BE908DC00F8697C /* ContentView.swift */,
+				8FE86A572BE908DE00F8697C /* Assets.xcassets */,
+				8FE86A592BE908DE00F8697C /* Preview Content */,
+			);
+			path = "nexthouselab-judge";
+			sourceTree = "<group>";
+		};
+		8FE86A592BE908DE00F8697C /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				8FE86A5A2BE908DE00F8697C /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		8FE86A632BE9094700F8697C /* View */ = {
+			isa = PBXGroup;
+			children = (
+				8F3D1FB12C0998AB000D34B0 /* Modifier */,
+				8FE86A6A2BE9353F00F8697C /* Ex */,
+				8FE86A672BE920C300F8697C /* Component */,
+				8FE86A662BE920B700F8697C /* Main */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		8FE86A662BE920B700F8697C /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				8FE86A682BE9255200F8697C /* HomeView.swift */,
+				8FE86A612BE9093600F8697C /* MainView.swift */,
+			);
+			name = Main;
+			sourceTree = "<group>";
+		};
+		8FE86A672BE920C300F8697C /* Component */ = {
+			isa = PBXGroup;
+			children = (
+				8FE86A6D2BE935A100F8697C /* UserDictionaryView.swift */,
+				8FE86A642BE9134E00F8697C /* EntryListItemView.swift */,
+				8F3D1FAF2C099232000D34B0 /* PrincipalIcon.swift */,
+				8F44AD9F2C0ADE5D0058914A /* CrayButtonView.swift */,
+				8F5B90732C1428AB00F0BF33 /* SelectHostView.swift */,
+				8FAC52F12D0EA97700C5985C /* SelectModeButtonPickerView.swift */,
+			);
+			name = Component;
+			sourceTree = "<group>";
+		};
+		8FE86A6A2BE9353F00F8697C /* Ex */ = {
+			isa = PBXGroup;
+			children = (
+				8FE86A6B2BE9355400F8697C /* DocumentPickerView.swift */,
+				8F7A42D62BFDDDBD0051A275 /* Const.swift */,
+				8FE7B6792BFF27C0002D8B15 /* Model.swift */,
+			);
+			name = Ex;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8FE86A4F2BE908DC00F8697C /* nexthouselab-judge */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8FE86A5E2BE908DE00F8697C /* Build configuration list for PBXNativeTarget "nexthouselab-judge" */;
+			buildPhases = (
+				8FE86A4C2BE908DC00F8697C /* Sources */,
+				8FE86A4D2BE908DC00F8697C /* Frameworks */,
+				8FE86A4E2BE908DC00F8697C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8F56276F2D0EB10A00189C0B /* PBXTargetDependency */,
+			);
+			name = "nexthouselab-judge";
+			packageProductDependencies = (
+				8F56276C2D0EB06300189C0B /* RswiftLibrary */,
+			);
+			productName = "nexthouselab-judge";
+			productReference = 8FE86A502BE908DC00F8697C /* nexthouselab-judge.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8FE86A482BE908DC00F8697C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1530;
+				LastUpgradeCheck = 1530;
+				TargetAttributes = {
+					8FE86A4F2BE908DC00F8697C = {
+						CreatedOnToolsVersion = 15.3;
+					};
+				};
+			};
+			buildConfigurationList = 8FE86A4B2BE908DC00F8697C /* Build configuration list for PBXProject "nexthouselab-judge" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 8FE86A472BE908DC00F8697C;
+			packageReferences = (
+				8F56276B2D0EB06300189C0B /* XCRemoteSwiftPackageReference "R" */,
+			);
+			productRefGroup = 8FE86A512BE908DC00F8697C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8FE86A4F2BE908DC00F8697C /* nexthouselab-judge */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8FE86A4E2BE908DC00F8697C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8FE86A5B2BE908DE00F8697C /* Preview Assets.xcassets in Resources */,
+				8FE86A582BE908DE00F8697C /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8FE86A4C2BE908DC00F8697C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8F3D1FB02C099232000D34B0 /* PrincipalIcon.swift in Sources */,
+				8FE86A562BE908DC00F8697C /* ContentView.swift in Sources */,
+				8FE86A6C2BE9355400F8697C /* DocumentPickerView.swift in Sources */,
+				8F6B2ACF2BEDC08A00A2E23F /* SocketManager.swift in Sources */,
+				8FE86A6E2BE935A100F8697C /* UserDictionaryView.swift in Sources */,
+				8FE86A622BE9093600F8697C /* MainView.swift in Sources */,
+				8FE7B67A2BFF27C0002D8B15 /* Model.swift in Sources */,
+				8FE86A652BE9134E00F8697C /* EntryListItemView.swift in Sources */,
+				8FE86A692BE9255200F8697C /* HomeView.swift in Sources */,
+				8F7A42D72BFDDDBD0051A275 /* Const.swift in Sources */,
+				8FAC52F22D0EA97700C5985C /* SelectModeButtonPickerView.swift in Sources */,
+				8F3D1FB32C0998C8000D34B0 /* HomeAlertModifier.swift in Sources */,
+				8FE86A542BE908DC00F8697C /* nexthouselab_judgeApp.swift in Sources */,
+				8F5B90772C1429A900F0BF33 /* CustomButtonStyle.swift in Sources */,
+				8F5B90742C1428AB00F0BF33 /* SelectHostView.swift in Sources */,
+				8F44ADA02C0ADE5D0058914A /* CrayButtonView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		8F56276F2D0EB10A00189C0B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 8F56276E2D0EB10A00189C0B /* RswiftGenerateInternalResources */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		8FE86A5C2BE908DE00F8697C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		8FE86A5D2BE908DE00F8697C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		8FE86A5F2BE908DE00F8697C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"nexthouselab-judge/Preview Content\"";
+				DEVELOPMENT_TEAM = RW9N8FZHM7;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "nexthouselab-judge/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "NHL Judge System";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen";
+				INFOPLIST_KEY_UIRequiresFullScreen = NO;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 3.2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.kyamisuke.nexthouselab-judge";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		8FE86A602BE908DE00F8697C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"nexthouselab-judge/Preview Content\"";
+				DEVELOPMENT_TEAM = RW9N8FZHM7;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "nexthouselab-judge/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "NHL Judge System";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen";
+				INFOPLIST_KEY_UIRequiresFullScreen = NO;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 3.2.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.kyamisuke.nexthouselab-judge";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8FE86A4B2BE908DC00F8697C /* Build configuration list for PBXProject "nexthouselab-judge" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8FE86A5C2BE908DE00F8697C /* Debug */,
+				8FE86A5D2BE908DE00F8697C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8FE86A5E2BE908DE00F8697C /* Build configuration list for PBXNativeTarget "nexthouselab-judge" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8FE86A5F2BE908DE00F8697C /* Debug */,
+				8FE86A602BE908DE00F8697C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8F56276B2D0EB06300189C0B /* XCRemoteSwiftPackageReference "R" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mac-cain13/R.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.8.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8F56276C2D0EB06300189C0B /* RswiftLibrary */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8F56276B2D0EB06300189C0B /* XCRemoteSwiftPackageReference "R" */;
+			productName = RswiftLibrary;
+		};
+		8F56276E2D0EB10A00189C0B /* RswiftGenerateInternalResources */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = "plugin:RswiftGenerateInternalResources";
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 8FE86A482BE908DC00F8697C /* Project object */;
+}

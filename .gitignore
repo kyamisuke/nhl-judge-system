@@ -86,7 +86,6 @@ fastlane/test_output
 *.xcuserdatad
 *.swifttemplate
 *.playground
-*.xcodeproj
 *.xcworkspace
 *.xcscmblueprint
 *.xcscheme
