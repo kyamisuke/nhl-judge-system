@@ -15,6 +15,7 @@ struct MainView: View {
     @Binding var currentPlayNum: Int
     @State var tappedId = 1
     @Binding var shouldInitialize: Bool
+    @Binding var currentMode: Const.Mode
     
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
@@ -34,7 +35,7 @@ struct MainView: View {
                 }
                 Spacer()
                 List(entryNames) {entryName in
-                    EntryListItemView(entryName: entryName, currentPlayNum: $currentPlayNum, currentEdintingNum: $currentEditingNum, judgeName: judgeName, tappedId: $tappedId)
+                    EntryListItemView(entryName: entryName, currentPlayNum: $currentPlayNum, currentEdintingNum: $currentEditingNum, judgeName: judgeName, tappedId: $tappedId, currentMode: $currentMode)
                         .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                         .contentShape(Rectangle())
                         .onTapGesture {
@@ -92,6 +93,7 @@ struct MainView: View {
     struct Sim: View {
         @State var socketManager = SocketManager()
         @State var scoreModel = ScoreModel()
+        @State var mode = Const.Mode.Solo
         
         var body: some View {
             MainView(judgeName: "KAZANE", entryNames: [
@@ -101,7 +103,7 @@ struct MainView: View {
                 EntryName(number: 4, name: "Tosai"),
                 EntryName(number: 5, name: "Rinki"),
                 EntryName(number: 6, name: "kyami")
-            ], currentPlayNum: .constant(1), shouldInitialize: .constant(true))
+            ], currentPlayNum: .constant(1), shouldInitialize: .constant(true), currentMode: $mode)
             .environmentObject(socketManager)
             .environmentObject(scoreModel)
         }

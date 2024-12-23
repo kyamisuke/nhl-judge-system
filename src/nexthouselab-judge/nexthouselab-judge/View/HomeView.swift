@@ -92,7 +92,7 @@ struct HomeView: View {
                 SelectHostView(alertType: $alertType, hostArray: $hostArray)
             }
             .navigationDestination(isPresented: $navigateToMainView) {
-                MainView(judgeName: name, entryNames: entryMembers, currentPlayNum: $currentPlayNum, shouldInitialize: $shouldInitialize)
+                MainView(judgeName: name, entryNames: entryMembers, currentPlayNum: $currentPlayNum, shouldInitialize: $shouldInitialize, currentMode: $mode)
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {

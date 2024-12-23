@@ -25,6 +25,7 @@ struct EntryListItemView: View {
     @State var wasOnStage = false
     let judgeName: String
     @Binding var tappedId: Int
+    @Binding var currentMode: Const.Mode
     let buttonColor = Color.init(red: 0.38, green: 0.28, blue: 0.86)
     let lightColor = Color.init(red: 0.54, green: 0.41, blue: 0.95)
     let shadowColor = Color.init(red: 0.25, green: 0.17, blue: 0.75)
@@ -124,16 +125,26 @@ struct EntryListItemView: View {
     }
     
     func isPlaying() -> Bool {
-        return currentPlayNum == entryName.number || currentPlayNum + 1 == entryName.number
+        switch currentMode {
+        case .Solo:
+            return currentPlayNum == entryName.number
+        case .Dual:
+            return currentPlayNum == entryName.number || currentPlayNum + 1 == entryName.number
+        }
     }
     
     func getBackgroundColor() -> Color {
         if isPlaying() {
-            if entryName.number % 2 == 1 {
+            switch currentMode {
+            case .Solo:
                 return Color(R.color.oddColor)
-            }
-            else {
-                return Color(R.color.evenColor)
+            case .Dual:
+                if entryName.number % 2 == 1 {
+                    return Color(R.color.oddColor)
+                }
+                else {
+                    return Color(R.color.evenColor)
+                }
             }
         } else if isDone {
             return Color(R.color.fixedColor)
@@ -143,10 +154,15 @@ struct EntryListItemView: View {
     }
     
     func isTapped() -> Bool {
-        if tappedId % 2 == 1 {
-            return entryName.number == tappedId || entryName.number == tappedId + 1
-        } else {
-            return entryName.number == tappedId - 1 || entryName.number == tappedId
+        switch currentMode {
+        case .Solo:
+            return entryName.number == tappedId
+        case .Dual:
+            if tappedId % 2 == 1 {
+                return entryName.number == tappedId || entryName.number == tappedId + 1
+            } else {
+                return entryName.number == tappedId - 1 || entryName.number == tappedId
+            }
         }
     }
     
@@ -181,10 +197,11 @@ private struct ScoreSliderView: View {
         @State var demoScores: [Float] = [0, 0, 0, 0, 0, 0]
         @State var socketManager = SocketManager()
         @State var scoreModel = ScoreModel()
+        @State var mode = Const.Mode.Solo
         
         var body: some View {
             List {
-                EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentPlayNum: .constant(5), currentEdintingNum: .constant(1), judgeName: "HIRO", tappedId: .constant(1))
+                EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentPlayNum: .constant(5), currentEdintingNum: .constant(1), judgeName: "HIRO", tappedId: .constant(1), currentMode: $mode)
                     .environmentObject(socketManager)
                     .environmentObject(scoreModel)
             }

@@ -22,5 +22,14 @@ class Const {
         case Dual
         
         var id: String { self.rawValue }
+        
+        var playerNum: Int {
+            switch self {
+            case .Solo:
+                return 1
+            case .Dual:
+                return 2
+            }
+        }
     }
 }
