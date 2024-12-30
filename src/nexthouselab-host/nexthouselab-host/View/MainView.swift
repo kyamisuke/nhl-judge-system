@@ -142,8 +142,11 @@ struct MainView: View {
             print(data[1])
         } else if data[0] == "SCORER" {
             //            if data[1] == "DECISION" {
-            print("Update Score: \(data[2]), \(data[3]), \(data[4])")
-            scoreModel.scores[data[2]]![data[3]] = Float(data[4])!
+            let judgeName = data[2]
+            let entryNumber = data[3]
+            let score = Float(data[4])!
+            print("Update Score: \(judgeName), \(entryNumber), \(score)")
+            scoreModel.scores[judgeName]![entryNumber] = score
             //            } else if data[1] == "CANCEL" {
             //                scoreModel.scores[data[2]]![data[3]] = Float(data[4])!
             //            }
