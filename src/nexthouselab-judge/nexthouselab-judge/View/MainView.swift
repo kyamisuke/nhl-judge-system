@@ -25,7 +25,7 @@ struct MainView: View {
             VStack {
                 Spacer()
                 HStack {
-                    Text("\(judgeName), Please fill all score.")
+                    Text("\(judgeName), Please enter all score.")
                         .font(.title)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(16)
