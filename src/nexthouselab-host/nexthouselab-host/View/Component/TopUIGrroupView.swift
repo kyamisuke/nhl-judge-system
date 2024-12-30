@@ -84,7 +84,11 @@ struct TopUIGrroupView: View {
                     guard let data = UserDefaults.standard.string(forKey: Const.SELCTED_FILE_KEY) else { return }
                     selectedFileContent = data
                 }
-            FolderExportView()
+//            FolderExportView()
+            FolderExportView(sufix: .constant("Hiphop"))
+            FolderExportView(sufix: .constant("Poppin"))
+            FolderExportView(sufix: .constant("Lockin"))
+            FolderExportView(sufix: .constant("House"))
             Spacer()
         }
     }
