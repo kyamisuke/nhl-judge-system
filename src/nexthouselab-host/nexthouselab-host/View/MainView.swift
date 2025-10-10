@@ -33,7 +33,7 @@ struct MainView: View {
     @State var timer: Timer?
     
     // TODO: 決め打ちなので、UIから変更できるような仕組みを作る
-    @State var currentMode = Const.Mode.Solo
+    @State var currentMode = Const.Mode.Dual
     
     let device = UIDevice.current
     

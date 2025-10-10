@@ -30,6 +30,7 @@ struct EntryListItemView: View {
     let lightColor = Color.init(red: 0.54, green: 0.41, blue: 0.95)
     let shadowColor = Color.init(red: 0.25, green: 0.17, blue: 0.75)
     let radius = CGFloat(12)
+    let buttonFontSize: CGFloat = Locale.current == Locale(identifier: "ja_JP") ? 16 : 12
     
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
@@ -78,19 +79,19 @@ struct EntryListItemView: View {
             }
             if isTapped() {
                 if isDone {
-                    CrayButtonView(label: "編集", action: tapButton, lightColor: Color(R.color.rewriteLightColor), shadowColor: Color(R.color.rewriteShadowColor), buttonColor: Color(R.color.rewriteButtonColor), radius: radius)
+                    CrayButtonView(label: R.string.localizable.edit(), action: tapButton, lightColor: Color(R.color.rewriteLightColor), shadowColor: Color(R.color.rewriteShadowColor), buttonColor: Color(R.color.rewriteButtonColor), radius: radius, fontSize: buttonFontSize)
                         .buttonStyle(BorderlessButtonStyle())
                         .frame(width: 64)
                 } else {
-                    CrayButtonView(label: "決定", action: tapButton, lightColor: Color(R.color.selectLightColor), shadowColor: Color(R.color.selectShadowColor), buttonColor: Color(R.color.selectButtonColor), radius: radius)
+                    CrayButtonView(label: R.string.localizable.ok(), action: tapButton, lightColor: Color(R.color.selectLightColor), shadowColor: Color(R.color.selectShadowColor), buttonColor: Color(R.color.selectButtonColor), radius: radius, fontSize: buttonFontSize)
                         .buttonStyle(BorderlessButtonStyle())
                         .frame(width: 64)
                 }
                 
             } else {
                 if isDone {
-                    Text("済")
-                        .font(.system(size: 16, weight: .semibold, design: .default))
+                    Text(R.string.localizable.done())
+                        .font(.system(size: buttonFontSize, weight: .semibold, design: .default))
                         .frame(width: 32)
                         .foregroundStyle(.white)
                         .padding(.horizontal, 16)
@@ -100,8 +101,8 @@ struct EntryListItemView: View {
                                 .foregroundStyle(.black)
                         )
                 } else {
-                    Text("未")
-                        .font(.system(size: 16, weight: .semibold, design: .default))
+                    Text(R.string.localizable.notYet())
+                        .font(.system(size: buttonFontSize, weight: .semibold, design: .default))
                         .frame(width: 32)
                         .foregroundStyle(.white)
                         .padding(.horizontal, 16)

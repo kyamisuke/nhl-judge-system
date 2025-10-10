@@ -78,15 +78,25 @@ struct DemoFolderExportView: View {
 
 struct FolderExportView: View {
     @State private var showsExportDocumentPicker = false
+    @State private var isExported = false
+    
+    @Binding private var sufix: String
+    
     let fileName: String
     @EnvironmentObject var scoreModel: ScoreModel
+    
+    init(fileName: String, sufix: Binding<String> = .constant("")) {
+        self.fileName = fileName
+        _sufix = sufix
+    }
  
     var body: some View {
         VStack(spacing: 0) {
-            Button("Export", action: {
+            Button(sufix == "" ? "Export" : sufix, action: {
                 showsExportDocumentPicker = true
             })
             .buttonStyle(.custom)
+            .tint(isExported ? .green : .blue)
         }
         .sheet(isPresented: $showsExportDocumentPicker) {
             // 1. ユーザにフォルダーを選択させ、そこにファイルを作成する。
@@ -94,13 +104,21 @@ struct FolderExportView: View {
                 .didPickDocument { directoryURL in
                     guard directoryURL.startAccessingSecurityScopedResource() else { return }
                     defer { directoryURL.stopAccessingSecurityScopedResource() }
-                    let newFileURL = directoryURL.appendingPathComponent(fileName)
+                    let newFileName: String
+                    if sufix == "" {
+                        newFileName = "\(fileName).csv"
+                    } else {
+                        newFileName = "\(fileName)_\(sufix).csv"
+                    }
+                    let newFileURL = directoryURL.appendingPathComponent(newFileName)
                     do {
                         var data = ""
                         for (number, score) in scoreModel.scores.sorted(by: { Int($0.0)! < Int($1.0)! }) {
                             data += "\(number),\(score)\n"
                         }
                         try data.write(to: newFileURL, atomically: true, encoding: .utf8)
+                        
+                        isExported = true
                     } catch {
                         print("Failed to export")
                     }

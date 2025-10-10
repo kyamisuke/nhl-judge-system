@@ -84,7 +84,13 @@ struct HomeView: View {
                             guard let data = UserDefaults.standard.string(forKey: Const.SELCTED_FILE_KEY) else { return }
                             selectedFileContent = data
                         }
-                    FolderExportView(fileName: "\(name).csv")
+                    FolderExportView(fileName: name)
+                }
+                HStack {
+                    FolderExportView(fileName: name, sufix: .constant("Hiphop"))
+                    FolderExportView(fileName: name, sufix: .constant("Poppin"))
+                    FolderExportView(fileName: name, sufix: .constant("Lockin"))
+                    FolderExportView(fileName: name, sufix: .constant("House"))
                 }
                 SelectModeButtonPickerView(selectedMode: $mode)
                     .frame(width: 400)
