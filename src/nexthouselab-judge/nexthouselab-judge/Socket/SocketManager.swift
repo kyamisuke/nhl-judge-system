@@ -107,7 +107,7 @@ final public class SocketManager: ObservableObject {
             // キャンセルが完了するのを待つ
             Thread.sleep(forTimeInterval: 0.1)
             // UDPを使用して指定されたポートでリスナーを作成
-            let listener = try NWListener(using: .udp, on: receivePort)
+            let listener = try NWListener(using: param, on: receivePort)
             listener.stateUpdateHandler = { state in
                 DispatchQueue.main.async {
                     self.updateListenerStae(state: state)

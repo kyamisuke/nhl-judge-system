@@ -1,0 +1,12 @@
+/* 
+  Localizable.strings
+  nexthouselab-judge
+
+  Created by 村上航輔 on 2025/01/01.
+  
+*/
+
+"ok" = "OK";
+"edit" = "Edit";
+"not yet" = "Not yet";
+"done" = "Done";

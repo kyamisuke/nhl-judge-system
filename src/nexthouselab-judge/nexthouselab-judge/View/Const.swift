@@ -17,17 +17,19 @@ class Const {
     static let DONE_STATES_KEY = "done_states"
     static let CURRENT_PLAY_NUM_KEY = "current_play_num_key"
     
-    static let oddColor = Color("oddColor")
-    static let evenColor = Color("evenColor")
-    static let fixedColor = Color("fixedColor")
-    static let scoreColor = Color("scoreColor")
-    
-    static let selectLightColor = Color("selectLightColor")
-    static let selectButtonColor = Color("selectButtonColor")
-    static let selectShadowColor = Color("selectShadowColor")
-    
-    static let rewriteLightColor = Color("rewriteLightColor")
-    static let rewriteButtonColor = Color("rewriteButtonColor")
-    static let rewriteShadowColor = Color("rewriteShadowColor")
-
+    enum Mode: String, CaseIterable, Identifiable {
+        case Solo
+        case Dual
+        
+        var id: String { self.rawValue }
+        
+        var playerNum: Int {
+            switch self {
+            case .Solo:
+                return 1
+            case .Dual:
+                return 2
+            }
+        }
+    }
 }

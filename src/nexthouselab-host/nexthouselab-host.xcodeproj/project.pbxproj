@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8F3D1FB92C09A9CD000D34B0 /* PrincipalIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D1FB82C09A9CD000D34B0 /* PrincipalIcon.swift */; };
-		8F3D1FBB2C09ABFA000D34B0 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D1FBA2C09ABFA000D34B0 /* Model.swift */; };
+		8F3D1FBB2C09ABFA000D34B0 /* ScoreModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D1FBA2C09ABFA000D34B0 /* ScoreModel.swift */; };
 		8F44ADA22C0C15450058914A /* CrayButtton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F44ADA12C0C15450058914A /* CrayButtton.swift */; };
 		8F44ADA42C0C190C0058914A /* CustomButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F44ADA32C0C190C0058914A /* CustomButtonStyle.swift */; };
 		8F44ADA62C0C772B0058914A /* TopUIGrroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F44ADA52C0C772B0058914A /* TopUIGrroupView.swift */; };
@@ -34,7 +34,7 @@
 
 /* Begin PBXFileReference section */
 		8F3D1FB82C09A9CD000D34B0 /* PrincipalIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrincipalIcon.swift; sourceTree = "<group>"; };
-		8F3D1FBA2C09ABFA000D34B0 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		8F3D1FBA2C09ABFA000D34B0 /* ScoreModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreModel.swift; sourceTree = "<group>"; };
 		8F44ADA12C0C15450058914A /* CrayButtton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrayButtton.swift; sourceTree = "<group>"; };
 		8F44ADA32C0C190C0058914A /* CustomButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButtonStyle.swift; sourceTree = "<group>"; };
 		8F44ADA52C0C772B0058914A /* TopUIGrroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopUIGrroupView.swift; sourceTree = "<group>"; };
@@ -71,15 +71,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		8F6B2AC02BEAFF4F00A2E23F /* Ex */ = {
+		8F5EE0152D2279BF00E138F0 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				8F6B2ABC2BEAFC6700A2E23F /* DocumentPickerView.swift */,
-				8F6B2AC62BEC461A00A2E23F /* TrackableList.swift */,
 				8FD586842BFC7F0100B2F775 /* Message.swift */,
 				8FD586862BFC814900B2F775 /* JudgeName.swift */,
 				8FD586882BFC816200B2F775 /* EntryName.swift */,
-				8F3D1FBA2C09ABFA000D34B0 /* Model.swift */,
+				8F3D1FBA2C09ABFA000D34B0 /* ScoreModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		8F6B2AC02BEAFF4F00A2E23F /* Ex */ = {
+			isa = PBXGroup;
+			children = (
+				8FB6051B2C04717E00A20BE5 /* Const.swift */,
+				8F6B2ABC2BEAFC6700A2E23F /* DocumentPickerView.swift */,
+				8F6B2AC62BEC461A00A2E23F /* TrackableList.swift */,
 				8FB7252E2C11A0E800951DD6 /* UIDeviceEx.swift */,
 			);
 			path = Ex;
@@ -104,7 +112,6 @@
 			isa = PBXGroup;
 			children = (
 				8F6B2ACA2BEDBBE500A2E23F /* SocketManager.swift */,
-				8FB6051B2C04717E00A20BE5 /* Const.swift */,
 			);
 			path = Socket;
 			sourceTree = "<group>";
@@ -128,6 +135,7 @@
 		8FC5BB9A2BEAF656007D6758 /* nexthouselab-host */ = {
 			isa = PBXGroup;
 			children = (
+				8F5EE0152D2279BF00E138F0 /* Model */,
 				8FB6051D2C04DD7C00A20BE5 /* Info.plist */,
 				8F6B2ACD2BEDC07500A2E23F /* Socket */,
 				8F6B2AC02BEAFF4F00A2E23F /* Ex */,
@@ -237,7 +245,7 @@
 				8F6B2AC32BEAFFAC00A2E23F /* EntryListItemView.swift in Sources */,
 				8F6B2AC72BEC461A00A2E23F /* TrackableList.swift in Sources */,
 				8F6B2ACB2BEDBBE500A2E23F /* SocketManager.swift in Sources */,
-				8F3D1FBB2C09ABFA000D34B0 /* Model.swift in Sources */,
+				8F3D1FBB2C09ABFA000D34B0 /* ScoreModel.swift in Sources */,
 				8F44ADA62C0C772B0058914A /* TopUIGrroupView.swift in Sources */,
 				8F5B90722C14094400F0BF33 /* HostSelectModalView.swift in Sources */,
 				8F6B2AC92BEC618D00A2E23F /* ScrollToRow.swift in Sources */,
@@ -386,6 +394,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "nexthouselab-host/Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "このアプリはローカルネットワーク通信を使用します";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -396,7 +405,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kyamisuke.nexthouselab-host";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -405,7 +414,7 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Debug;
 		};
@@ -421,6 +430,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "nexthouselab-host/Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "このアプリはローカルネットワーク通信を使用します";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -431,7 +441,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.0;
+				MARKETING_VERSION = 3.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kyamisuke.nexthouselab-host";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -440,7 +450,7 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Release;
 		};

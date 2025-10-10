@@ -19,6 +19,7 @@ struct HomeView: View {
     @State var hostIp = ""
     @State var hostArray = [String]()
     @State var currentPlayNum = 1
+    @State var mode = Const.Mode.Solo
     
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
@@ -83,45 +84,21 @@ struct HomeView: View {
                             guard let data = UserDefaults.standard.string(forKey: Const.SELCTED_FILE_KEY) else { return }
                             selectedFileContent = data
                         }
-                    FolderExportView(fileName: "\(name).csv")
+                    FolderExportView(fileName: name)
                 }
-                //                HStack {
-                //                    VStack(alignment: .leading) {
-                //                        TextField(text: $hostIp, label: {
-                //                            Text("host ip")
-                //                        })
-                //                        .textFieldStyle(.roundedBorder)
-                //                        .frame(width: 150)
-                //                        .onChange(of: hostIp) {
-                //                            UserDefaults.standard.set(hostIp, forKey: Const.HOST_IP_KEY)
-                //                        }
-                //                        .onAppear {
-                //                            guard let ip = UserDefaults.standard.string(forKey: Const.HOST_IP_KEY) else { return }
-                //                            hostIp = ip
-                //                        }
-                //                        if hostIp.components(separatedBy: ".").count == 4 {
-                //                            EmptyView()
-                //                        } else {
-                //                            Text("invalid ip address")
-                //                                .foregroundStyle(Color.red)
-                //                                .font(.caption)
-                //                        }
-                //                    }
-                //                    Button(action: {
-                //                        if hostIp.isEmpty {
-                //                            return
-                //                        }
-                //                        socketManager.connect(host: hostIp, port: "9000", param: .udp)
-                //                        socketManager.startListener(name: "judge_listner")
-                //                    }, label: {
-                //                        Text("Connect")
-                //                    })
-                //                }
+                HStack {
+                    FolderExportView(fileName: name, sufix: .constant("Hiphop"))
+                    FolderExportView(fileName: name, sufix: .constant("Poppin"))
+                    FolderExportView(fileName: name, sufix: .constant("Lockin"))
+                    FolderExportView(fileName: name, sufix: .constant("House"))
+                }
+                SelectModeButtonPickerView(selectedMode: $mode)
+                    .frame(width: 400)
                 Divider()
                 SelectHostView(alertType: $alertType, hostArray: $hostArray)
             }
             .navigationDestination(isPresented: $navigateToMainView) {
-                MainView(judgeName: name, entryNames: entryMembers, currentPlayNum: $currentPlayNum, shouldInitialize: $shouldInitialize)
+                MainView(judgeName: name, entryNames: entryMembers, currentPlayNum: $currentPlayNum, shouldInitialize: $shouldInitialize, currentMode: $mode)
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {

@@ -25,10 +25,12 @@ struct EntryListItemView: View {
     @State var wasOnStage = false
     let judgeName: String
     @Binding var tappedId: Int
+    @Binding var currentMode: Const.Mode
     let buttonColor = Color.init(red: 0.38, green: 0.28, blue: 0.86)
     let lightColor = Color.init(red: 0.54, green: 0.41, blue: 0.95)
     let shadowColor = Color.init(red: 0.25, green: 0.17, blue: 0.75)
     let radius = CGFloat(12)
+    let buttonFontSize: CGFloat = Locale.current == Locale(identifier: "ja_JP") ? 16 : 12
     
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
@@ -52,7 +54,7 @@ struct EntryListItemView: View {
                         .onChange(of: scoreModel.getScore(for: String(entryName.number)).wrappedValue) {
                             currentEdintingNum = entryName.number
                         }
-                        .tint(Const.scoreColor)
+                        .tint(Color(R.color.scoreColor))
                 } else {
                     Rectangle()
                         .foregroundStyle(.clear)
@@ -77,19 +79,19 @@ struct EntryListItemView: View {
             }
             if isTapped() {
                 if isDone {
-                    CrayButtonView(label: "編集", action: tapButton, lightColor: Const.rewriteLightColor, shadowColor: Const.rewriteShadowColor, buttonColor: Const.rewriteButtonColor, radius: radius)
+                    CrayButtonView(label: R.string.localizable.edit(), action: tapButton, lightColor: Color(R.color.rewriteLightColor), shadowColor: Color(R.color.rewriteShadowColor), buttonColor: Color(R.color.rewriteButtonColor), radius: radius, fontSize: buttonFontSize)
                         .buttonStyle(BorderlessButtonStyle())
                         .frame(width: 64)
                 } else {
-                    CrayButtonView(label: "決定", action: tapButton, lightColor: Const.selectLightColor, shadowColor: Const.selectShadowColor, buttonColor: Const.selectButtonColor, radius: radius)
+                    CrayButtonView(label: R.string.localizable.ok(), action: tapButton, lightColor: Color(R.color.selectLightColor), shadowColor: Color(R.color.selectShadowColor), buttonColor: Color(R.color.selectButtonColor), radius: radius, fontSize: buttonFontSize)
                         .buttonStyle(BorderlessButtonStyle())
                         .frame(width: 64)
                 }
                 
             } else {
                 if isDone {
-                    Text("済")
-                        .font(.system(size: 16, weight: .semibold, design: .default))
+                    Text(R.string.localizable.done())
+                        .font(.system(size: buttonFontSize, weight: .semibold, design: .default))
                         .frame(width: 32)
                         .foregroundStyle(.white)
                         .padding(.horizontal, 16)
@@ -99,8 +101,8 @@ struct EntryListItemView: View {
                                 .foregroundStyle(.black)
                         )
                 } else {
-                    Text("未")
-                        .font(.system(size: 16, weight: .semibold, design: .default))
+                    Text(R.string.localizable.notYet())
+                        .font(.system(size: buttonFontSize, weight: .semibold, design: .default))
                         .frame(width: 32)
                         .foregroundStyle(.white)
                         .padding(.horizontal, 16)
@@ -124,29 +126,44 @@ struct EntryListItemView: View {
     }
     
     func isPlaying() -> Bool {
-        return currentPlayNum == entryName.number || currentPlayNum + 1 == entryName.number
+        switch currentMode {
+        case .Solo:
+            return currentPlayNum == entryName.number
+        case .Dual:
+            return currentPlayNum == entryName.number || currentPlayNum + 1 == entryName.number
+        }
     }
     
     func getBackgroundColor() -> Color {
         if isPlaying() {
-            if entryName.number % 2 == 1 {
-                return Const.oddColor
-            }
-            else {
-                return Const.evenColor
+            switch currentMode {
+            case .Solo:
+                return Color(R.color.oddColor)
+            case .Dual:
+                if entryName.number % 2 == 1 {
+                    return Color(R.color.oddColor)
+                }
+                else {
+                    return Color(R.color.evenColor)
+                }
             }
         } else if isDone {
-            return Const.fixedColor
+            return Color(R.color.fixedColor)
         } else {
             return .white
         }
     }
     
     func isTapped() -> Bool {
-        if tappedId % 2 == 1 {
-            return entryName.number == tappedId || entryName.number == tappedId + 1
-        } else {
-            return entryName.number == tappedId - 1 || entryName.number == tappedId
+        switch currentMode {
+        case .Solo:
+            return entryName.number == tappedId
+        case .Dual:
+            if tappedId % 2 == 1 {
+                return entryName.number == tappedId || entryName.number == tappedId + 1
+            } else {
+                return entryName.number == tappedId - 1 || entryName.number == tappedId
+            }
         }
     }
     
@@ -181,10 +198,11 @@ private struct ScoreSliderView: View {
         @State var demoScores: [Float] = [0, 0, 0, 0, 0, 0]
         @State var socketManager = SocketManager()
         @State var scoreModel = ScoreModel()
+        @State var mode = Const.Mode.Solo
         
         var body: some View {
             List {
-                EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentPlayNum: .constant(5), currentEdintingNum: .constant(1), judgeName: "HIRO", tappedId: .constant(1))
+                EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentPlayNum: .constant(5), currentEdintingNum: .constant(1), judgeName: "HIRO", tappedId: .constant(1), currentMode: $mode)
                     .environmentObject(socketManager)
                     .environmentObject(scoreModel)
             }

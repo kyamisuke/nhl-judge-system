@@ -88,6 +88,9 @@ struct DemoFolderExportView: View {
 
 struct FolderExportView: View {
     @State private var showsExportDocumentPicker = false
+    @State private var isExported = false
+    
+    @Binding private var sufix: String
     
     let buttonColor = Color.init(red: 0.38, green: 0.28, blue: 0.86)
     let lightColor = Color.init(red: 0.54, green: 0.41, blue: 0.95)
@@ -95,17 +98,18 @@ struct FolderExportView: View {
     let radius = CGFloat(12)
     
     @EnvironmentObject var scoreModel: ScoreModel
+    
+    init(sufix: Binding<String> = .constant("")) {
+        _sufix = sufix
+    }
  
     var body: some View {
         VStack(spacing: 0) {
-            Button("Export", action: {
+            Button(sufix == "" ? "Export" : sufix, action: {
                 showsExportDocumentPicker = true
             })
             .buttonStyle(.custom)
-            .tint(Const.exportColor)
-//            CrayButtton(label: "Export", hue: 0.7, radius: radius) {
-//                showsExportDocumentPicker = true
-//            }
+            .tint(isExported ? Color("isExported") : Const.exportColor)
         }
         .sheet(isPresented: $showsExportDocumentPicker) {
             // 1. ユーザにフォルダーを選択させ、そこにファイルを作成する。
@@ -114,13 +118,20 @@ struct FolderExportView: View {
                     guard directoryURL.startAccessingSecurityScopedResource() else { return }
                     defer { directoryURL.stopAccessingSecurityScopedResource() }
                     for (name, scores) in scoreModel.scores {
-                        let newFileURL = directoryURL.appendingPathComponent("\(name).csv")
+                        let fileName: String
+                        if sufix == "" {
+                            fileName = "\(name).csv"
+                        } else {
+                            fileName = "\(name)_\(sufix).csv"
+                        }
+                        let newFileURL = directoryURL.appendingPathComponent(fileName)
                         do {
                             var data = ""
                             for (number, score) in scores.sorted(by: { Int($0.0)! < Int($1.0)! }) {
                                 data += "\(number),\(score)\n"
                             }
                             try data.write(to: newFileURL, atomically: true, encoding: .utf8)
+                            isExported = true
                         } catch {
                             print("Failed to export")
                         }
@@ -138,7 +149,6 @@ struct FolderExportView: View {
         var body: some View {
             FolderImportView(fileContent: $fileContent, entryNum: .constant(0))
             DemoFolderExportView()
-            FolderExportView()
                 .environmentObject(scoreModel)
         }
     }

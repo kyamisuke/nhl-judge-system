@@ -45,7 +45,7 @@ struct HostSelectModalView: View {
     @State var alertType: HostAlertType?
     @Binding var isModal: Bool
     @Binding var hostArray: JudgeIpModel
-    @State private var selection = "KEIN"
+    @State private var selection = Const.JUDGE_NAMES[0].name
     
     let device = UIDevice.current
     

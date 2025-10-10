@@ -14,11 +14,12 @@ struct CrayButtonView: View {
     let shadowColor: Color
     let buttonColor: Color
     let radius: CGFloat
+    let fontSize: CGFloat
     
     var body: some View {
         Button(action: action, label: {
             Text(label)
-                .font(.system(size: 16, weight: .semibold, design: .default))
+                .font(.system(size: fontSize, weight: .semibold, design: .default))
                 .foregroundColor(.white)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 10)
