@@ -73,6 +73,7 @@
 				8F1DD3882EBF6C3B0030F6C7 /* AppConfiguration.swift */,
 				8F1DD3892EBF6C3B0030F6C7 /* MessageHandler.swift */,
 				8F1DD38A2EBF6C3B0030F6C7 /* NetworkMessage.swift */,
+				8FE7B6792BFF27C0002D8B15 /* ScoreModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -84,14 +85,6 @@
 				8F5B90762C1429A900F0BF33 /* CustomButtonStyle.swift */,
 			);
 			name = Modifier;
-			sourceTree = "<group>";
-		};
-		8F5EE0142D2278B100E138F0 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				8FE7B6792BFF27C0002D8B15 /* ScoreModel.swift */,
-			);
-			name = Model;
 			sourceTree = "<group>";
 		};
 		8F6B2ACC2BEDC05400A2E23F /* Socket */ = {
@@ -151,7 +144,6 @@
 		8FE86A632BE9094700F8697C /* View */ = {
 			isa = PBXGroup;
 			children = (
-				8F5EE0142D2278B100E138F0 /* Model */,
 				8F3D1FB12C0998AB000D34B0 /* Modifier */,
 				8FE86A6A2BE9353F00F8697C /* Ex */,
 				8FE86A672BE920C300F8697C /* Component */,
