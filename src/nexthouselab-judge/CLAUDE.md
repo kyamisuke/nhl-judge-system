@@ -70,6 +70,12 @@ xcodebuild test -scheme nexthouselab-judge -destination 'platform=iOS Simulator,
 - IPアドレスをキーとした`NWConnection`オブジェクトの辞書を保持
 - 複数のホストデバイスに同時接続可能
 
+**PeerManager.swift**: ローカル検出用のMultipeerConnectivity実装:
+- サービスタイプ"judge-session"でBonjourサービスディスカバリーを使用
+- ピアの自動検出と接続を提供
+- デフォルトで接続を暗号化
+- メインフローにはまだ統合されていない（将来的なオプション）
+
 ### メッセージプロトコル（型安全化済み）
 
 **NetworkMessage.swift**で型安全なメッセージ定義を提供:
