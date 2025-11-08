@@ -75,9 +75,9 @@ struct HomeAlertModifier: ViewModifier {
                         message: Text("前回中断したデータから再開しますか？"),
                         primaryButton: .default(Text("再開"), action: {
                             isChecked = true
-                            scoreModel.updateScores(UserDefaults.standard.dictionary(forKey: Const.SCORE_KEY) as! Dictionary<String, Float>)
-                            scoreModel.updateDoneState(UserDefaults.standard.dictionary(forKey: Const.DONE_STATES_KEY) as! Dictionary<String, Bool>)
-                            currentPlayNum = UserDefaults.standard.integer(forKey: Const.CURRENT_PLAY_NUM_KEY)
+                            // ScoreModelはinit時にUserDefaultsから自動的に読み込むため、
+                            // ここでは読み込み不要（既にloadFromUserDefaults()が呼ばれている）
+                            currentPlayNum = UserDefaults.standard.integer(forKey: AppConfiguration.StorageKeys.currentPlayNum)
                             shouldInitialize = false
                             navigateToMainView = true
                         }),
@@ -90,8 +90,8 @@ struct HomeAlertModifier: ViewModifier {
                         title: Text("得点のデータを初期化しますか？"),
                         message: Text("初期化したデータは復元できません。"),
                         primaryButton: .destructive(Text("削除"), action: {
-                            UserDefaults.standard.set(nil, forKey: Const.SCORE_KEY)
-                            UserDefaults.standard.set(nil, forKey: Const.DONE_STATES_KEY)
+                            UserDefaults.standard.set(nil, forKey: AppConfiguration.StorageKeys.scores)
+                            UserDefaults.standard.set(nil, forKey: AppConfiguration.StorageKeys.doneStates)
                             currentPlayNum = 1
                             shouldInitialize = true
                         }),

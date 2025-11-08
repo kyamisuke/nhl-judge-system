@@ -18,7 +18,7 @@ struct FolderImportView: View {
             HStack {
                 Text(fileName)
                     .onAppear {
-                        guard let savedFileName = UserDefaults.standard.string(forKey: Const.FILE_NAME_KEY) else { return }
+                        guard let savedFileName = UserDefaults.standard.string(forKey: AppConfiguration.StorageKeys.fileName) else { return }
                         fileName = savedFileName
                     }
                 Button("Import", action: {
@@ -40,8 +40,8 @@ struct FolderImportView: View {
                     let range = NSRange(location: 0, length: fileContent.utf16.count)
                     fileContent = regex.stringByReplacingMatches(in: fileContent, options: [], range: range, withTemplate: "\n")
                     self.fileContent = fileContent
-                    UserDefaults.standard.set(fileContent, forKey: Const.SELCTED_FILE_KEY)
-                    UserDefaults.standard.set(fileName, forKey: Const.FILE_NAME_KEY)
+                    UserDefaults.standard.set(fileContent, forKey: AppConfiguration.StorageKeys.selectedFileContents)
+                    UserDefaults.standard.set(fileName, forKey: AppConfiguration.StorageKeys.fileName)
                 } catch {
                     print("Failed to import")
                 }
@@ -114,10 +114,11 @@ struct FolderExportView: View {
                     do {
                         var data = ""
                         for (number, score) in scoreModel.scores.sorted(by: { Int($0.0)! < Int($1.0)! }) {
-                            data += "\(number),\(score)\n"
+                            let scoreValue = score ?? 0  // nilの場合は0として出力
+                            data += "\(number),\(scoreValue)\n"
                         }
                         try data.write(to: newFileURL, atomically: true, encoding: .utf8)
-                        
+
                         isExported = true
                     } catch {
                         print("Failed to export")

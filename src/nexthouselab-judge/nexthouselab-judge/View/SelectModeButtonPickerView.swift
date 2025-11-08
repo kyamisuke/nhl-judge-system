@@ -35,11 +35,11 @@ struct SelectModeButtonPickerView: View {
 
 #Preview {
     struct Sim: View {
-        @State var selectedMode: Const.Mode = .Solo
+        @State var selectedMode: Const.Mode = .solo
         var body: some View {
             SelectModeButtonPickerView(selectedMode: $selectedMode)
         }
     }
-    
+
     return Sim()
 }

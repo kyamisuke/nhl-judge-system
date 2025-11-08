@@ -19,10 +19,11 @@ struct HomeView: View {
     @State var hostIp = ""
     @State var hostArray = [String]()
     @State var currentPlayNum = 1
-    @State var mode = Const.Mode.Solo
-    
+    @State var mode = Const.Mode.solo
+
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
+    @EnvironmentObject var messageHandler: MessageHandler
     
     let demo = [
         EntryName(number: 0, name: "kyami"),
@@ -42,12 +43,12 @@ struct HomeView: View {
                         Text("ジャッジ名")
                     })
                     .textFieldStyle(.roundedBorder)
-                    .frame(width: 150)
+                    .frame(width: AppConfiguration.UI.smallFrameWidth)
                     .onChange(of: name) {
-                        UserDefaults.standard.set(name, forKey: Const.JUDGE_NAME_KEY)
+                        UserDefaults.standard.set(name, forKey: AppConfiguration.StorageKeys.judgeName)
                     }
                     .onAppear {
-                        guard let judgeName = UserDefaults.standard.string(forKey: Const.JUDGE_NAME_KEY) else { return }
+                        guard let judgeName = UserDefaults.standard.string(forKey: AppConfiguration.StorageKeys.judgeName) else { return }
                         name = judgeName
                     }
                     Button(action: {
@@ -67,7 +68,7 @@ struct HomeView: View {
                     .buttonStyle(.custom)
                     .tint(.green)
                 }
-                .frame(width: 480)
+                .frame(width: AppConfiguration.UI.standardFrameWidth)
                 HStack {
                     FolderImportView(fileContent: $selectedFileContent)
                         .onChange(of: selectedFileContent) {
@@ -81,19 +82,18 @@ struct HomeView: View {
                             entryMembers = tmpMemberArray
                         }
                         .onAppear{
-                            guard let data = UserDefaults.standard.string(forKey: Const.SELCTED_FILE_KEY) else { return }
+                            guard let data = UserDefaults.standard.string(forKey: AppConfiguration.StorageKeys.selectedFileContents) else { return }
                             selectedFileContent = data
                         }
                     FolderExportView(fileName: name)
                 }
                 HStack {
-                    FolderExportView(fileName: name, sufix: .constant("Hiphop"))
-                    FolderExportView(fileName: name, sufix: .constant("Poppin"))
-                    FolderExportView(fileName: name, sufix: .constant("Lockin"))
-                    FolderExportView(fileName: name, sufix: .constant("House"))
+                    ForEach(AppConfiguration.ExportGenres.genres, id: \.self) { genre in
+                        FolderExportView(fileName: name, sufix: .constant(genre))
+                    }
                 }
                 SelectModeButtonPickerView(selectedMode: $mode)
-                    .frame(width: 400)
+                    .frame(width: AppConfiguration.UI.mediumFrameWidth)
                 Divider()
                 SelectHostView(alertType: $alertType, hostArray: $hostArray)
             }
@@ -135,11 +135,18 @@ struct HomeView: View {
 #Preview {
     struct Sim: View {
         @StateObject var socketManager = SocketManager()
+        @StateObject var scoreModel = ScoreModel()
+        @StateObject var messageHandler = MessageHandler()
         var body: some View {
             HomeView()
                 .environmentObject(socketManager)
+                .environmentObject(scoreModel)
+                .environmentObject(messageHandler)
+                .onAppear {
+                    messageHandler.configure(socketManager: socketManager, scoreModel: scoreModel)
+                }
         }
     }
-    
+
     return Sim()
 }

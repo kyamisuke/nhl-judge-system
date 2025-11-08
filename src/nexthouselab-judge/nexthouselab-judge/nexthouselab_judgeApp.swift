@@ -11,12 +11,17 @@ import SwiftUI
 struct nexthouselab_judgeApp: App {
     @StateObject var socketManager = SocketManager()
     @StateObject var scoreModel = ScoreModel()
-    
+    @StateObject var messageHandler = MessageHandler()
+
     var body: some Scene {
         WindowGroup {
             HomeView()
                 .environmentObject(socketManager)
                 .environmentObject(scoreModel)
+                .environmentObject(messageHandler)
+                .onAppear {
+                    messageHandler.configure(socketManager: socketManager, scoreModel: scoreModel)
+                }
         }
     }
 }

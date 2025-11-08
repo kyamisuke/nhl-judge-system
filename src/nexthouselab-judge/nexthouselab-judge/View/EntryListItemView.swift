@@ -26,14 +26,15 @@ struct EntryListItemView: View {
     let judgeName: String
     @Binding var tappedId: Int
     @Binding var currentMode: Const.Mode
-    let buttonColor = Color.init(red: 0.38, green: 0.28, blue: 0.86)
-    let lightColor = Color.init(red: 0.54, green: 0.41, blue: 0.95)
-    let shadowColor = Color.init(red: 0.25, green: 0.17, blue: 0.75)
-    let radius = CGFloat(12)
-    let buttonFontSize: CGFloat = Locale.current == Locale(identifier: "ja_JP") ? 16 : 12
-    
+
+    let radius = AppConfiguration.UI.buttonRadius
+    let buttonFontSize: CGFloat = Locale.current == Locale(identifier: "ja_JP") ?
+        AppConfiguration.UI.japaneseButtonFontSize :
+        AppConfiguration.UI.englishButtonFontSize
+
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
+    @EnvironmentObject var messageHandler: MessageHandler
     
     var body: some View {
         HStack(spacing: 12) {
@@ -44,30 +45,34 @@ struct EntryListItemView: View {
                 .frame(width: 80)
             VStack {
                 HStack {
-                    ForEach(0..<21) {num in
+                    ForEach(0..<AppConfiguration.Scores.tickCount) {num in
                         ScoreSliderView(num: num)
                     }
                 }
                 .padding(8)
                 if isTapped() && !isDone {
-                    Slider(value: scoreModel.getScore(for: String(entryName.number)), in: 0...10, step: 0.5)
-                        .onChange(of: scoreModel.getScore(for: String(entryName.number)).wrappedValue) {
-                            currentEdintingNum = entryName.number
-                        }
-                        .tint(Color(R.color.scoreColor))
+                    Slider(
+                        value: scoreModel.getScore(for: String(entryName.number)),
+                        in: AppConfiguration.Scores.minValue...AppConfiguration.Scores.maxValue,
+                        step: AppConfiguration.Scores.step
+                    )
+                    .onChange(of: scoreModel.getScore(for: String(entryName.number)).wrappedValue) {
+                        currentEdintingNum = entryName.number
+                    }
+                    .tint(Color(R.color.scoreColor))
                 } else {
                     Rectangle()
                         .foregroundStyle(.clear)
                         .frame(height: 32)
                 }
             }
-            .frame(width: 480)
+            .frame(width: AppConfiguration.UI.standardFrameWidth)
             ZStack {
                 Text(String(scoreModel.getScore(for: String(entryName.number)).wrappedValue))
                     .frame(width: 48)
                 // 上の円
                 Circle()
-                    .trim(from: 0.0, to: CGFloat(scoreModel.getScore(for: String(entryName.number)).wrappedValue) / 10.0) // 線のトリム
+                    .trim(from: 0.0, to: CGFloat(scoreModel.getScore(for: String(entryName.number)).wrappedValue) / CGFloat(AppConfiguration.Scores.maxValue)) // 線のトリム
                     .stroke(
                         Color.green,
                         style: StrokeStyle(
@@ -127,9 +132,9 @@ struct EntryListItemView: View {
     
     func isPlaying() -> Bool {
         switch currentMode {
-        case .Solo:
+        case .solo:
             return currentPlayNum == entryName.number
-        case .Dual:
+        case .dual:
             return currentPlayNum == entryName.number || currentPlayNum + 1 == entryName.number
         }
     }
@@ -137,9 +142,9 @@ struct EntryListItemView: View {
     func getBackgroundColor() -> Color {
         if isPlaying() {
             switch currentMode {
-            case .Solo:
+            case .solo:
                 return Color(R.color.oddColor)
-            case .Dual:
+            case .dual:
                 if entryName.number % 2 == 1 {
                     return Color(R.color.oddColor)
                 }
@@ -156,9 +161,9 @@ struct EntryListItemView: View {
     
     func isTapped() -> Bool {
         switch currentMode {
-        case .Solo:
+        case .solo:
             return entryName.number == tappedId
-        case .Dual:
+        case .dual:
             if tappedId % 2 == 1 {
                 return entryName.number == tappedId || entryName.number == tappedId + 1
             } else {
@@ -170,9 +175,19 @@ struct EntryListItemView: View {
     func tapButton() {
         scoreModel.updateDoneState(in: String(entryName.number), value: !isDone)
         if isDone {
-            socketManager.send(message: "SCORER/DECISION/\(judgeName)/\(entryName.number)/\(scoreModel.getScore(for: String(entryName.number)).wrappedValue)")
+            let score = scoreModel.getScore(for: String(entryName.number)).wrappedValue
+            let message = NetworkMessage.decision(
+                judgeName: judgeName,
+                entryNumber: entryName.number,
+                score: score
+            )
+            messageHandler.sendMessage(message)
         } else {
-            socketManager.send(message: "SCORER/CANCEL/\(judgeName)/\(entryName.number)/-1")
+            let message = NetworkMessage.cancel(
+                judgeName: judgeName,
+                entryNumber: entryName.number
+            )
+            messageHandler.sendMessage(message)
         }
     }
 }
@@ -196,18 +211,23 @@ private struct ScoreSliderView: View {
 #Preview {
     struct PreviewView: View {
         @State var demoScores: [Float] = [0, 0, 0, 0, 0, 0]
-        @State var socketManager = SocketManager()
-        @State var scoreModel = ScoreModel()
-        @State var mode = Const.Mode.Solo
-        
+        @StateObject var socketManager = SocketManager()
+        @StateObject var scoreModel = ScoreModel()
+        @StateObject var messageHandler = MessageHandler()
+        @State var mode = Const.Mode.solo
+
         var body: some View {
             List {
                 EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentPlayNum: .constant(5), currentEdintingNum: .constant(1), judgeName: "HIRO", tappedId: .constant(1), currentMode: $mode)
                     .environmentObject(socketManager)
                     .environmentObject(scoreModel)
+                    .environmentObject(messageHandler)
+            }
+            .onAppear {
+                messageHandler.configure(socketManager: socketManager, scoreModel: scoreModel)
             }
         }
     }
-    
+
     return PreviewView()
 }

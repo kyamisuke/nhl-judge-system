@@ -16,9 +16,10 @@ struct MainView: View {
     @State var tappedId = 1
     @Binding var shouldInitialize: Bool
     @Binding var currentMode: Const.Mode
-    
+
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
+    @EnvironmentObject var messageHandler: MessageHandler
         
     var body: some View {
         NavigationStack {
@@ -30,7 +31,7 @@ struct MainView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(16)
                     Spacer()
-                    Text("auto saved: \(scoreModel.udpatedTime)")
+                    Text("auto saved: \(scoreModel.updatedTime)")
                     Spacer()
                 }
                 Spacer()
@@ -43,27 +44,14 @@ struct MainView: View {
                         }
                 }
                 .onChange(of: currentEditingNum) {
-                    socketManager.send(message: "EDITING/\(judgeName)/\(currentEditingNum)")
+                    let message = NetworkMessage.editing(judgeName: judgeName, entryNumber: currentEditingNum)
+                    messageHandler.sendMessage(message)
                 }
-                .onChange(of: socketManager.recievedData) {
-                    if let currentPlayNum = Int(socketManager.recievedData) {
-                        self.currentPlayNum = currentPlayNum
-                    } else if socketManager.recievedData == "UPDATE" {
-                        do {
-                            // DictionaryをJSONデータに変換
-                            let scoresJson = try JSONSerialization.data(withJSONObject: scoreModel.scores)
-                            // JSONデータを文字列に変換
-                            let scoresJsonStr = String(bytes: scoresJson, encoding: .utf8)!
-                            // DictionaryをJSONデータに変換
-                            let doneStateJson = try JSONSerialization.data(withJSONObject: scoreModel.doneArray)
-                            // JSONデータを文字列に変換
-                            let doneStateJsonStr = String(bytes: doneStateJson, encoding: .utf8)!
-                            print(doneStateJsonStr)
-                            socketManager.send(message: "UPDATE/\(judgeName)/\(scoresJsonStr)/\(doneStateJsonStr)")
-                        } catch (let e) {
-                            print(e)
-                        }
-                    }
+                .onChange(of: socketManager.receivedData) {
+                    messageHandler.handleMessage(socketManager.receivedData)
+                }
+                .onChange(of: messageHandler.currentNumber) {
+                    self.currentPlayNum = messageHandler.currentNumber
                 }
                 
                 Spacer()
@@ -91,10 +79,11 @@ struct MainView: View {
 
 #Preview {
     struct Sim: View {
-        @State var socketManager = SocketManager()
-        @State var scoreModel = ScoreModel()
-        @State var mode = Const.Mode.Solo
-        
+        @StateObject var socketManager = SocketManager()
+        @StateObject var scoreModel = ScoreModel()
+        @StateObject var messageHandler = MessageHandler()
+        @State var mode = Const.Mode.solo
+
         var body: some View {
             MainView(judgeName: "KAZANE", entryNames: [
                 EntryName(number: 1, name: "Kenshu"),
@@ -106,8 +95,12 @@ struct MainView: View {
             ], currentPlayNum: .constant(1), shouldInitialize: .constant(true), currentMode: $mode)
             .environmentObject(socketManager)
             .environmentObject(scoreModel)
+            .environmentObject(messageHandler)
+            .onAppear {
+                messageHandler.configure(socketManager: socketManager, scoreModel: scoreModel)
+            }
         }
     }
-    
+
     return Sim()
 }

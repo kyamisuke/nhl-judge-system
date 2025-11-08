@@ -11,73 +11,53 @@ import Network
 final public class SocketManager: ObservableObject {
     // ネットワーク
     @Published var connections = [String: NWConnection]()
-    @Published var listnerStae = "未接続"
+    @Published var listenerState = "未接続"
     @Published var stateColor = Color.red
     private var nwListener: NWListener?
 
-    @Published var recievedData: String = ""
+    @Published var receivedData: String = ""
 
-    let sendPort: NWEndpoint.Port = 9000
-    let receivePort: NWEndpoint.Port = 8000
+    let sendPort: NWEndpoint.Port = NWEndpoint.Port(integerLiteral: AppConfiguration.Network.sendPort)
+    let receivePort: NWEndpoint.Port = NWEndpoint.Port(integerLiteral: AppConfiguration.Network.receivePort)
     let param = NWParameters.udp
-    
+
     // 定数
-    let networkType = "_networkplayground._udp."
-    let networkDomain = "local"
+    let networkType = AppConfiguration.Network.serviceType
+    let networkDomain = AppConfiguration.Network.networkDomain
     
     func send(message: String) {
-        //        if connection == nil { return }
-        //
-        //        /* 送信データ生成 */
-        //        let data = message.data(using: .utf8)!
-        //        let semaphore = DispatchSemaphore(value: 0)
-        //
-        //        /* データ送信 */
-        //        connection.send(content: data, completion: .contentProcessed { error in
-        //            if let error = error {
-        //                NSLog("\(#function), \(error)")
-        //                semaphore.signal()
-        //            } else {
-        //                semaphore.signal()
-        //            }
-        //        })
-        //        /* 送信完了待ち */
-        //        semaphore.wait()
-        
         /* 送信データ生成 */
-        let data = message.data(using: .utf8)!
-        let group = DispatchGroup()
-        
-        /* データ送信 */
+        guard let data = message.data(using: .utf8) else {
+            print("❌ Failed to encode message")
+            return
+        }
+
+        /* データ送信（非同期） */
         connections.forEach { (host, connection) in
-            group.enter()
             connection.send(content: data, completion: .contentProcessed { error in
                 if let error = error {
-                    print("\(#function), \(error)")
+                    print("❌ Send error to \(host): \(error)")
                 } else {
-                    print("Send to \(host)")
+                    print("✅ Sent to \(host)")
                 }
-                group.leave()
             })
         }
-        /* 送信完了待ち */
-        group.wait()
     }
     
     private func receive(on connection: NWConnection) {
-        print("receive on connection: \(connection)")
+        print("📡 Receive on connection: \(connection)")
         connection.receiveMessage { (data: Data?, contentContext: NWConnection.ContentContext?, aBool: Bool, error: NWError?) in
-            
+
             if let data = data, let message = String(data: data, encoding: .utf8) {
-                print("Received Message: \(message)")
-                // メインスレッドで変数更新
-                DispatchQueue.main.sync {
-                    self.recievedData = message
+                print("📨 Received Message: \(message)")
+                // メインスレッドで変数更新（asyncに修正してデッドロック防止）
+                DispatchQueue.main.async {
+                    self.receivedData = message
                 }
             }
-            
+
             if let error = error {
-                print(error)
+                print("❌ Receive error: \(error)")
             } else {
                 // エラーがなければこのメソッドを再帰的に呼ぶ
                 self.receive(on: connection)
@@ -86,21 +66,6 @@ final public class SocketManager: ObservableObject {
     }
     
     func startListener(name: String) {
-        //        guard let listener = try? NWListener(using: .udp, on: 8000) else { fatalError() }
-        //
-        //        listener.service = NWListener.Service(name: name, type: networkType)
-        //
-        //        let listnerQueue = DispatchQueue(label: "com.nhl.judge.system.host.listener")
-        //
-        //        // 新しいコネクション受診時の処理
-        //        listener.newConnectionHandler = { [unowned self] (connection: NWConnection) in
-        //            connection.start(queue: listnerQueue)
-        //            self.receive(on: connection)
-        //        }
-        //
-        //        // Listener開始
-        //        listener.start(queue: listnerQueue)
-        //        print("Start Listening as \(listener.service!.name)")
         do {
             // すでに繋がっているなら閉じる
             nwListener?.cancel()
@@ -110,97 +75,97 @@ final public class SocketManager: ObservableObject {
             let listener = try NWListener(using: param, on: receivePort)
             listener.stateUpdateHandler = { state in
                 DispatchQueue.main.async {
-                    self.updateListenerStae(state: state)
+                    self.updateListenerState(state: state)
                 }
             }
-            
+
             listener.newConnectionHandler = { [unowned self] newConnection in
                 newConnection.start(queue: .global())
                 self.receive(on: newConnection)
             }
-            
+
             listener.start(queue: .main)
             nwListener = listener
+            print("🎧 Started listener on port \(self.receivePort)")
         } catch {
-            print("Failed to create listener: \(error)")
+            print("❌ Failed to create listener: \(error)")
         }
     }
     
-    func updateListenerStae(state: NWListener.State)  {
+    func updateListenerState(state: NWListener.State)  {
         switch state {
         case .setup:
-            print("Listener setup")
-            listnerStae = "セットアップ中"
+            print("🔧 Listener setup")
+            listenerState = "セットアップ中"
             stateColor = .yellow
         case .waiting(let error):
-            print("Listener waiting: \(error)")
-            listnerStae =  "待機中"
+            print("⏳ Listener waiting: \(error)")
+            listenerState =  "待機中"
             stateColor = .yellow
         case .ready:
-            print("Listener ready and listening for incoming messages")
-            listnerStae =  "接続準備完了"
+            print("✅ Listener ready and listening for incoming messages")
+            listenerState =  "接続準備完了"
             stateColor = .green
         case .failed(let error):
-            print("Listener failed with error: \(error)")
-            listnerStae =  "失敗しました"
+            print("❌ Listener failed with error: \(error)")
+            listenerState =  "失敗しました"
             stateColor = .red
         case .cancelled:
-            print("Listener cancelled")
-            listnerStae =  "キャンセルしました"
+            print("🚫 Listener cancelled")
+            listenerState =  "キャンセルしました"
             stateColor = .black
         @unknown default:
-            print("Unknown state")
-            listnerStae =  "未定義"
+            print("❓ Unknown state")
+            listenerState =  "未定義"
             stateColor = .yellow
         }
     }
     
-    func disconnect(host: String)
-    {
+    func disconnect(host: String) {
         /* コネクション切断 */
         connections[host]?.cancel()
         connections.removeValue(forKey: host)
+        print("🔌 Disconnected from \(host)")
     }
 
-    func connect(host: String)
-    {
-        if connections.keys.contains(host) { return }
-        
-        let connection: NWConnection!
+    func connect(host: String, completion: (() -> Void)? = nil) {
+        if connections.keys.contains(host) {
+            print("ℹ️ Already connected to \(host)")
+            completion?()
+            return
+        }
+
+        let connection: NWConnection
         let t_host = NWEndpoint.Host(host)
-        let semaphore = DispatchSemaphore(value: 0)
 
         /* コネクションの初期化 */
         connection = NWConnection(host: t_host, port: sendPort, using: param)
 
         /* コネクションのStateハンドラ設定 */
-        connection?.stateUpdateHandler = { (newState) in
+        connection.stateUpdateHandler = { [weak self] newState in
             switch newState {
-                case .ready:
-                    NSLog("Ready to send")
-                    semaphore.signal()
-                case .waiting(let error):
-                    NSLog("\(#function), \(error)")
-                case .failed(let error):
-                    NSLog("\(#function), \(error)")
-                case .setup:
-                    print("set up")
-                case .cancelled:
-                    print("cancelled")
-                case .preparing:
-                    print("preparing")
-                @unknown default:
-                    fatalError("Illegal state")
+            case .ready:
+                print("✅ Ready to send to \(host)")
+                completion?()
+            case .waiting(let error):
+                print("⏳ Waiting for \(host): \(error)")
+            case .failed(let error):
+                print("❌ Failed to connect to \(host): \(error)")
+            case .setup:
+                print("🔧 Setting up connection to \(host)")
+            case .cancelled:
+                print("🚫 Connection to \(host) cancelled")
+            case .preparing:
+                print("⏳ Preparing connection to \(host)")
+            @unknown default:
+                print("❓ Unknown connection state for \(host)")
             }
         }
-        
-        /* コネクション開始 */
-        let queue = DispatchQueue(label: "_udp._hostConnection")
-        connection?.start(queue:queue)
 
-        /* コネクション完了待ち */
-        semaphore.wait()
-        
+        /* コネクション開始 */
+        let queue = DispatchQueue(label: "com.nhl.judge.udp.connection.\(host)")
+        connection.start(queue: queue)
+
         connections[host] = connection
     }
 
@@ -241,48 +206,9 @@ final public class SocketManager: ObservableObject {
     }
     
     func connectAllHosts(hosts: [String]) {
-        let group = DispatchGroup()
-        
+        print("🔗 Connecting to \(hosts.count) hosts...")
         hosts.forEach { host in
-            if connections.keys.contains(host) { return }
-            
-            group.enter()
-            
-            let connection: NWConnection!
-            let t_host = NWEndpoint.Host(host)
-            
-            /* コネクションの初期化 */
-            connection = NWConnection(host: t_host, port: sendPort, using: param)
-            
-            /* コネクションのStateハンドラ設定 */
-            connection?.stateUpdateHandler = { (newState) in
-                switch newState {
-                case .ready:
-                    print("Ready to send")
-                    group.leave()
-                case .waiting(let error):
-                    print("\(#function), \(error)")
-                case .failed(let error):
-                    print("\(#function), \(error)")
-                case .setup:
-                    print("set up")
-                case .cancelled:
-                    print("cancelled")
-                case .preparing:
-                    print("preparing")
-                @unknown default:
-                    fatalError("Illegal state")
-                }
-            }
-            
-            /* コネクション開始 */
-            let queue = DispatchQueue(label: "_udp._hostConnection")
-            connection?.start(queue:queue)
-            
-            /* コネクション完了待ち */
-            group.wait()
-            
-            connections[host] = connection
+            connect(host: host)
         }
     }
     

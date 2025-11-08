@@ -41,7 +41,7 @@ struct SelectHostView: View {
             }
             Spacer()
             HStack {
-                Text(socketManager.listnerStae)
+                Text(socketManager.listenerState)
                     .foregroundStyle(socketManager.stateColor)
                 Button(action: {
                     socketManager.startListener(name: "judge_listner")
@@ -112,7 +112,7 @@ struct SelectHostView: View {
     }
     
     func save() {
-        UserDefaults.standard.set(hostArray, forKey: Const.HOST_KEY)
+        UserDefaults.standard.set(hostArray, forKey: AppConfiguration.StorageKeys.host)
     }
 }
 
