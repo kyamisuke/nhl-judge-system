@@ -63,26 +63,6 @@ struct JudgeView: View {
                             }
                             Divider()
                         }
-//                        HStack {
-//                            Divider()
-//                            ForEach(Const.JUDGE_NAMES) { judgeName in
-//                                // 角ジャッジの下に表示するエントリーリスト
-//                                LazyVStack(spacing: 0) {
-//                                    Text(judgeName.name)
-//                                        .frame(maxWidth: .infinity)
-//                                        .font(.title)
-//                                        .fontWeight(.bold)
-////                                        .background(Const.judgeLabelColor)
-//                                    Divider()
-//                                        .padding(8)
-//                                    ForEach(entryMembers) { member in
-//                                        EntryListItemView(entryName: member, currentNumber: $currentNumber, judgeName: judgeName.name, currentMessage: $currentMessage)
-//                                        Divider()
-//                                    }
-//                                }
-//                                Divider()
-//                            }
-//                        }
                     }
                     .background {
                         GeometryReader { proxy in
@@ -155,7 +135,7 @@ struct JudgeView: View {
         var body: some View {
             //            Text("offset: \(offset!)")
             HStack {
-                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1), currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)), isModal: .constant(false), judgeIpModel: .constant(JudgeIpModel()), mode: .constant(.Solo))
+                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1), currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)), isModal: .constant(false), judgeIpModel: .constant(JudgeIpModel()), mode: .constant(.solo))
                     .environmentObject(socketManager)
                     .environmentObject(scoreModel)
             }

@@ -77,7 +77,7 @@ struct HostSelectModalView: View {
             }
             Spacer()
             HStack {
-                Text(socketManager.listnerStae)
+                Text(socketManager.listenerState)
                     .foregroundStyle(socketManager.stateColor)
                 Button(action: {
                     socketManagerInit()

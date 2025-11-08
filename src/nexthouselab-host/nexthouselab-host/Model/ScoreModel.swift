@@ -8,43 +8,64 @@
 import SwiftUI
 
 final public class ScoreModel: ObservableObject {
-    @Published var scores: Dictionary<String, Dictionary<String, Float>>
-    @Published var udpatedTime: String = ""
-    
+    @Published var scores: Dictionary<String, Dictionary<String, Float?>>
+    @Published var updatedTime: String = ""
+
     private var timer: Timer?
     private let formatter: DateFormatter = DateFormatter()
-    
+
     init() {
-        scores = Dictionary<String, Dictionary<String, Float>>()
+        scores = Dictionary<String, Dictionary<String, Float?>>()
         formatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "yMdkHms", options: 0, locale: Locale(identifier: "ja_JP"))
     }
-    
+
     func initialize(entryNames: [EntryName]) {
-        let storedScore = UserDefaults.standard.object(forKey: Const.SCORES_KEY) as? Dictionary<String, Dictionary<String, Float>>
-        if storedScore == nil {
-            scores = Dictionary<String, Dictionary<String, Float>>()
+        if let storedScore = UserDefaults.standard.object(forKey: Const.SCORES_KEY) as? Dictionary<String, Dictionary<String, Float>> {
+            // 既存データを変換: -1 を nil に変換
+            scores = Dictionary<String, Dictionary<String, Float?>>()
+            for (judgeName, judgeScores) in storedScore {
+                var convertedScores = Dictionary<String, Float?>()
+                for (entryNumber, score) in judgeScores {
+                    convertedScores[entryNumber] = score == -1 ? nil : score
+                }
+                scores[judgeName] = convertedScores
+            }
+            print("すでにデータが存在しています。")
+        } else {
+            scores = Dictionary<String, Dictionary<String, Float?>>()
             for judgeName in Const.JUDGE_NAMES {
-                var tmpScores = Dictionary<String, Float>()
+                var tmpScores = Dictionary<String, Float?>()
                 for entryName in entryNames {
-                    tmpScores[String(entryName.number)] = -1
+                    tmpScores[String(entryName.number)] = nil
                 }
                 scores[judgeName.name] = tmpScores
             }
-            print("Initialze score.")
-        } else {
-            scores = storedScore!
-            print("すでにデータが存在しています。")
+            print("Initialize score.")
         }
     }
-    
-    func getScore(in judgeName: String, for key: String) -> Binding<Float> {
+
+    func getScore(in judgeName: String, for key: String) -> Binding<Float?> {
         return .init(
-            get: { (self.scores[judgeName] ?? Dictionary<String, Float>())[key, default: -1] },
+            get: { (self.scores[judgeName] ?? Dictionary<String, Float?>())[key, default: nil] },
             set: { self.scores[judgeName]?[key] = $0 }
         )
     }
-    
+
+    /// Float版の互換性のための関数（従来の-1を返す）
+    func getScoreLegacy(in judgeName: String, for key: String) -> Float {
+        return getScore(in: judgeName, for: key).wrappedValue ?? -1
+    }
+
     func update(forKey judge: String, scores: Dictionary<String, Float>) {
+        // Float版をOptional版に変換
+        var convertedScores = Dictionary<String, Float?>()
+        for (key, value) in scores {
+            convertedScores[key] = value == -1 ? nil : value
+        }
+        self.scores[judge] = convertedScores
+    }
+
+    func updateOptional(forKey judge: String, scores: Dictionary<String, Float?>) {
         self.scores[judge] = scores
     }
     
@@ -55,8 +76,17 @@ final public class ScoreModel: ObservableObject {
     }
     
     private func saveCounter() {
-        UserDefaults.standard.set(scores, forKey: Const.SCORES_KEY)
-        udpatedTime = formatter.string(from: Date())
+        // Optional<Float>をFloatに変換して保存（互換性のため）
+        var legacyScores = Dictionary<String, Dictionary<String, Float>>()
+        for (judgeName, judgeScores) in scores {
+            var convertedScores = Dictionary<String, Float>()
+            for (entryNumber, score) in judgeScores {
+                convertedScores[entryNumber] = score ?? -1
+            }
+            legacyScores[judgeName] = convertedScores
+        }
+        UserDefaults.standard.set(legacyScores, forKey: Const.SCORES_KEY)
+        updatedTime = formatter.string(from: Date())
     }
     
     func stopTimer() {

@@ -26,31 +26,29 @@ struct MainView: View {
 
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
+    @EnvironmentObject var messageHandler: MessageHandler
     @State var judgeIpModel: JudgeIpModel = JudgeIpModel()
-    
-    @State var currentMessage = Message(judgeName: "", number: 0)
-    
+
     @State var timer: Timer?
     
     // TODO: 決め打ちなので、UIから変更できるような仕組みを作る
-    @State var currentMode = Const.Mode.Dual
+    @State var currentMode = Const.Mode.dual
     
     let device = UIDevice.current
     
     var body: some View {
-        //        Text(ges)
         NavigationStack {
             VStack {
                 // 各ジャッジのリストを表示
-                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: $currentNumber, currentMessage: $currentMessage, isModal: $isModal, judgeIpModel: $judgeIpModel, mode: $currentMode)
-                    .onChange(of: socketManager.recievedData) {
-                        receiveMessage(message: socketManager.recievedData)
+                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: $messageHandler.currentNumber, currentMessage: $messageHandler.currentMessage, isModal: $isModal, judgeIpModel: $judgeIpModel, mode: $currentMode)
+                    .onChange(of: socketManager.receivedData) {
+                        receiveMessage(message: socketManager.receivedData)
                     }
                 if device.isiPad {
                     Group {
                         Button(action: {
-                            if self.currentNumber != 1 {
-                                currentNumber -= currentMode.playerNum()
+                            if messageHandler.currentNumber != 1 {
+                                messageHandler.currentNumber -= currentMode.playerNum()
                             }
                             isTapped = true
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -65,10 +63,10 @@ struct MainView: View {
                                 .padding(.vertical, 4)
                         })
                         .buttonStyle(.custom)
-                        .disabled(currentNumber == 1 || isTapped)
+                        .disabled(messageHandler.currentNumber == 1 || isTapped)
                         Button(action: {
-                            if self.currentNumber + currentMode.playerNum() <= entryMembers.count {
-                                currentNumber += currentMode.playerNum()
+                            if messageHandler.currentNumber + currentMode.playerNum() <= entryMembers.count {
+                                messageHandler.currentNumber += currentMode.playerNum()
                             }
                             isTapped = true
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -83,11 +81,11 @@ struct MainView: View {
                                 .padding(.vertical, 4)
                         })
                         .buttonStyle(.custom)
-                        .disabled(currentNumber + currentMode.playerNum() > entryMembers.count || isTapped)
+                        .disabled(messageHandler.currentNumber + currentMode.playerNum() > entryMembers.count || isTapped)
                     }
                     .padding(.horizontal, 8)
-                    .onChange(of: currentNumber) {
-                        socketManager.send(message: String(currentNumber))
+                    .onChange(of: messageHandler.currentNumber) {
+                        socketManager.send(message: String(messageHandler.currentNumber))
                     }
                     Spacer()
                 }
@@ -127,52 +125,14 @@ struct MainView: View {
     }
     
     func receiveMessage(message: String) {
-        let data = message.components(separatedBy: "/")
-        // 先頭にコマンドが入っているので其れによって処理分岐
-        if data[0] == "EDITING" {
-            // ${judgeName}が今操作している欄を取得
-            guard let num = Int(data[2]) else { return }
-            let name = data[1]
-            currentMessage = Message(judgeName: name, number: num)
-            print(currentMessage)
+        // MessageHandlerに処理を委譲
+        messageHandler.handleMessage(message)
+
+        // UUIDキーを削除（メッセージの最後のコンポーネント）
+        let components = message.components(separatedBy: "/")
+        if let uuidKey = components.last {
+            socketManager.storedData.removeValue(forKey: uuidKey)
         }
-        else if data[0] == "CONNECT" {
-            // 接続開始したIPアドレスを取得
-            socketManager.connect(host: data[1])
-            print(data[1])
-        } else if data[0] == "SCORER" {
-            //            if data[1] == "DECISION" {
-            let judgeName = data[2]
-            let entryNumber = data[3]
-            let score = Float(data[4])!
-            print("Update Score: \(judgeName), \(entryNumber), \(score)")
-            scoreModel.scores[judgeName]![entryNumber] = score
-            //            } else if data[1] == "CANCEL" {
-            //                scoreModel.scores[data[2]]![data[3]] = Float(data[4])!
-            //            }
-        } else if data[0] == "DISCONNECT" {
-            socketManager.disconnect(host: data[1])
-        } else if data[0] == "UPDATE" {
-            do {
-                let judgeName = data[1]
-                var scores = try JSONSerialization.jsonObject(with: data[2].data(using: .utf8)!) as! [String: Float]
-                let stateArray = try JSONSerialization.jsonObject(with: data[3].data(using: .utf8)!) as! [String: Bool]
-                stateArray.forEach { state in
-                    if !state.value {
-                        scores[state.key] = -1
-                    }
-                }
-                scoreModel.update(forKey: judgeName, scores: scores)
-            } catch {
-                
-            }
-        }else {
-            guard let currentNum = Int(message) else {
-                return
-            }
-            self.currentNumber = currentNum
-        }
-        socketManager.storedData.removeValue(forKey: data.last!)
     }
     
     func scoreModelInit() {

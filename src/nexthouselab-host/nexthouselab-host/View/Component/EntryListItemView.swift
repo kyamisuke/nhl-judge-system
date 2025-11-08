@@ -34,34 +34,28 @@ struct EntryListItemView: View {
                 )
         }
         .frame(maxWidth: .infinity)
-//        .frame(width: 150)
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
         .background(getBackgroundColor())
         .border(isEditing ? Color.green : Color.clear, width: 4)
         .onChange(of: currentMessage, checkEditing)
-//        .onChange(of: socketManager.recievedData, receiveData)
-    }
-    
-    private func onClickButton() {
-        isFilling = true
     }
     
     private func isFocus() -> Bool {
         switch mode {
-        case .Solo:
+        case .solo:
             return entryName.number == currentNumber
-        case .Dual:
+        case .dual:
             return entryName.number == currentNumber || entryName.number == currentNumber + 1
         }
     }
-    
+
     private func getBackgroundColor() -> Color {
         if isFocus() {
             switch mode {
-            case .Solo:
+            case .solo:
                 return Color("oddColor")
-            case .Dual:
+            case .dual:
                 if entryName.number % 2 == 1 {
                     return Color("oddColor")
                 } else {
@@ -78,28 +72,13 @@ struct EntryListItemView: View {
             isEditing = entryName.number == currentMessage.number
         }
     }
-    
-//    private func receiveData() {
-//        let data = socketManager.recievedData.components(separatedBy: "/")
-//        if data[0] == "SCORER" {
-//            if data[1] == "DECISION" {
-//                if judgeName == data[2] && entryName.number == Int(data[3])! {
-//                    scoreModel.scores[judgeName]![String(entryName.number)] = Float(data[4])!
-//                }
-//            } else if data[1] == "CANCEL" {
-//                if judgeName == data[2] && entryName.number == Int(data[3])! {
-//                    scoreModel.scores[judgeName]![String(entryName.number)] = Float(data[4])!
-//                }
-//            }
-//        }
-//    }
-    
+
     private func getLabel() -> String {
         let score = scoreModel.getScore(in: judgeName, for: String(entryName.number)).wrappedValue
-        if score == -1 {
-            return "未"
-        } else {
+        if let score = score {
             return String(score)
+        } else {
+            return "未"
         }
     }
 }
@@ -127,7 +106,7 @@ private struct ScoreSliderView: View {
         @StateObject var scoreModel = ScoreModel()
 
         var body: some View {
-            EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentNumber: .constant(1), judgeName: "KAZANE", currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)), mode: .constant(.Solo))
+            EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentNumber: .constant(1), judgeName: "KAZANE", currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)), mode: .constant(.solo))
                 .environmentObject(socketManager)
                 .environmentObject(scoreModel)
         }

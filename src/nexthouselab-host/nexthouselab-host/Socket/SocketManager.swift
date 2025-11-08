@@ -11,12 +11,12 @@ import Network
 final public class SocketManager: ObservableObject {
     // ネットワーク
     @Published var connections = [String: NWConnection]()
-    @Published var listnerStae = "未接続"
+    @Published var listenerState = "未接続"
     @Published var stateColor = Color.red
     private var nwListener: NWListener?
 
     // 送られてきたデータを監視するところ
-    @Published var recievedData: String = ""
+    @Published var receivedData: String = ""
     
     var storedData = [String: String]()
     
@@ -27,24 +27,6 @@ final public class SocketManager: ObservableObject {
     let param = NWParameters.udp
             
     func send(message: String) {
-//        if connection == nil { return }
-//        
-//        /* 送信データ生成 */
-//        let data = message.data(using: .utf8)!
-//        let semaphore = DispatchSemaphore(value: 0)
-//
-//        /* データ送信 */
-//        connection.send(content: data, completion: .contentProcessed { error in
-//            if let error = error {
-//                NSLog("\(#function), \(error)")
-//                semaphore.signal()
-//            } else {
-//                semaphore.signal()
-//            }
-//        })
-//        /* 送信完了待ち */
-//        semaphore.wait()
-        
         /* 送信データ生成 */
         let data = message.data(using: .utf8)!
         let group = DispatchGroup()
@@ -87,33 +69,6 @@ final public class SocketManager: ObservableObject {
     }
     
     func startListener(name: String) {
-//        guard let listener = try? NWListener(using: .udp, on: 9000) else { fatalError() }
-//
-//        listener.service = NWListener.Service(name: name, type: networkType)
-//
-//        let listnerQueue = DispatchQueue(label: "com.nhl.judge.system.host.listener")
-//
-//        // 新しいコネクション受診時の処理
-//        listener.newConnectionHandler = { [unowned self] (connection: NWConnection) in
-//            connection.start(queue: listnerQueue)
-//            self.receive(on: connection)
-//        }
-//
-//        // Listener開始
-//        listener.start(queue: listnerQueue)
-//        listener.stateUpdateHandler = { state in
-//            switch state {
-//            case .failed(let error):
-//                print("Failed to listen: \(error)")
-//            case .ready:
-//                print("Start Listening as \(listener.service!.name)")
-//            default:
-//                break
-//            }
-//        }
-//        DispatchQueue.main.async {
-//            self.listenerState = listener.state
-//        }
         do {
             // 前のポートが残ってるなら閉じる
             nwListener?.cancel()
@@ -123,15 +78,15 @@ final public class SocketManager: ObservableObject {
             let listener = try NWListener(using: param, on: 9000)
             listener.stateUpdateHandler = { state in
                 DispatchQueue.main.async {
-                    self.updateListenerStae(state: state)
+                    self.updateListenerState(state: state)
                 }
             }
-            
+
             listener.newConnectionHandler = { [weak self] newConnection in
                 newConnection.start(queue: .global())
                 self?.receive(on: newConnection)
             }
-            
+
             listener.start(queue: .main)
             nwListener = listener
         } catch {
@@ -140,33 +95,6 @@ final public class SocketManager: ObservableObject {
     }
     
     func startListenerForPhone(name: String) {
-//        guard let listener = try? NWListener(using: .udp, on: 8000) else { fatalError() }
-//
-//        listener.service = NWListener.Service(name: name, type: networkType)
-//
-//        let listnerQueue = DispatchQueue(label: "com.nhl.judge.system.host.listener")
-//
-//        // 新しいコネクション受診時の処理
-//        listener.newConnectionHandler = { [unowned self] (connection: NWConnection) in
-//            connection.start(queue: listnerQueue)
-//            self.receive(on: connection)
-//        }
-//
-//        // Listener開始
-//        listener.start(queue: listnerQueue)
-//        listener.stateUpdateHandler = { state in
-//            switch state {
-//            case .failed(let error):
-//                print("Failed to listen: \(error)")
-//            case .ready:
-//                print("Start Listening as \(listener.service!.name)")
-//            default:
-//                break
-//            }
-//        }
-//        DispatchQueue.main.async {
-//            self.listenerStateForPhone = listener.state
-//        }
         do {
             // UDPを使用して指定されたポートでリスナーを作成
             let listener = try NWListener(using: param, on: 8000)
@@ -186,43 +114,43 @@ final public class SocketManager: ObservableObject {
                     print("Unknown state")
                 }
             }
-            
+
             listener.newConnectionHandler = { [unowned self] newConnection in
                 newConnection.start(queue: .global())
                 self.receive(on: newConnection)
             }
-            
+
             listener.start(queue: .main)
         } catch {
             print("Failed to create listener: \(error)")
         }
     }
     
-    func updateListenerStae(state: NWListener.State)  {
+    func updateListenerState(state: NWListener.State)  {
         switch state {
         case .setup:
             print("Listener setup")
-            listnerStae = "セットアップ中"
+            listenerState = "セットアップ中"
             stateColor = .yellow
         case .waiting(let error):
             print("Listener waiting: \(error)")
-            listnerStae =  "待機中"
+            listenerState = "待機中"
             stateColor = .yellow
         case .ready:
             print("Listener ready and listening for incoming messages")
-            listnerStae =  "接続準備完了"
+            listenerState = "接続準備完了"
             stateColor = .green
         case .failed(let error):
             print("Listener failed with error: \(error)")
-            listnerStae =  "失敗しました"
+            listenerState = "失敗しました"
             stateColor = .red
         case .cancelled:
             print("Listener cancelled")
-            listnerStae =  "キャンセルしました"
+            listenerState = "キャンセルしました"
             stateColor = .black
         @unknown default:
             print("Unknown state")
-            listnerStae =  "未定義"
+            listenerState = "未定義"
             stateColor = .yellow
         }
     }
@@ -236,8 +164,8 @@ final public class SocketManager: ObservableObject {
                 // メインスレッドで変数更新
                 DispatchQueue.main.sync {
                     let uuid = UUID()
-                    self.recievedData = "\(message)/\(uuid)"
-                    self.storedData["\(uuid)"] = self.recievedData
+                    self.receivedData = "\(message)/\(uuid)"
+                    self.storedData["\(uuid)"] = self.receivedData
                 }
             }
 

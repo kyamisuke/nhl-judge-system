@@ -9,7 +9,7 @@ import SwiftUI
 
 struct TopUIGrroupView: View {
     @State var selectedFileContent = ""
-    @State var bloadcastIp = ""
+    @State var broadcastIp = ""
     @Binding var entryMembers: [EntryName]
     @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
@@ -20,19 +20,19 @@ struct TopUIGrroupView: View {
         HStack {
             Spacer()
 //            VStack(alignment: .leading) {
-//                TextField(text: $bloadcastIp, label: {
+//                TextField(text: $broadcastIp, label: {
 //                    Text("ip")
 //                })
 //                .textFieldStyle(.roundedBorder)
 //                .frame(width: 150)
-//                .onChange(of: bloadcastIp) {
-//                    UserDefaults.standard.set(bloadcastIp, forKey: Const.IP_KEY)
+//                .onChange(of: broadcastIp) {
+//                    UserDefaults.standard.set(broadcastIp, forKey: Const.IP_KEY)
 //                }
 //                .onAppear {
 //                    guard let ip = UserDefaults.standard.string(forKey: Const.IP_KEY) else { return }
-//                    bloadcastIp = ip
+//                    broadcastIp = ip
 //                }
-//                if bloadcastIp.components(separatedBy: ".").count == 4 {
+//                if broadcastIp.components(separatedBy: ".").count == 4 {
 //                    EmptyView()
 //                } else {
 //                    Text("invalid ip address")
@@ -42,7 +42,7 @@ struct TopUIGrroupView: View {
 //            }
 //            Button(action: {
 //                socketManager.startListener(name: "host_listener")
-//                socketManager.connect(host: bloadcastIp, port: "8000", param: .udp)
+//                socketManager.connect(host: broadcastIp, port: "8000", param: .udp)
 //            }, label: {
 //                Text("通信待受開始")
 //            })
