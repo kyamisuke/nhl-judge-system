@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8F1DD3902EBF6C3C0030F6C7 /* ActivityViewControllerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1DD38F2EBF6C3C0030F6C7 /* ActivityViewControllerRepresentable.swift */; };
-		8F1DD3922EBF6C3C0030F6C7 /* ShareExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1DD3912EBF6C3C0030F6C7 /* ShareExportView.swift */; };
 		8F1DD38C2EBF6C3B0030F6C7 /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1DD3882EBF6C3B0030F6C7 /* AppConfiguration.swift */; };
 		8F1DD38D2EBF6C3B0030F6C7 /* NetworkMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1DD38A2EBF6C3B0030F6C7 /* NetworkMessage.swift */; };
 		8F1DD38E2EBF6C3B0030F6C7 /* MessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1DD3892EBF6C3B0030F6C7 /* MessageHandler.swift */; };
+		8F1DD3902EBF6C3C0030F6C7 /* ActivityViewControllerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1DD38F2EBF6C3C0030F6C7 /* ActivityViewControllerRepresentable.swift */; };
+		8F1DD3922EBF6C3C0030F6C7 /* ShareExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1DD3912EBF6C3C0030F6C7 /* ShareExportView.swift */; };
 		8F3D1FB02C099232000D34B0 /* PrincipalIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D1FAF2C099232000D34B0 /* PrincipalIcon.swift */; };
 		8F3D1FB32C0998C8000D34B0 /* HomeAlertModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D1FB22C0998C8000D34B0 /* HomeAlertModifier.swift */; };
 		8F44ADA02C0ADE5D0058914A /* CrayButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F44AD9F2C0ADE5D0058914A /* CrayButtonView.swift */; };
@@ -33,11 +33,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8F1DD38F2EBF6C3C0030F6C7 /* ActivityViewControllerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityViewControllerRepresentable.swift; sourceTree = "<group>"; };
-		8F1DD3912EBF6C3C0030F6C7 /* ShareExportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareExportView.swift; sourceTree = "<group>"; };
 		8F1DD3882EBF6C3B0030F6C7 /* AppConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfiguration.swift; sourceTree = "<group>"; };
 		8F1DD3892EBF6C3B0030F6C7 /* MessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageHandler.swift; sourceTree = "<group>"; };
 		8F1DD38A2EBF6C3B0030F6C7 /* NetworkMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMessage.swift; sourceTree = "<group>"; };
+		8F1DD38F2EBF6C3C0030F6C7 /* ActivityViewControllerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityViewControllerRepresentable.swift; sourceTree = "<group>"; };
+		8F1DD3912EBF6C3C0030F6C7 /* ShareExportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareExportView.swift; sourceTree = "<group>"; };
 		8F3D1FAF2C099232000D34B0 /* PrincipalIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrincipalIcon.swift; sourceTree = "<group>"; };
 		8F3D1FB22C0998C8000D34B0 /* HomeAlertModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAlertModifier.swift; sourceTree = "<group>"; };
 		8F44AD9F2C0ADE5D0058914A /* CrayButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrayButtonView.swift; sourceTree = "<group>"; };
@@ -436,7 +436,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2026010300;
+				CURRENT_PROJECT_VERSION = 2026010301;
 				DEVELOPMENT_ASSET_PATHS = "\"nexthouselab-judge/Preview Content\"";
 				DEVELOPMENT_TEAM = RW9N8FZHM7;
 				ENABLE_PREVIEWS = YES;
@@ -455,7 +455,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.2;
+				MARKETING_VERSION = 3.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kyamisuke.nexthouselab-judge";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -474,7 +474,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2026010300;
+				CURRENT_PROJECT_VERSION = 2026010301;
 				DEVELOPMENT_ASSET_PATHS = "\"nexthouselab-judge/Preview Content\"";
 				DEVELOPMENT_TEAM = RW9N8FZHM7;
 				ENABLE_PREVIEWS = YES;
@@ -493,7 +493,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2.2;
+				MARKETING_VERSION = 3.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kyamisuke.nexthouselab-judge";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
