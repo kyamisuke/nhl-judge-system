@@ -138,7 +138,6 @@ enum NetworkMessage {
 
 主要メソッド:
 - `getScore(for:)`: Floatの Bindingを返す（nilは0として表示）
-- `updateScores(forKey:value:)`: Float?版を直接受け取る
 - `initialize(entryList:)`: エントリーリストでスコアを初期化（nilで開始）
 - `startTimer()`/`stopTimer()`: 自動保存タイマーの制御
 
