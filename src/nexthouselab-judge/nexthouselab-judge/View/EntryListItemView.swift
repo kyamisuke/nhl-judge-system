@@ -140,7 +140,7 @@ struct EntryListItemView: View {
     }
     
     func getBackgroundColor() -> Color {
-        if isPlaying() {
+        if isPlaying() && false {
             switch currentMode {
             case .solo:
                 return Color(R.color.oddColor)
