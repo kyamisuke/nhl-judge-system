@@ -85,11 +85,17 @@ struct HomeView: View {
                             guard let data = UserDefaults.standard.string(forKey: AppConfiguration.StorageKeys.selectedFileContents) else { return }
                             selectedFileContent = data
                         }
-                    FolderExportView(fileName: name)
+                    HStack {
+                        FolderExportView(fileName: name)
+                        ShareExportView(fileName: name)
+                    }
                 }
                 HStack {
                     ForEach(AppConfiguration.ExportGenres.genres, id: \.self) { genre in
-                        FolderExportView(fileName: name, sufix: .constant(genre))
+                        HStack(spacing: 4) {
+                            FolderExportView(fileName: name, sufix: .constant(genre))
+                            ShareExportView(fileName: name, sufix: .constant(genre))
+                        }
                     }
                 }
                 SelectModeButtonPickerView(selectedMode: $mode)

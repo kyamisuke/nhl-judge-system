@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8F1DD3902EBF6C3C0030F6C7 /* ActivityViewControllerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1DD38F2EBF6C3C0030F6C7 /* ActivityViewControllerRepresentable.swift */; };
+		8F1DD3922EBF6C3C0030F6C7 /* ShareExportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1DD3912EBF6C3C0030F6C7 /* ShareExportView.swift */; };
 		8F1DD38C2EBF6C3B0030F6C7 /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1DD3882EBF6C3B0030F6C7 /* AppConfiguration.swift */; };
 		8F1DD38D2EBF6C3B0030F6C7 /* NetworkMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1DD38A2EBF6C3B0030F6C7 /* NetworkMessage.swift */; };
 		8F1DD38E2EBF6C3B0030F6C7 /* MessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1DD3892EBF6C3B0030F6C7 /* MessageHandler.swift */; };
@@ -31,6 +33,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8F1DD38F2EBF6C3C0030F6C7 /* ActivityViewControllerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityViewControllerRepresentable.swift; sourceTree = "<group>"; };
+		8F1DD3912EBF6C3C0030F6C7 /* ShareExportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareExportView.swift; sourceTree = "<group>"; };
 		8F1DD3882EBF6C3B0030F6C7 /* AppConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfiguration.swift; sourceTree = "<group>"; };
 		8F1DD3892EBF6C3B0030F6C7 /* MessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageHandler.swift; sourceTree = "<group>"; };
 		8F1DD38A2EBF6C3B0030F6C7 /* NetworkMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMessage.swift; sourceTree = "<group>"; };
@@ -170,6 +174,7 @@
 				8F44AD9F2C0ADE5D0058914A /* CrayButtonView.swift */,
 				8F5B90732C1428AB00F0BF33 /* SelectHostView.swift */,
 				8FAC52F12D0EA97700C5985C /* SelectModeButtonPickerView.swift */,
+				8F1DD3912EBF6C3C0030F6C7 /* ShareExportView.swift */,
 			);
 			name = Component;
 			sourceTree = "<group>";
@@ -178,6 +183,7 @@
 			isa = PBXGroup;
 			children = (
 				8FE86A6B2BE9355400F8697C /* DocumentPickerView.swift */,
+				8F1DD38F2EBF6C3C0030F6C7 /* ActivityViewControllerRepresentable.swift */,
 			);
 			name = Ex;
 			sourceTree = "<group>";
@@ -261,6 +267,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8F1DD3902EBF6C3C0030F6C7 /* ActivityViewControllerRepresentable.swift in Sources */,
+				8F1DD3922EBF6C3C0030F6C7 /* ShareExportView.swift in Sources */,
 				8F3D1FB02C099232000D34B0 /* PrincipalIcon.swift in Sources */,
 				8FE86A6C2BE9355400F8697C /* DocumentPickerView.swift in Sources */,
 				8F6B2ACF2BEDC08A00A2E23F /* SocketManager.swift in Sources */,
@@ -428,7 +436,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2026010300;
 				DEVELOPMENT_ASSET_PATHS = "\"nexthouselab-judge/Preview Content\"";
 				DEVELOPMENT_TEAM = RW9N8FZHM7;
 				ENABLE_PREVIEWS = YES;
@@ -466,7 +474,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2026010300;
 				DEVELOPMENT_ASSET_PATHS = "\"nexthouselab-judge/Preview Content\"";
 				DEVELOPMENT_TEAM = RW9N8FZHM7;
 				ENABLE_PREVIEWS = YES;
