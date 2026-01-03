@@ -14,12 +14,11 @@ struct JudgeView: View {
     @State var isSticky = false
     @Binding var currentMessage: Message
     @Binding var isModal: Bool
-    @Binding var judgeIpModel: JudgeIpModel
     @Binding var mode: Const.Mode
     
     @EnvironmentObject var scoreModel: ScoreModel
-    @EnvironmentObject var socketManager: SocketManager
-        
+    @EnvironmentObject var peerManager: PeerManager
+    
     var body: some View {
         VStack {
             ZStack(alignment: .top) {
@@ -38,18 +37,13 @@ struct JudgeView: View {
                                     .font(.title)
                                     .fontWeight(.bold)
                                 Button(action: {
-                                    guard let ip = judgeIpModel.getIp(forKey: judgeName.name) else {
-                                        print("ip not found")
-                                        return
-                                    }
-                                    socketManager.send(to: ip, message: "UPDATE")
-                                    print("send update")
+                                    sendUpdateRequest()
                                 }, label: {
                                     Text("更新")
                                 })
                                 .buttonStyle(.custom)
                                 Divider()
-                                    
+                                
                             }
                         }
                         Divider()
@@ -87,12 +81,7 @@ struct JudgeView: View {
                                 .background(.clear)
                                 .opacity(getOffset())
                             Button(action: {
-                                guard let ip = judgeIpModel.getIp(forKey: judgeName.name) else {
-                                    print("ip not found")
-                                    return
-                                }
-                                socketManager.send(to: ip, message: "UPDATE")
-                                print("send update")
+                                sendUpdateRequest()
                             }, label: {
                                 Text("更新")
                             })
@@ -113,6 +102,11 @@ struct JudgeView: View {
         }
     }
     
+    private func sendUpdateRequest() {
+        peerManager.send(message: NetworkMessage.requestUpdate)
+        print("🔄 UPDATE ブロードキャスト送信")
+    }
+    
     private func getOffset() -> CGFloat {
         return clamp(from: 0, to: 1, in: -1 * (offset/40.0 + 1.0))
     }
@@ -129,14 +123,14 @@ struct JudgeView: View {
         
         @State var offset: CGFloat = 0
         
-        @StateObject var socketManager = SocketManager()
+        @StateObject var peerManager = PeerManager()
         @StateObject var scoreModel = ScoreModel()
-
+        
         var body: some View {
             //            Text("offset: \(offset!)")
             HStack {
-                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1), currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)), isModal: .constant(false), judgeIpModel: .constant(JudgeIpModel()), mode: .constant(.solo))
-                    .environmentObject(socketManager)
+                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: .constant(1), currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)), isModal: .constant(false), mode: .constant(.solo))
+                    .environmentObject(peerManager)
                     .environmentObject(scoreModel)
             }
             .onAppear {

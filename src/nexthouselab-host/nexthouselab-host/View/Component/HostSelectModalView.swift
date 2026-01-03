@@ -6,188 +6,126 @@
 //
 
 import SwiftUI
+import MultipeerConnectivity
 
 struct HostSelectModalView: View {
-    enum HostAlertType: Identifiable {
-        case Empty
-        case Invalid
-        case IsExited
-        
-        var id: Int {
-            hashValue
-        }
-        
-        var title: String {
-            switch self {
-            case .Empty:
-                return "空欄になっています。"
-            case .Invalid:
-                return "入力された値は使えません。"
-            case .IsExited:
-                return "既に登録されています。"
-            }
-        }
-        
-        var message: String {
-            switch self {
-            case .Empty:
-                return "アドレスを入力してください。"
-            case .Invalid:
-                return "X.X.X.Xの形式で入力してください。"
-            case .IsExited:
-                return "他のアドレスを入力してください。"
-            }
-        }
-    }
-    
-    @State var host = ""
-    @EnvironmentObject var socketManager: SocketManager
-    @State var alertType: HostAlertType?
     @Binding var isModal: Bool
-    @Binding var hostArray: JudgeIpModel
-    @State private var selection = Const.JUDGE_NAMES[0].name
-    
-    let device = UIDevice.current
-    
+    @EnvironmentObject var peerManager: PeerManager
+    @EnvironmentObject var judgePeerModel: JudgePeerModel
+
     var body: some View {
-        VStack {
-            Button(action: {
-                isModal = false
-            }, label: {
-                Image(systemName: "xmark.circle.fill")
-                    .resizable()
-                    .frame(width: 32, height: 32)
-            })
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-        VStack {
-            Spacer()
+        VStack(spacing: 20) {
+            // ヘッダー（閉じるボタン）
             HStack {
-                Text("この端末のIPアドレス: ")
-                if !socketManager.getIPAddresses().isEmpty {
-                    Text("\(socketManager.getIPAddresses()[1])")
-                        .textSelection(.enabled)
-                    Button(action: {
-                        UIPasteboard.general.string = socketManager.getIPAddresses()[1]
-                    }, label: {
-                        Image(systemName: "doc.on.doc.fill")
-                    })
-                }
-            }
-            Spacer()
-            HStack {
-                Text(socketManager.listenerState)
-                    .foregroundStyle(socketManager.stateColor)
+                Text("接続中の審査員を管理")
+                    .font(.headline)
+                Spacer()
                 Button(action: {
-                    socketManagerInit()
+                    isModal = false
                 }, label: {
-                    Text("接続待受開始")
+                    Image(systemName: "xmark.circle.fill")
+                        .resizable()
+                        .frame(width: 32, height: 32)
                 })
-                .buttonStyle(.custom)
-            }
-            Spacer()
-            HStack {
-                Picker("ジャッジの名前を選択", selection: $selection) {
-                    ForEach(Const.JUDGE_NAMES) { judge in
-                        Text(judge.name).tag(judge.name)
-                    }
-                }
-                TextField("送信先のIPアドレスを入力", text: $host)
-                    .frame(width: 200)
-                    .textFieldStyle(.roundedBorder)
-                Button(action: addRow, label: {
-                    Text("登録")
-                })
-                .buttonStyle(.custom)
-            }
-            List {
-                Section("接続済みホスト一覧") {
-                    ForEach(hostArray.keys, id: \.self) { judge in
-                        HStack {
-                            Text("")
-                            Spacer()
-                            Text(judge)
-                                .frame(width: 150)
-                                .fontWeight(.bold)
-                            Divider()
-                            Text(hostArray.getIp(forKey: judge)!)
-                                .frame(width: 150)
-                            Spacer()
-                            Text("")
-                        }
-                    }
-                    .onDelete(perform: removeRow)
-                }
             }
             .padding()
-        }
-        .alert(item: $alertType) { alertType in
-            Alert(
-                title: Text(alertType.title),
-                message: Text(alertType.message),
-                dismissButton: .default(Text("OK"))
-            )
+
+            // 接続状態サマリー（シンプル）
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("接続中: \(judgePeerModel.count)名")
+                        .font(.title3)
+                        .fontWeight(.bold)
+                    Text(connectionStatusText)
+                        .font(.caption)
+                        .foregroundStyle(connectionStatusColor)
+                }
+                Spacer()
+            }
+            .padding()
+            .background(Color(.systemGray6))
+            .cornerRadius(8)
+            .padding(.horizontal)
+
+            // 接続済み審査員リスト（表示のみ）
+            List {
+                Section(header: Text("接続済み審査員")) {
+                    if judgePeerModel.count == 0 {
+                        HStack {
+                            Spacer()
+                            Text("接続している審査員はいません")
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                        }
+                    } else {
+                        ForEach(judgePeerModel.allJudgeNames.sorted(), id: \.self) { judgeName in
+                            HStack {
+                                // 接続状態インジケーター
+                                Circle()
+                                    .fill(.green)
+                                    .frame(width: 8, height: 8)
+
+                                Spacer()
+
+                                // 審査員名
+                                Text(judgeName)
+                                    .fontWeight(.bold)
+
+                                Spacer()
+
+                                // 接続中表示
+                                Text("接続中")
+                                    .font(.caption)
+                                    .foregroundStyle(.green)
+                            }
+                        }
+                    }
+                }
+            }
+            .listStyle(.plain)
+            .padding(.horizontal)
+
+            // 説明テキスト
+            Text("審査員アプリから自動的に接続されます")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(.bottom)
         }
     }
-    
-    func addRow() {
-        if host.isEmpty {
-            alertType = .Empty
-            return
-        }
-        if host.components(separatedBy: ".").count != 4 {
-            alertType = .Invalid
-            return
-        }
-        for ad in host.components(separatedBy: ".") {
-            if Int(ad) == nil {
-                alertType = .Invalid
-                return
-            }
-        }
-        if hostArray.update(forKey: selection, value: host) == false {
-            alertType = .IsExited
-            return
-        }
-        socketManager.connect(host: host)
-        host = ""
-    }
-    
-    func removeRow(offsets: IndexSet) {
-        // 削除する前に、インデックスセットを配列に変換して並べ替え
-        let indices = offsets.sorted()
-        // 削除する要素の値を抽出
-        let keysToRemove = indices.map { hostArray.keys[$0] }
-        keysToRemove.forEach { judge in
-            socketManager.disconnect(host: hostArray.getIp(forKey: judge)!)
-            let _ = hostArray.remove(forKey: judge)
+
+    // 接続状態に応じた色
+    private var connectionStatusColor: Color {
+        if peerManager.isHosting {
+            return .green
+        } else {
+            return .red
         }
     }
-        
-    func socketManagerInit() {
-        if device.isiPad {
-            DispatchQueue.global(qos: .background).async {
-                socketManager.startListener(name: "host-listener")
-            }
-        } else if device.isiPhone {
-            DispatchQueue.global(qos: .background).async {
-                socketManager.startListener(name: "host-9000-listener")
-                socketManager.startListenerForPhone(name: "host-8000-listener")
-            }
+
+    // 接続状態テキスト
+    private var connectionStatusText: String {
+        if peerManager.isHosting {
+            return "ホスティング中"
+        } else {
+            return "停止中"
         }
     }
 }
 
 #Preview {
     struct Sim: View {
-        @StateObject var socketManager = SocketManager()
-        
+        @StateObject var peerManager = PeerManager()
+        @StateObject var judgePeerModel = JudgePeerModel()
+
         var body: some View {
-            HostSelectModalView(isModal: .constant(true), hostArray: .constant(JudgeIpModel()))
-                .environmentObject(socketManager)
+            HostSelectModalView(isModal: .constant(true))
+                .environmentObject(peerManager)
+                .environmentObject(judgePeerModel)
+                .onAppear {
+                    peerManager.judgePeerModel = judgePeerModel
+                }
         }
     }
-    
+
     return Sim()
 }

@@ -17,11 +17,10 @@ struct HomeView: View {
     @State var isChecked = false
     @State var shouldInitialize = true
     @State var hostIp = ""
-    @State var hostArray = [String]()
     @State var currentPlayNum = 1
     @State var mode = Const.Mode.solo
 
-    @EnvironmentObject var socketManager: SocketManager
+    @EnvironmentObject var peerManager: PeerManager
     @EnvironmentObject var scoreModel: ScoreModel
     @EnvironmentObject var messageHandler: MessageHandler
     
@@ -95,7 +94,7 @@ struct HomeView: View {
                 SelectModeButtonPickerView(selectedMode: $mode)
                     .frame(width: AppConfiguration.UI.mediumFrameWidth)
                 Divider()
-                SelectHostView(alertType: $alertType, hostArray: $hostArray)
+                SelectHostView()
             }
             .navigationDestination(isPresented: $navigateToMainView) {
                 MainView(judgeName: name, entryNames: entryMembers, currentPlayNum: $currentPlayNum, shouldInitialize: $shouldInitialize, currentMode: $mode)
@@ -112,8 +111,9 @@ struct HomeView: View {
                     if UserDefaults.standard.dictionary(forKey: "scores") != nil {
                         alertType = .scoreData
                     }
-                    socketManager.startListener(name: "judge_listner")
-                    hostArrayInit()
+                    // MultipeerConnectivityでホスト検索を開始
+                    let judgeName = UserDefaults.standard.string(forKey: AppConfiguration.StorageKeys.judgeName) ?? name
+                    peerManager.startBrowsing(judgeName: judgeName)
                 }
             }
             .onChange(of: currentPlayNum) {
@@ -122,28 +122,21 @@ struct HomeView: View {
             .modifier(HomeAlertModifier(alertType: $alertType, isChecked: $isChecked, shouldInitialize: $shouldInitialize, navigateToMainView: $navigateToMainView, hostIp: $hostIp, currentPlayNum: $currentPlayNum))
         }
     }
-    
-    func hostArrayInit() {
-        guard let hosts = UserDefaults.standard.array(forKey: Const.HOST_KEY) as? [String] else {
-            return
-        }
-        hostArray = hosts
-        socketManager.connectAllHosts(hosts: hosts)
-    }
+    // hostArrayInit()関数は削除（MultipeerConnectivityでは不要）
 }
 
 #Preview {
     struct Sim: View {
-        @StateObject var socketManager = SocketManager()
+        @StateObject var peerManager = PeerManager()
         @StateObject var scoreModel = ScoreModel()
         @StateObject var messageHandler = MessageHandler()
         var body: some View {
             HomeView()
-                .environmentObject(socketManager)
+                .environmentObject(peerManager)
                 .environmentObject(scoreModel)
                 .environmentObject(messageHandler)
                 .onAppear {
-                    messageHandler.configure(socketManager: socketManager, scoreModel: scoreModel)
+                    messageHandler.configure(peerManager: peerManager, scoreModel: scoreModel)
                 }
         }
     }

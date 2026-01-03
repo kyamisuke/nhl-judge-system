@@ -33,28 +33,30 @@ iOS/iPadOSアプリのため、Xcodeまたは実機で実行する必要があ�
 
 アプリはSwiftUIを使用し、環境オブジェクトで状態管理を行います:
 
-- **nexthouselab_hostApp.swift**: アプリのエントリーポイント。3つのメイン状態オブジェクトを初期化:
-  - `SocketManager`: すべてのUDPネットワーク通信を管理
+- **nexthouselab_hostApp.swift**: アプリのエントリーポイント。4つのメイン状態オブジェクトを初期化:
+  - `PeerManager`: MultipeerConnectivityによる自動ピア検出と通信管理
   - `ScoreModel`: スコアデータと永続化を管理
-  - `MessageHandler`: ネットワークメッセージの処理と状態管理（新規追加）
+  - `MessageHandler`: ネットワークメッセージの処理と状態管理
+  - `JudgePeerModel`: 審査員名↔MCPeerIDの双方向マッピング管理
 
 - **MainView.swift**: UI全体を統括するルートビュー（メッセージ処理はMessageHandlerに委譲）
 
-### ネットワークアーキテクチャ (UDPベース)
+### ネットワークアーキテクチャ (MultipeerConnectivityベース)
 
-カスタムUDPネットワーキング層を実装してリアルタイム通信を実現:
+MultipeerConnectivityによる自動ピア検出システムを実装:
 
-**SocketManager.swift**が複数の同時接続を管理:
-- **iPadモード**: ポート9000でリッスン、ポート8000で審査員に接続
-- **iPhoneモード**: ポート9000(ホスト)と8000(phone)のデュアルリスナー
-- IPアドレスをキーとした`NWConnection`オブジェクトの辞書を保持
-- ブロードキャスト(全審査員)と個別送信の両方をサポート
+**PeerManager.swift**が自動ピア検出と接続を管理:
+- **サービスタイプ**: "judge-session" でBonjourサービスディスカバリー使用
+- **接続確立**: MCNearbyServiceAdvertiser で審査員からの接続を受け入れ
+- **審査員識別**: 招待時のcontextで審査員名を受信
+- **暗号化**: MCSessionのencryptionPreference: .requiredで必須化
+- **ブロードキャスト送信**: 全審査員に一斉メッセージ送信をサポート
 
-**PeerManager.swift**: ローカル検出用のMultipeerConnectivity実装:
-- サービスタイプ"judge-session"でBonjourサービスディスカバリーを使用
-- ピアの自動検出と接続を提供
-- デフォルトで接続を暗号化
-- メインフローにはまだ統合されていない（将来的なオプション）
+**JudgePeerModel.swift**が審査員マッピングを管理:
+- **双方向マッピング**: 審査員名 ↔ MCPeerID
+- **自動登録**: 審査員接続時にPeerManagerから自動登録
+- **自動削除**: 審査員切断時に自動削除
+- **UI連携**: @Published プロパティでリアルタイムUI更新
 
 ### メッセージプロトコル（型安全化済み）
 
@@ -74,10 +76,10 @@ enum NetworkMessage {
 
 ワイヤーフォーマット（スラッシュ区切りの文字列）:
 - `EDITING/{judgeName}/{entryNumber}` - 審査員がエントリーを編集中
-- `CONNECT/{ipAddress}` - 新しい審査員が接続
-- `DISCONNECT/{ipAddress}` - 審査員が切断
-- `SCORER/{judgeName}/{entryNumber}/{score}` - スコア更新（-1はnilとして扱う）
-- `UPDATE/{judgeName}/{scoresJSON}/{stateJSON}` - 一括スコア更新
+- `SCORER/DECISION/{judgeName}/{entryNumber}/{score}` - スコア確定（-1はnilとして扱う）
+- `SCORER/CANCEL/{judgeName}/{entryNumber}/-1` - スコアキャンセル
+- `UPDATE/{judgeName}/{scoresJSON}/{doneStatesJSON}` - 一括スコア更新（審査員→ホスト）
+- `UPDATE` - UPDATE要求（ホスト→審査員へのブロードキャスト）
 - `{number}` - 現在のエントリー番号の同期
 
 **重要**: スコア値`-1`は自動的に`nil`に変換されます（未入力を示す）
@@ -113,10 +115,11 @@ enum NetworkMessage {
 - `update(forKey:scores:)`: Float版スコア辞書を受け取り変換（互換性用）
 - `updateOptional(forKey:scores:)`: Optional<Float>版を直接受け取る
 
-**JudgeIpModel.swift**:
-- 審査員名とIPアドレスのマッピング
-- 重複する審査員名やIPを防止
-- `AppConfiguration.StorageKeys.hostAddresses`キーで永続化
+**JudgePeerModel.swift**:
+- 審査員名とMCPeerIDの双方向マッピング
+- 審査員接続時にPeerManagerから自動登録
+- 審査員切断時に自動削除
+- @Published プロパティでUI自動更新
 
 ### 設定管理
 
@@ -124,13 +127,13 @@ enum NetworkMessage {
 - アプリケーション全体の設定を一元管理する構造体
 
 主要セクション:
-- `Network`: ポート番号、サービスタイプなどのネットワーク設定
+- `Network`: サービスタイプ("judge-session")などのネットワーク設定
 - `StorageKeys`: UserDefaultsキーの定義
 - `Judges`: 審査員の設定（デフォルト4名）
 - `Colors`: UI色定義
 - `CompetitionMode`: 競技モード（solo/dual）
 
-後方互換性のため`Const`クラスをラッパーとして提供。
+後方互換性のため`Const`クラスをラッパーとして提供（UDP関連の定数は削除済み）。
 
 ### デバイス固有の動作
 
@@ -138,13 +141,13 @@ enum NetworkMessage {
 
 **iPad (ホストモード)**:
 - ナビゲーションコントロール付きの完全な審査インターフェース
-- ポート9000でUDPリスナー起動
-- 複数の審査員デバイスに接続可能
+- MultipeerConnectivityで自動的にホスティング開始
+- 複数の審査員デバイスからの接続を自動受け入れ
 - エントリーをナビゲートする上下矢印を表示
 
 **iPhone (審査員/セカンダリモード)**:
 - シンプルなインターフェース
-- デュアルリスナー(ポート8000と9000)
+- MultipeerConnectivityでホストを自動検出・接続
 - ホストと審査員の両方として機能可能
 
 ### ビュー構造
@@ -167,20 +170,24 @@ MainView (ルート)
 ```
 nexthouselab-host/
 ├── Model/
-│   ├── AppConfiguration.swift    # 設定管理（新規）
-│   ├── MessageHandler.swift      # メッセージ処理（新規）
-│   ├── NetworkMessage.swift      # 型安全なメッセージ定義（新規）
+│   ├── AppConfiguration.swift    # 設定管理
+│   ├── MessageHandler.swift      # メッセージ処理
+│   ├── NetworkMessage.swift      # 型安全なメッセージ定義
+│   ├── JudgePeerModel.swift      # 審査員名↔MCPeerIDマッピング
 │   ├── ScoreModel.swift          # スコアデータ管理
 │   ├── EntryName.swift
 │   ├── JudgeName.swift
 │   └── Message.swift
 ├── Socket/
-│   ├── SocketManager.swift       # UDPネットワーク管理
-│   └── PeerManager.swift         # MultipeerConnectivity（未統合）
+│   └── PeerManager.swift         # MultipeerConnectivity管理
 ├── View/
 │   ├── MainView.swift
 │   ├── Component/
+│   │   ├── JudgeView.swift       # 審査員スコア表示（ブロードキャスト送信）
+│   │   ├── HostSelectModalView.swift  # 接続済み審査員リスト表示
+│   │   └── ...
 │   └── Phone/
+│       └── PhoneMainView.swift    # iPhoneモード用ビュー
 └── Ex/
     ├── UIDeviceEx.swift
     ├── TrackableList.swift

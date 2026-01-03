@@ -11,20 +11,20 @@ import SwiftUI
 /// ネットワークメッセージを処理し、適切なモデルを更新するクラス
 final class MessageHandler: ObservableObject {
 
-    private weak var socketManager: SocketManager?
+    private weak var peerManager: PeerManager?
     private weak var scoreModel: ScoreModel?
 
     @Published var currentMessage: Message = Message(judgeName: "", number: 0)
     @Published var currentNumber: Int = 1
 
-    init(socketManager: SocketManager? = nil, scoreModel: ScoreModel? = nil) {
-        self.socketManager = socketManager
+    init(peerManager: PeerManager? = nil, scoreModel: ScoreModel? = nil) {
+        self.peerManager = peerManager
         self.scoreModel = scoreModel
     }
 
-    /// SocketManagerとScoreModelへの参照を設定
-    func configure(socketManager: SocketManager, scoreModel: ScoreModel) {
-        self.socketManager = socketManager
+    /// PeerManagerとScoreModelへの参照を設定
+    func configure(peerManager: PeerManager, scoreModel: ScoreModel) {
+        self.peerManager = peerManager
         self.scoreModel = scoreModel
     }
 
@@ -84,15 +84,13 @@ final class MessageHandler: ObservableObject {
     }
 
     private func handleConnect(ipAddress: String) {
-        guard let socketManager = socketManager else { return }
-        socketManager.connect(host: ipAddress)
-        print("🔗 Connect: \(ipAddress)")
+        // MultipeerConnectivityでは接続は自動的に管理されるため、このメッセージは不要
+        print("🔗 Connect (ignored in MultipeerConnectivity): \(ipAddress)")
     }
 
     private func handleDisconnect(ipAddress: String) {
-        guard let socketManager = socketManager else { return }
-        socketManager.disconnect(host: ipAddress)
-        print("🔌 Disconnect: \(ipAddress)")
+        // MultipeerConnectivityでは切断は自動的に管理されるため、このメッセージは不要
+        print("🔌 Disconnect (ignored in MultipeerConnectivity): \(ipAddress)")
     }
 
     private func handleScorer(judgeName: String, entryNumber: String, score: Float?) {

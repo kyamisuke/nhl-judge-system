@@ -13,10 +13,10 @@ struct AppConfiguration {
     // MARK: - Network Configuration
 
     struct Network {
-        static let sendPort: UInt16 = 9000
-        static let receivePort: UInt16 = 8000
-        static let serviceType = "_networkplayground._udp."
-        static let networkDomain = "local"
+        /// MultipeerConnectivityのサービスタイプ
+        static let serviceType = "judge-session"
+        /// セッション表示名
+        static let sessionName = "NHL Judge Session"
     }
 
     // MARK: - UserDefaults Keys
@@ -25,11 +25,11 @@ struct AppConfiguration {
         static let selectedFileContents = "selected_file_cocntents"
         static let fileName = "file_name"
         static let judgeName = "judge_name"
-        static let hostIP = "host_ip"
-        static let host = "host"
         static let scores = "scores"
         static let doneStates = "done_states"
         static let currentPlayNum = "current_play_num_key"
+        // 注: IP関連のキー(hostIP, host)は削除されました
+        // MultipeerConnectivityでは自動検出を使用します
     }
 
     // MARK: - Score Configuration
@@ -105,8 +105,6 @@ class Const {
     static let SELCTED_FILE_KEY = AppConfiguration.StorageKeys.selectedFileContents
     static let FILE_NAME_KEY = AppConfiguration.StorageKeys.fileName
     static let JUDGE_NAME_KEY = AppConfiguration.StorageKeys.judgeName
-    static let HOST_IP_KEY = AppConfiguration.StorageKeys.hostIP
-    static let HOST_KEY = AppConfiguration.StorageKeys.host
     static let SCORE_KEY = AppConfiguration.StorageKeys.scores
     static let DONE_STATES_KEY = AppConfiguration.StorageKeys.doneStates
     static let CURRENT_PLAY_NUM_KEY = AppConfiguration.StorageKeys.currentPlayNum

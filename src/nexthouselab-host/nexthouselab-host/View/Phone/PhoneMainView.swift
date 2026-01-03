@@ -21,19 +21,20 @@ struct PhoneMainView: View {
     @State var preDragPosition: CGFloat = 0
     @State var isFirstDrag = true
     @State var onClearAction = false
-    
-    @EnvironmentObject var socketManager: SocketManager
+
+    @EnvironmentObject var peerManager: PeerManager
     @EnvironmentObject var scoreModel: ScoreModel
-    
+    @EnvironmentObject var messageHandler: MessageHandler
+
     @State var currentMessage = Message(judgeName: "", number: 0)
     
     var body: some View {
         NavigationStack {
             VStack {
                 // 各ジャッジのリストを表示
-                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: $currentNumber, currentMessage: $currentMessage)
-                    .onChange(of: socketManager.recievedData) {
-                        receiveMessage(message: socketManager.recievedData)
+                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: $messageHandler.currentNumber, currentMessage: $messageHandler.currentMessage, isModal: .constant(false), mode: .constant(Const.Mode.dual))
+                    .onChange(of: peerManager.receivedData) {
+                        messageHandler.handleMessage(peerManager.receivedData)
                     }
 //                Group {
 //                    Button(action: {
@@ -79,11 +80,9 @@ struct PhoneMainView: View {
             .onAppear {
                 scoreModel.startTimer()
                 scoreModel.initialize(entryNames: entryMembers)
-                DispatchQueue.global(qos: .background).async {
-//                    socketManager.connect(host: "192.168.0.43", port: "8000", param: .udp)
-                    socketManager.startListener(name: "host-9000-listener")
-                    socketManager.startListenerForPhone(name: "host-8000-listener")
-                }
+                // MultipeerConnectivityでホストとして起動
+                peerManager.startHosting()
+                print("🟢 Phone mode: PeerManager started as host")
             }
             .onDisappear {
                 scoreModel.stopTimer()
@@ -104,45 +103,23 @@ struct PhoneMainView: View {
             }
         }
     }
-    
-    func receiveMessage(message: String) {
-        let data = message.components(separatedBy: "/")
-        // 先頭にコマンドが入っているので其れによって処理分岐
-        if data[0] == "EDITING" {
-            // ${judgeName}が今操作している欄を取得
-            guard let num = Int(data[2]) else { return }
-            let name = data[1]
-            currentMessage = Message(judgeName: name, number: num)
-            print(currentMessage)
-        }
-        else if data[0] == "CONNECT" {
-            // 接続開始したIPアドレスを取得
-            socketManager.ipAddresses.append(data[1])
-            print(data[1])
-        } else if data[0] == "SCORER" {
-            //            if data[1] == "DECISION" {
-            scoreModel.scores[data[2]]![data[3]] = Float(data[4])!
-            //            } else if data[1] == "CANCEL" {
-            //                scoreModel.scores[data[2]]![data[3]] = Float(data[4])!
-            //            }
-        } else {
-            guard let currentNum = Int(message) else {
-                return
-            }
-            self.currentNumber = currentNum
-        }
-    }
+    // receiveMessage関数は削除（MessageHandlerに委譲）
 }
 
 #Preview {
     struct Sim: View {
-        @StateObject var socketManager = SocketManager()
+        @StateObject var peerManager = PeerManager()
         @StateObject var scoreModel = ScoreModel()
-        
+        @StateObject var messageHandler = MessageHandler()
+
         var body: some View {
             PhoneMainView()
-                .environmentObject(socketManager)
+                .environmentObject(peerManager)
                 .environmentObject(scoreModel)
+                .environmentObject(messageHandler)
+                .onAppear {
+                    messageHandler.configure(peerManager: peerManager, scoreModel: scoreModel)
+                }
         }
     }
     return Sim()

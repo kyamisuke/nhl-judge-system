@@ -15,8 +15,7 @@ struct EntryListItemView: View {
     @Binding var currentMessage: Message
     @State var isEditing: Bool = false
     @Binding var mode: Const.Mode
-    
-    @EnvironmentObject var socketManager: SocketManager
+
     @EnvironmentObject var scoreModel: ScoreModel
     
     var body: some View {
@@ -102,12 +101,12 @@ private struct ScoreSliderView: View {
 #Preview {
     struct PreviewView: View {
         @State var demoScores: [Float] = [0, 0, 0, 0, 0, 0]
-        @StateObject var socketManager = SocketManager()
+        @StateObject var peerManager = PeerManager()
         @StateObject var scoreModel = ScoreModel()
 
         var body: some View {
             EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentNumber: .constant(1), judgeName: "KAZANE", currentMessage: .constant(Message(judgeName: "KAZANE", number: 1)), mode: .constant(.solo))
-                .environmentObject(socketManager)
+                .environmentObject(peerManager)
                 .environmentObject(scoreModel)
         }
     }

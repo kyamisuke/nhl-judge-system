@@ -32,7 +32,6 @@ struct EntryListItemView: View {
         AppConfiguration.UI.japaneseButtonFontSize :
         AppConfiguration.UI.englishButtonFontSize
 
-    @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
     @EnvironmentObject var messageHandler: MessageHandler
     
@@ -211,7 +210,7 @@ private struct ScoreSliderView: View {
 #Preview {
     struct PreviewView: View {
         @State var demoScores: [Float] = [0, 0, 0, 0, 0, 0]
-        @StateObject var socketManager = SocketManager()
+        @StateObject var peerManager = PeerManager()
         @StateObject var scoreModel = ScoreModel()
         @StateObject var messageHandler = MessageHandler()
         @State var mode = Const.Mode.solo
@@ -219,12 +218,12 @@ private struct ScoreSliderView: View {
         var body: some View {
             List {
                 EntryListItemView(entryName: EntryName(number: 1, name: "kyami"), currentPlayNum: .constant(5), currentEdintingNum: .constant(1), judgeName: "HIRO", tappedId: .constant(1), currentMode: $mode)
-                    .environmentObject(socketManager)
+                    .environmentObject(peerManager)
                     .environmentObject(scoreModel)
                     .environmentObject(messageHandler)
             }
             .onAppear {
-                messageHandler.configure(socketManager: socketManager, scoreModel: scoreModel)
+                messageHandler.configure(peerManager: peerManager, scoreModel: scoreModel)
             }
         }
     }
