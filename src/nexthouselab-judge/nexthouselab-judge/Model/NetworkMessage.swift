@@ -68,7 +68,8 @@ enum NetworkMessage {
                     var scores = [String: Float?]()
                     for (key, value) in rawScores {
                         if value == -1 || doneStates[key] == false {
-                            scores[key] = nil
+                            // dict[key] = nil はキー削除になるため updateValue を使用
+                            scores.updateValue(nil, forKey: key)
                         } else {
                             scores[key] = value
                         }

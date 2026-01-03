@@ -65,6 +65,9 @@ struct MainView: View {
             .onAppear {
                 if shouldInitialize {
                     scoreModel.initialize(entryList: entryNames)
+                } else {
+                    // 既存スコアを保持しつつ、新しいエントリーを追加
+                    scoreModel.initialize(entryList: entryNames, preserveExistingScores: true)
                 }
                 scoreModel.startTimer()
             }
