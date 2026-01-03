@@ -9,18 +9,18 @@ import SwiftUI
 
 @main
 struct nexthouselab_judgeApp: App {
-    @StateObject var socketManager = SocketManager()
+    @StateObject var peerManager = PeerManager()
     @StateObject var scoreModel = ScoreModel()
     @StateObject var messageHandler = MessageHandler()
 
     var body: some Scene {
         WindowGroup {
             HomeView()
-                .environmentObject(socketManager)
+                .environmentObject(peerManager)
                 .environmentObject(scoreModel)
                 .environmentObject(messageHandler)
                 .onAppear {
-                    messageHandler.configure(socketManager: socketManager, scoreModel: scoreModel)
+                    messageHandler.configure(peerManager: peerManager, scoreModel: scoreModel)
                 }
         }
     }

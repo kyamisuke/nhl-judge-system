@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## プロジェクト概要
 
-NHL-Judge-System JudgeはSwiftUIベースのiPad/iPhoneアプリケーションで、ダンス/パフォーマンスコンテストの審査員として機能します。UDPネットワーク通信を介してホストデバイスとリアルタイムでスコアを送受信します。
+NHL-Judge-System JudgeはSwiftUIベースのiPad/iPhoneアプリケーションで、ダンス/パフォーマンスコンテストの審査員として機能します。MultipeerConnectivityによる自動ピア検出を使用してホストデバイスとリアルタイムでスコアを送受信します。
 
 これは2つのアプリケーションからなるシステムの一部です：
 - **nexthouselab-judge** (このリポジトリ): スコアを入力・送信する審査員クライアントデバイス
@@ -39,7 +39,7 @@ xcodebuild test -scheme nexthouselab-judge -destination 'platform=iOS Simulator,
 アプリはSwiftUIを使用し、環境オブジェクトで状態管理を行います：
 
 - **nexthouselab_judgeApp.swift**: アプリのエントリーポイント。3つのメイン状態オブジェクトを初期化：
-  - `SocketManager`: すべてのUDPネットワーク通信を管理
+  - `PeerManager`: MultipeerConnectivityによる自動ピア検出と通信管理
   - `ScoreModel`: スコアデータと永続化を管理
   - `MessageHandler`: ネットワークメッセージの処理と状態管理（2025年追加）
 
@@ -51,30 +51,26 @@ xcodebuild test -scheme nexthouselab-judge -destination 'platform=iOS Simulator,
 1. **HomeView** (`View/HomeView.swift`): エントリーポイント。審査員は以下を行います：
    - 名前を入力（UserDefaultsに保存）
    - CSVファイルから出場者リストをインポート（フォーマット: `番号,名前`）
-   - ネットワーク同期用のホストIPアドレスを選択
+   - SelectHostViewで自動検出されたホストに接続
    - 採点モード（ソロまたはデュアル）を選択
 
 2. **MainView** (`View/MainView.swift`): メインの採点インターフェース：
    - 出場者リスト（`EntryListItemView`）
    - 0-10の範囲で0.5刻みのリアルタイムスコア入力
    - 5秒ごとの自動保存
-   - スコア変更時のUDPメッセージブロードキャスト
+   - スコア変更時のMultipeerConnectivityメッセージ送信
 
-### ネットワークアーキテクチャ (UDPベース)
+### ネットワークアーキテクチャ (MultipeerConnectivityベース)
 
-カスタムUDPネットワーキング層を実装してリアルタイム通信を実現:
+MultipeerConnectivityによる自動ピア検出システムを実装:
 
-**SocketManager.swift**が複数のホストへの接続を管理:
-- **受信ポート**: 8000（ホストからのメッセージを受信）
-- **送信ポート**: 9000（ホストへメッセージ送信）
-- IPアドレスをキーとした`NWConnection`オブジェクトの辞書を保持
-- 複数のホストデバイスに同時接続可能
-
-**PeerManager.swift**: ローカル検出用のMultipeerConnectivity実装:
-- サービスタイプ"judge-session"でBonjourサービスディスカバリーを使用
-- ピアの自動検出と接続を提供
-- デフォルトで接続を暗号化
-- メインフローにはまだ統合されていない（将来的なオプション）
+**PeerManager.swift**が自動ピア検出と接続を管理:
+- **サービスタイプ**: "judge-session" でBonjourサービスディスカバリー使用
+- **ホスト検出**: MCNearbyServiceBrowser で利用可能なホストを自動検出
+- **接続確立**: 検出された最初のホストに自動接続
+- **審査員識別**: 接続時のcontextで審査員名を送信
+- **暗号化**: MCSessionのencryptionPreference: .requiredで必須化
+- **接続状態管理**: @Published プロパティでUI自動更新
 
 ### メッセージプロトコル（型安全化済み）
 
@@ -152,7 +148,7 @@ enum NetworkMessage {
 - アプリケーション全体の設定を一元管理する構造体
 
 主要セクション:
-- `Network`: ポート番号（送信9000、受信8000）、サービスタイプなどのネットワーク設定
+- `Network`: サービスタイプ("judge-session")などのネットワーク設定
 - `StorageKeys`: UserDefaultsキーの定義
 - `Scores`: スコア範囲（0-10）、ステップ（0.5）、自動保存間隔（5秒）などの設定
 - `CompetitionMode`: 競技モード（solo/dual）
@@ -168,8 +164,9 @@ enum NetworkMessage {
 - `done_states`: 各エントリーの完了状態
 - `judge_name`: 審査員名
 - `selected_file_cocntents`: インポートしたファイル内容
-- `host`: ホストIPアドレスの配列
 - `current_play_num_key`: 現在のプレイ番号
+
+注: IP関連のキー（host、ipAddress等）は削除されました（MultipeerConnectivityで自動検出）
 
 ### 採点モード
 
@@ -191,10 +188,11 @@ nexthouselab-judge/
 │   ├── MessageHandler.swift      # メッセージ処理（2025年追加）
 │   └── NetworkMessage.swift      # 型安全なメッセージ定義（2025年追加）
 ├── Socket/
-│   └── SocketManager.swift       # UDPネットワーク管理
+│   └── PeerManager.swift         # MultipeerConnectivity管理
 ├── View/
 │   ├── HomeView.swift            # 初期設定画面
 │   ├── MainView.swift            # スコア入力画面
+│   ├── SelectHostView.swift      # ホスト選択・接続画面
 │   ├── ScoreModel.swift          # スコアデータ管理
 │   ├── EntryListItemView.swift   # 個別エントリー行
 │   ├── DocumentPickerView.swift  # ファイルインポート
@@ -252,6 +250,23 @@ nexthouselab-judge/
    - `Model/`ディレクトリの新規作成
    - `Const.swift`を削除（AppConfigurationに統合、互換レイヤーとして残存）
    - `ContentView.swift`削除（未使用）
+
+### 2025年11月 UDP → MultipeerConnectivity 完全移行（✅完了）
+
+**完了した全作業**:
+1. SocketManager → PeerManagerへの完全置き換え
+2. SelectHostView完全再設計（自動接続機能）
+3. IP入力UIの削除（HomeAlertModifier更新）
+4. 全ビューのSocketManager参照をPeerManagerに置き換え
+5. AppConfiguration.swiftからIP関連設定削除
+6. ドキュメント更新（CLAUDE.md全体）
+
+**移行の影響**:
+- **削除されたコンポーネント**: SocketManager クラス、IP入力UI、IP関連UserDefaultsキー
+- **新規追加**: 自動接続機能付きSelectHostView
+- **変更なし**: メッセージプロトコル（NetworkMessage enum）、ScoreModel
+- **接続方法**: 手動IP入力 → Bonjour自動検出・自動接続
+- **識別方法**: IPアドレス → 審査員名（接続contextで送信）
 
 ### マイグレーション注意点
 

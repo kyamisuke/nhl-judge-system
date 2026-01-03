@@ -24,10 +24,9 @@ struct MainView: View {
     @State var isTapped = false
     @State var isModal = false
 
-    @EnvironmentObject var socketManager: SocketManager
+    @EnvironmentObject var peerManager: PeerManager
     @EnvironmentObject var scoreModel: ScoreModel
     @EnvironmentObject var messageHandler: MessageHandler
-    @State var judgeIpModel: JudgeIpModel = JudgeIpModel()
 
     @State var timer: Timer?
     
@@ -40,9 +39,9 @@ struct MainView: View {
         NavigationStack {
             VStack {
                 // 各ジャッジのリストを表示
-                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: $messageHandler.currentNumber, currentMessage: $messageHandler.currentMessage, isModal: $isModal, judgeIpModel: $judgeIpModel, mode: $currentMode)
-                    .onChange(of: socketManager.receivedData) {
-                        receiveMessage(message: socketManager.receivedData)
+                JudgeView(entryMembers: $entryMembers, offset: $offset, currentNumber: $messageHandler.currentNumber, currentMessage: $messageHandler.currentMessage, isModal: $isModal, mode: $currentMode)
+                    .onChange(of: peerManager.receivedData) {
+                        receiveMessage(message: peerManager.receivedData)
                     }
                 if device.isiPad {
                     Group {
@@ -85,7 +84,7 @@ struct MainView: View {
                     }
                     .padding(.horizontal, 8)
                     .onChange(of: messageHandler.currentNumber) {
-                        socketManager.send(message: String(messageHandler.currentNumber))
+                        peerManager.send(messageString: String(messageHandler.currentNumber))
                     }
                     Spacer()
                 }
@@ -97,8 +96,7 @@ struct MainView: View {
             }
             .onAppear {
                 scoreModelInit()
-                socketManagerInit()
-                startTimer()
+                peerManagerInit()
             }
             .onDisappear {
                 scoreModel.stopTimer()
@@ -119,68 +117,57 @@ struct MainView: View {
                 )
             }
             .sheet(isPresented: $isModal) {
-                HostSelectModalView(isModal: $isModal, hostArray: $judgeIpModel)
+                // MultipeerConnectivityでは接続済みのピア一覧を表示
+                // TODO: ピア管理用のモーダルビューが必要
+                Text("接続中のピア: \(peerManager.connectedPeers.count)名")
             }
         }
     }
     
     func receiveMessage(message: String) {
-        // MessageHandlerに処理を委譲
-        messageHandler.handleMessage(message)
+        print("🔍 [MainView] 受信メッセージ処理開始: \(message)")
 
-        // UUIDキーを削除（メッセージの最後のコンポーネント）
+        // PeerManagerではUUID付加を行っているため、UUID部分を除去してから処理
         let components = message.components(separatedBy: "/")
-        if let uuidKey = components.last {
-            socketManager.storedData.removeValue(forKey: uuidKey)
+
+        // 最後のコンポーネント（UUID）を除去
+        guard components.count >= 2 else {
+            print("⚠️ [MainView] UUID付加されていないメッセージ: \(message)")
+            messageHandler.handleMessage(message)
+            return
         }
+
+        // UUIDを除いた部分を再構築
+        let messageWithoutUUID = components.dropLast().joined(separator: "/")
+        print("🔍 [MainView] UUID除去後: \(messageWithoutUUID)")
+
+        // MessageHandlerに処理を委譲
+        messageHandler.handleMessage(messageWithoutUUID)
     }
-    
+
     func scoreModelInit() {
         scoreModel.startTimer()
         scoreModel.initialize(entryNames: entryMembers)
     }
-    
-    func socketManagerInit() {
-        if device.isiPad {
-            DispatchQueue.global(qos: .background).async {
-                socketManager.startListener(name: "host-listener")
-            }
-            hostArrayInit()
-        } else if device.isiPhone {
-            DispatchQueue.global(qos: .background).async {
-                socketManager.startListener(name: "host-9000-listener")
-                socketManager.startListenerForPhone(name: "host-8000-listener")
-            }
-        }
-    }
-    
-    func hostArrayInit() {
-        guard let hosts = UserDefaults.standard.dictionary(forKey: Const.HOST_KEY) as? [String: String] else {
-            return
-        }
-        socketManager.connectAllHosts(hosts: hosts.map{ $0.value })
-    }
-    
-    func startTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
-            if (socketManager.storedData.isEmpty) { return }
-            for m in socketManager.storedData.values {
-                print("restore: \(m)")
-                self.receiveMessage(message: m)
-            }
-        }
+
+    func peerManagerInit() {
+        // MultipeerConnectivityでホストとして起動
+        peerManager.startHosting()
+        print("🟢 PeerManager initialized as host")
     }
 }
 
 #Preview {
     struct Sim: View {
-        @StateObject var socketManager = SocketManager()
+        @StateObject var peerManager = PeerManager()
         @StateObject var scoreModel = ScoreModel()
-        
+        @StateObject var messageHandler = MessageHandler()
+
         var body: some View {
             MainView()
-                .environmentObject(socketManager)
+                .environmentObject(peerManager)
                 .environmentObject(scoreModel)
+                .environmentObject(messageHandler)
         }
     }
     return Sim()

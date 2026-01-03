@@ -11,19 +11,19 @@ import SwiftUI
 /// ネットワークメッセージを処理し、適切なモデルを更新するクラス
 final class MessageHandler: ObservableObject {
 
-    private weak var socketManager: SocketManager?
+    private weak var peerManager: PeerManager?
     private weak var scoreModel: ScoreModel?
 
     @Published var currentNumber: Int = 1
 
-    init(socketManager: SocketManager? = nil, scoreModel: ScoreModel? = nil) {
-        self.socketManager = socketManager
+    init(peerManager: PeerManager? = nil, scoreModel: ScoreModel? = nil) {
+        self.peerManager = peerManager
         self.scoreModel = scoreModel
     }
 
-    /// SocketManagerとScoreModelへの参照を設定
-    func configure(socketManager: SocketManager, scoreModel: ScoreModel) {
-        self.socketManager = socketManager
+    /// PeerManagerとScoreModelへの参照を設定
+    func configure(peerManager: PeerManager, scoreModel: ScoreModel) {
+        self.peerManager = peerManager
         self.scoreModel = scoreModel
     }
 
@@ -70,9 +70,9 @@ final class MessageHandler: ObservableObject {
 
     /// ホストからのUPDATEリクエストに応答
     private func handleUpdateRequest() {
-        guard let socketManager = socketManager,
+        guard let peerManager = peerManager,
               let scoreModel = scoreModel else {
-            print("⚠️ SocketManager or ScoreModel not configured")
+            print("⚠️ PeerManager or ScoreModel not configured")
             return
         }
 
@@ -95,7 +95,7 @@ final class MessageHandler: ObservableObject {
                 doneStates: scoreModel.doneArray
             )
 
-            socketManager.send(message: message.serialize())
+            peerManager.send(message: message)
             print("🔄 Sent UPDATE response for \(judgeName)")
         } catch {
             print("❌ Failed to send UPDATE response: \(error)")
@@ -104,6 +104,6 @@ final class MessageHandler: ObservableObject {
 
     /// メッセージを送信（型安全な送信ヘルパー）
     func sendMessage(_ message: NetworkMessage) {
-        socketManager?.send(message: message.serialize())
+        peerManager?.send(message: message)
     }
 }

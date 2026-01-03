@@ -10,13 +10,13 @@
 		8F1DD38C2EBF6C3B0030F6C7 /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1DD3882EBF6C3B0030F6C7 /* AppConfiguration.swift */; };
 		8F1DD38D2EBF6C3B0030F6C7 /* NetworkMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1DD38A2EBF6C3B0030F6C7 /* NetworkMessage.swift */; };
 		8F1DD38E2EBF6C3B0030F6C7 /* MessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1DD3892EBF6C3B0030F6C7 /* MessageHandler.swift */; };
+		8F1DD3972EBF70AE0030F6C7 /* PeerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F1DD3962EBF70AE0030F6C7 /* PeerManager.swift */; };
 		8F3D1FB02C099232000D34B0 /* PrincipalIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D1FAF2C099232000D34B0 /* PrincipalIcon.swift */; };
 		8F3D1FB32C0998C8000D34B0 /* HomeAlertModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F3D1FB22C0998C8000D34B0 /* HomeAlertModifier.swift */; };
 		8F44ADA02C0ADE5D0058914A /* CrayButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F44AD9F2C0ADE5D0058914A /* CrayButtonView.swift */; };
 		8F56276D2D0EB06300189C0B /* RswiftLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = 8F56276C2D0EB06300189C0B /* RswiftLibrary */; };
 		8F5B90742C1428AB00F0BF33 /* SelectHostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F5B90732C1428AB00F0BF33 /* SelectHostView.swift */; };
 		8F5B90772C1429A900F0BF33 /* CustomButtonStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F5B90762C1429A900F0BF33 /* CustomButtonStyle.swift */; };
-		8F6B2ACF2BEDC08A00A2E23F /* SocketManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6B2ACE2BEDC08A00A2E23F /* SocketManager.swift */; };
 		8FAC52F22D0EA97700C5985C /* SelectModeButtonPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FAC52F12D0EA97700C5985C /* SelectModeButtonPickerView.swift */; };
 		8FD6BF7E2D24F38100962C2E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8FD6BF7C2D24F38100962C2E /* Localizable.strings */; };
 		8FE7B67A2BFF27C0002D8B15 /* ScoreModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE7B6792BFF27C0002D8B15 /* ScoreModel.swift */; };
@@ -34,12 +34,12 @@
 		8F1DD3882EBF6C3B0030F6C7 /* AppConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfiguration.swift; sourceTree = "<group>"; };
 		8F1DD3892EBF6C3B0030F6C7 /* MessageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageHandler.swift; sourceTree = "<group>"; };
 		8F1DD38A2EBF6C3B0030F6C7 /* NetworkMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMessage.swift; sourceTree = "<group>"; };
+		8F1DD3962EBF70AE0030F6C7 /* PeerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeerManager.swift; sourceTree = "<group>"; };
 		8F3D1FAF2C099232000D34B0 /* PrincipalIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrincipalIcon.swift; sourceTree = "<group>"; };
 		8F3D1FB22C0998C8000D34B0 /* HomeAlertModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAlertModifier.swift; sourceTree = "<group>"; };
 		8F44AD9F2C0ADE5D0058914A /* CrayButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrayButtonView.swift; sourceTree = "<group>"; };
 		8F5B90732C1428AB00F0BF33 /* SelectHostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectHostView.swift; sourceTree = "<group>"; };
 		8F5B90762C1429A900F0BF33 /* CustomButtonStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomButtonStyle.swift; sourceTree = "<group>"; };
-		8F6B2ACE2BEDC08A00A2E23F /* SocketManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocketManager.swift; sourceTree = "<group>"; };
 		8FAC52F12D0EA97700C5985C /* SelectModeButtonPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectModeButtonPickerView.swift; sourceTree = "<group>"; };
 		8FD6BF7D2D24F38100962C2E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		8FD6BF7F2D24F39B00962C2E /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -90,7 +90,7 @@
 		8F6B2ACC2BEDC05400A2E23F /* Socket */ = {
 			isa = PBXGroup;
 			children = (
-				8F6B2ACE2BEDC08A00A2E23F /* SocketManager.swift */,
+				8F1DD3962EBF70AE0030F6C7 /* PeerManager.swift */,
 			);
 			path = Socket;
 			sourceTree = "<group>";
@@ -263,7 +263,7 @@
 			files = (
 				8F3D1FB02C099232000D34B0 /* PrincipalIcon.swift in Sources */,
 				8FE86A6C2BE9355400F8697C /* DocumentPickerView.swift in Sources */,
-				8F6B2ACF2BEDC08A00A2E23F /* SocketManager.swift in Sources */,
+				8F1DD3972EBF70AE0030F6C7 /* PeerManager.swift in Sources */,
 				8FE86A6E2BE935A100F8697C /* UserDictionaryView.swift in Sources */,
 				8FE86A622BE9093600F8697C /* MainView.swift in Sources */,
 				8FE7B67A2BFF27C0002D8B15 /* ScoreModel.swift in Sources */,
@@ -427,6 +427,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"nexthouselab-judge/Preview Content\"";
@@ -450,6 +451,7 @@
 				MARKETING_VERSION = 3.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kyamisuke.nexthouselab-judge";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -465,6 +467,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"nexthouselab-judge/Preview Content\"";
@@ -488,6 +491,7 @@
 				MARKETING_VERSION = 3.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kyamisuke.nexthouselab-judge";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;

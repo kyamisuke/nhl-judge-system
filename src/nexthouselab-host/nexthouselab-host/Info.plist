@@ -4,9 +4,11 @@
 <dict>
 	<key>NSBonjourServices</key>
 	<array>
-		<string>host-9000-listener</string>
-		<string>host-8000-listener</string>
+		<string>_judge-session._tcp</string>
+		<string>_judge-session._udp</string>
 	</array>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>このアプリは審査員デバイスとの通信にローカルネットワークを使用します。</string>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

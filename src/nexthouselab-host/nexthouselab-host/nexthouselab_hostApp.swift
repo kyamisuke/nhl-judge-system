@@ -9,19 +9,23 @@ import SwiftUI
 
 @main
 struct nexthouselab_hostApp: App {
-    @StateObject var socketManager = SocketManager()
+    @StateObject var peerManager = PeerManager()
     @StateObject var scoreModel = ScoreModel()
     @StateObject var messageHandler = MessageHandler()
+    @StateObject var judgePeerModel = JudgePeerModel()
 
     var body: some Scene {
         WindowGroup {
             MainView()
-                .environmentObject(socketManager)
+                .environmentObject(peerManager)
                 .environmentObject(scoreModel)
                 .environmentObject(messageHandler)
+                .environmentObject(judgePeerModel)
                 .onAppear {
                     // MessageHandlerに依存関係を設定
-                    messageHandler.configure(socketManager: socketManager, scoreModel: scoreModel)
+                    messageHandler.configure(peerManager: peerManager, scoreModel: scoreModel)
+                    // PeerManagerにJudgePeerModelを設定
+                    peerManager.judgePeerModel = judgePeerModel
                 }
         }
     }

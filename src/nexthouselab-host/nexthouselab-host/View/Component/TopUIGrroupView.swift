@@ -11,7 +11,6 @@ struct TopUIGrroupView: View {
     @State var selectedFileContent = ""
     @State var broadcastIp = ""
     @Binding var entryMembers: [EntryName]
-    @EnvironmentObject var socketManager: SocketManager
     @EnvironmentObject var scoreModel: ScoreModel
     @State var isInvalidFile = false
     @Binding var isModal: Bool

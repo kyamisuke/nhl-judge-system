@@ -13,10 +13,10 @@ struct AppConfiguration {
     // MARK: - Network Configuration
 
     struct Network {
-        static let hostPort: UInt16 = 9000
-        static let judgePort: UInt16 = 8000
-        static let serviceType = "_networkplayground._udp."
-        static let networkDomain = "local"
+        /// MultipeerConnectivityのサービスタイプ
+        static let serviceType = "judge-session"
+        /// セッション表示名
+        static let sessionName = "NHL Judge Session"
     }
 
     // MARK: - UserDefaults Keys
@@ -24,9 +24,9 @@ struct AppConfiguration {
     struct StorageKeys {
         static let selectedFileContents = "selected_file_cocntents"
         static let fileName = "file_name"
-        static let ipAddress = "ip_key"
-        static let hostAddresses = "host_key"
         static let scores = "scores"
+        // 注: IP関連のキー(ipAddress, hostAddresses)は削除されました
+        // MultipeerConnectivityでは自動検出を使用します
     }
 
     // MARK: - Judge Configuration
@@ -96,8 +96,6 @@ class Const {
     // UserDefaults Keys
     static let SELCTED_FILE_KEY = AppConfiguration.StorageKeys.selectedFileContents
     static let FILE_NAME_KEY = AppConfiguration.StorageKeys.fileName
-    static let IP_KEY = AppConfiguration.StorageKeys.ipAddress
-    static let HOST_KEY = AppConfiguration.StorageKeys.hostAddresses
     static let SCORES_KEY = AppConfiguration.StorageKeys.scores
 
     // Judge Configuration

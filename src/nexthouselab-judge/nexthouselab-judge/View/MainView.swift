@@ -17,7 +17,7 @@ struct MainView: View {
     @Binding var shouldInitialize: Bool
     @Binding var currentMode: Const.Mode
 
-    @EnvironmentObject var socketManager: SocketManager
+    @EnvironmentObject var peerManager: PeerManager
     @EnvironmentObject var scoreModel: ScoreModel
     @EnvironmentObject var messageHandler: MessageHandler
         
@@ -47,8 +47,8 @@ struct MainView: View {
                     let message = NetworkMessage.editing(judgeName: judgeName, entryNumber: currentEditingNum)
                     messageHandler.sendMessage(message)
                 }
-                .onChange(of: socketManager.receivedData) {
-                    messageHandler.handleMessage(socketManager.receivedData)
+                .onChange(of: peerManager.receivedData) {
+                    messageHandler.handleMessage(peerManager.receivedData)
                 }
                 .onChange(of: messageHandler.currentNumber) {
                     self.currentPlayNum = messageHandler.currentNumber
@@ -79,7 +79,7 @@ struct MainView: View {
 
 #Preview {
     struct Sim: View {
-        @StateObject var socketManager = SocketManager()
+        @StateObject var peerManager = PeerManager()
         @StateObject var scoreModel = ScoreModel()
         @StateObject var messageHandler = MessageHandler()
         @State var mode = Const.Mode.solo
@@ -93,11 +93,11 @@ struct MainView: View {
                 EntryName(number: 5, name: "Rinki"),
                 EntryName(number: 6, name: "kyami")
             ], currentPlayNum: .constant(1), shouldInitialize: .constant(true), currentMode: $mode)
-            .environmentObject(socketManager)
+            .environmentObject(peerManager)
             .environmentObject(scoreModel)
             .environmentObject(messageHandler)
             .onAppear {
-                messageHandler.configure(socketManager: socketManager, scoreModel: scoreModel)
+                messageHandler.configure(peerManager: peerManager, scoreModel: scoreModel)
             }
         }
     }
