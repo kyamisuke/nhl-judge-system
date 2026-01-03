@@ -26,15 +26,25 @@ final public class ScoreModel: ObservableObject {
         loadFromUserDefaults()
     }
     
-    func initialize(entryList: [EntryName]) {
+    /// エントリーリストで初期化（既存のスコアは保持）
+    func initialize(entryList: [EntryName], preserveExistingScores: Bool = false) {
         for entry in entryList {
-            scores[String(entry.number)] = nil
-            doneArray[String(entry.number)] = false
+            let key = String(entry.number)
+            if preserveExistingScores {
+                // 既存のスコアがない場合のみ追加
+                if !scores.keys.contains(key) {
+                    // nilを値として設定（dict[key] = nilはキー削除になるため updateValue を使用）
+                    scores.updateValue(nil, forKey: key)
+                }
+                if !doneArray.keys.contains(key) {
+                    doneArray[key] = false
+                }
+            } else {
+                // nilを値として設定（dict[key] = nilはキー削除になるため updateValue を使用）
+                scores.updateValue(nil, forKey: key)
+                doneArray[key] = false
+            }
         }
-    }
-
-    func updateScores(forKey key: String, value: Float?) {
-        self.scores[key] = value
     }
 
     func getScore(for key: String) -> Binding<Float> {
@@ -82,9 +92,13 @@ final public class ScoreModel: ObservableObject {
     /// UserDefaultsからデータを読み込み
     private func loadFromUserDefaults() {
         if let rawScores = UserDefaults.standard.dictionary(forKey: AppConfiguration.StorageKeys.scores) as? [String: Float] {
-            // -1をnilに変換
+            // -1をnilに変換（dict[key] = nilはキー削除になるため updateValue を使用）
             for (key, value) in rawScores {
-                scores[key] = value == -1 ? nil : value
+                if value == -1 {
+                    scores.updateValue(nil, forKey: key)
+                } else {
+                    scores[key] = value
+                }
             }
             print("📂 Loaded \(rawScores.count) scores from storage")
         }
